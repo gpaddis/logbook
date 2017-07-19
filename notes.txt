@@ -1,0 +1,12 @@
+# Structure
+
+/counters
+
+1. VisitsLog ^
+2. RequestsLog ^
+3. Timeslot ^
+4. PatronCategory ^
+5. RequestCategory ^
+
+A. A VisitsLog records the cumulative number of visits of a specific patron category within a time slot.
+B. A RequestsLog records the cumulative number of request types of a specific patron category within a time slot.
