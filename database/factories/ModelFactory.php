@@ -16,9 +16,36 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     static $password;
 
     return [
-        'name' => $faker->name,
+        'first_name' => $faker->firstName,
+        'last_name' => $faker->lastName,
         'email' => $faker->unique()->safeEmail,
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
+    ];
+});
+
+/**
+ * Counters
+ */
+$factory->define(App\Counters\PatronCategory::class, function (Faker\Generator $faker) {
+    return [
+        'category' => $faker->unique()->jobTitle,
+    ];
+});
+
+$factory->define(App\Counters\RequestCategory::class, function (Faker\Generator $faker) {
+    return [
+        'category' => $faker->unique()->safeColorName,
+    ];
+});
+
+$factory->define(App\Counters\VisitsLog::class, function (Faker\Generator $faker) {
+    return [
+        'start_time' => \App\Counters\Timeslot::default()->start(),
+        'end_time' => \App\Counters\Timeslot::default()->end(),
+        'patron_category_id' => function () {
+            return factory('App\Counters\PatronCategory')->create()->id;
+        },
+        'count' => $faker->randomDigitNotNull,
     ];
 });

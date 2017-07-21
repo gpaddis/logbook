@@ -15,7 +15,8 @@ class CreateRequestCategoriesTable extends Migration
     {
         Schema::create('request_categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            $table->string('category');
+            $table->boolean('is_active')->default(true);
         });
     }
 
