@@ -15,7 +15,8 @@ class CreatePatronCategoriesTable extends Migration
     {
         Schema::create('patron_categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('category');
+            $table->string('name');
+            $table->string('abbreviation')->nullable();
             $table->boolean('is_active')->default(true);
         });
     }

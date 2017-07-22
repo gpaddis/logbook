@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Counters\VisitsLog;
 use Illuminate\Http\Request;
+use App\Counters\PatronCategory;
 
 class VisitsLogController extends Controller
 {
@@ -14,7 +15,9 @@ class VisitsLogController extends Controller
      */
     public function index()
     {
-        //
+        $categories = PatronCategory::active()->get();
+
+        return view('visitslog.index', compact('categories'));
     }
 
     /**
@@ -35,7 +38,7 @@ class VisitsLogController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request);
     }
 
     /**

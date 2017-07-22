@@ -29,13 +29,13 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
  */
 $factory->define(App\Counters\PatronCategory::class, function (Faker\Generator $faker) {
     return [
-        'category' => $faker->unique()->jobTitle,
+        'name' => $faker->unique()->safeColorName,
     ];
 });
 
 $factory->define(App\Counters\RequestCategory::class, function (Faker\Generator $faker) {
     return [
-        'category' => $faker->unique()->safeColorName,
+        'name' => $faker->unique()->safeColorName,
     ];
 });
 

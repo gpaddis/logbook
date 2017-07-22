@@ -9,6 +9,11 @@ class PatronCategory extends Model
     public $timestamps = false;
     
     public $fillable = [
-        'category', 'is_active'
+        'name', 'is_active'
     ];
+
+    public static function active()
+    {
+        return PatronCategory::where('is_active', true);
+    }
 }

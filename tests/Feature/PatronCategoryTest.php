@@ -21,4 +21,13 @@ class PatronCategoryTest extends TestCase
 
         $this->assertEquals(true, $category->is_active);
     }
+
+    /** @test */
+    function a_category_name_is_visible_on_the_visitslog_page()
+    {
+        $category = factory('App\Counters\PatronCategory')->create();
+
+        $this->get('/visits')
+            ->assertSee($category->name);
+    }
 }
