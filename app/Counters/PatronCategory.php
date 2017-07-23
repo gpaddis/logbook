@@ -12,8 +12,14 @@ class PatronCategory extends Model
         'name', 'is_active'
     ];
 
-    public static function active()
+    /**
+     * Scope a query to only include active patron categories.
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public static function scopeActive($query)
     {
-        return PatronCategory::where('is_active', true);
+        return $query->where('is_active', true);
     }
 }

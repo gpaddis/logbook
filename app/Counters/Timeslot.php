@@ -35,6 +35,18 @@ class Timeslot
         $this->end->addHours($hours)->minute(59)->second(59);
     }
 
+    /**
+     * Add a number of $hours to the timeslot
+     * @param integer $hours
+     */
+    public function addHour(int $hours = 1)
+    {
+        $this->start->addHour($hours);
+        $this->end->addHour($hours);
+
+        return $this;
+    }
+
     // Getter methods
     public function start()
     {
@@ -46,8 +58,21 @@ class Timeslot
         return $this->end;
     }
 
+    /**
+     * Get an array of start and end.
+     * 
+     * @return array
+     */
+    public function get()
+    {
+        return [
+            'start' => $this->start(),
+            'end' => $this->end()
+        ];
+    }
+
     // Static methods
-    public static function default($hours = 1)
+    public static function now($hours = 1)
     {
         return self::custom(Carbon::now(), $hours);
     }
@@ -62,7 +87,7 @@ class Timeslot
 
     public static function today()
     {
-        $timeslot = self::default(24);
+        $timeslot = self::now(24);
         $timeslot->start = Carbon::now()->hour(0)->minute(0)->second(0);
         $timeslot->setEnd($timeslot->hours);
         return $timeslot;
@@ -70,7 +95,7 @@ class Timeslot
 
     public static function thisWeek()
     {
-        $timeslot = self::default();
+        $timeslot = self::now();
         $timeslot->start = Carbon::now()->startOfWeek();
         $timeslot->end = Carbon::now()->endOfWeek();
         return $timeslot;
@@ -86,7 +111,7 @@ class Timeslot
 
     public static function thisMonth()
     {
-        $timeslot = self::default();
+        $timeslot = self::now();
         $timeslot->start = Carbon::now()->startOfMonth();
         $timeslot->end = Carbon::now()->endOfMonth();
         return $timeslot;

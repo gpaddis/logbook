@@ -41,8 +41,8 @@ $factory->define(App\Counters\RequestCategory::class, function (Faker\Generator 
 
 $factory->define(App\Counters\VisitsLog::class, function (Faker\Generator $faker) {
     return [
-        'start_time' => \App\Counters\Timeslot::default()->start(),
-        'end_time' => \App\Counters\Timeslot::default()->end(),
+        'start_time' => \App\Counters\Timeslot::now()->start(),
+        'end_time' => \App\Counters\Timeslot::now()->end(),
         'patron_category_id' => function () {
             return factory('App\Counters\PatronCategory')->create()->id;
         },

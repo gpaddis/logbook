@@ -15,7 +15,7 @@ class TimeslotTest extends TestCase
     function create_default_timeslot()
     {
         // Given I have a default timeslot (1 hour)
-        $timeslot = Timeslot::default();
+        $timeslot = Timeslot::now();
 
         // When I compare timeslot's start and end with the current time
         $start = $timeslot->start()->timestamp;

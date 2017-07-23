@@ -17,7 +17,17 @@ class VisitsLogController extends Controller
     {
         $categories = PatronCategory::active()->get();
 
-        return view('visitslog.index', compact('categories'));
+        // TODO: implement the method to return this array of timeslots
+        $timeslots = [
+            \App\Counters\Timeslot::now()->get(),
+            \App\Counters\Timeslot::now()->addHour(1)->get(),
+            \App\Counters\Timeslot::now()->addHour(2)->get(),
+            \App\Counters\Timeslot::now()->addHour(3)->get(),
+            \App\Counters\Timeslot::now()->addHour(4)->get(),
+            \App\Counters\Timeslot::now()->addHour(5)->get(),
+        ];
+
+        return view('visitslog.index', compact('categories', 'timeslots'));
     }
 
     /**
@@ -38,7 +48,11 @@ class VisitsLogController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
+        // $this->validate($request, [
+            // https://stackoverflow.com/questions/32092276/laravel-5-request-validate-multidimensional-array            
+        // ]);
+
+        dd($request->all());
     }
 
     /**
