@@ -34,4 +34,13 @@ class PatronCategory extends Model
     {
         return $this->hasMany('App\Counters\VisitsLog');
     }
+
+    /**
+     * Return the full path of the current patron category.
+     * @return string
+     */
+    public function settingsPath()
+    {
+        return '/settings/patron-categories/' . $this->id;
+    }
 }

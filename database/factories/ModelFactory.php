@@ -29,13 +29,15 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
  */
 $factory->define(App\Counters\PatronCategory::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->unique()->safeColorName,
+        'name' => $faker->unique()->colorName,
+        'abbreviation' => $faker->unique()->word,
     ];
 });
 
 $factory->define(App\Counters\RequestCategory::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->unique()->safeColorName,
+        'name' => $faker->unique()->colorName,
+        'abbreviation' => $faker->unique()->word,
     ];
 });
 

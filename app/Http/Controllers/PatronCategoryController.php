@@ -48,7 +48,7 @@ class PatronCategoryController extends Controller
      */
     public function show(PatronCategory $patronCategory)
     {
-        //
+        return $patronCategory;
     }
 
     /**

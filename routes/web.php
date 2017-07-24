@@ -18,3 +18,4 @@ Route::post('/visits', 'VisitsLogController@store');
  * Application Settings
  */
 Route::get('/settings/patron-categories', 'PatronCategoryController@index')->name('settings.patron-categories.index');
+Route::get('/settings/patron-categories/{patronCategory}', 'PatronCategoryController@show');
