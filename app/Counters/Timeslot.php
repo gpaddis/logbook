@@ -36,7 +36,7 @@ class Timeslot
     }
 
     /**
-     * Add a number of $hours to the timeslot
+     * Add a number of $hours to the timeslot's start and end time.
      * @param integer $hours
      */
     public function addHour(int $hours = 1)

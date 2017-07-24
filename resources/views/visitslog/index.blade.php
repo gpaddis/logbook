@@ -12,7 +12,7 @@
           <h4>Visits Log</h4>
         </div>
         <div class="panel-body">
-          <p>Insert or update the visits log for the day ...</p>
+          <h4>Insert or update the visits log for {{ $timeslots[0]['start']->toDateString() }}</h4>
         </div>
         
         {{-- Form begins --}}
