@@ -9,7 +9,7 @@ class PatronCategory extends Model
     public $timestamps = false;
     
     public $fillable = [
-        'name', 'is_active'
+        'name', 'abbreviation', 'is_active'
     ];
 
     protected $casts = [

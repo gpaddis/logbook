@@ -46,7 +46,7 @@
                              Settings<span class="caret"></span>
                          </a>
                          <ul class="dropdown-menu" aria-labelledby="settings">
-                            <li><a href="{{ route('settings.patron-categories.index') }}">Patron Categories</a></li>
+                            <li><a href="{{ route('settings.patron-categories') }}">Patron Categories</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="#">All Settings</a></li>
                         </ul>

@@ -7,52 +7,63 @@
     <div class="col-md-8 col-md-offset-2">
 
       <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Application Settings: Patron Categories</h3>
-      </div>
-      <div class="panel-body">
-          <h4>List of Patron Categories</h4>
 
-          <div class="table-responsive">
-            <table class="table">
+          <div class="panel-body">
+              <h3>List of Patron Categories</h3>
 
-             @if($categories->count())
-             <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Abbreviation</th>
-              <th>Status</th>
-          </tr>
+              @if($categories->count())
+              <div class="table-responsive">
+                <table class="table">
 
-          @foreach($categories as $category)
-          <tr>
-              <td>
-                  {{ $category->id }}
-              </td>
-              <td>
-              <a href="{{ $category->settingsPath() }}">
-                      {{ $category->name }}
-                  </a>
-              </td>
-              <td>
-                  {{ $category->abbreviation }}
-              </td>
-              <td>
-                @if($category->is_active === true)
-                Active
-                @else
-                Not active
-                @endif
-            </td>
-        </tr>
-        @endforeach
+                   <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Abbreviation</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                  </tr>
+
+                  @foreach($categories as $category)
+                  <tr>
+                      <td>
+                        {{ $category->id }}
+                    </td>
+                    <td>
+                        <a href="{{ $category->settingsPath() }}">
+                          {{ $category->name }}
+                      </a>
+                  </td>
+                  <td>
+                    {{ $category->abbreviation }}
+                </td>
+                <td>
+                    @if($category->is_active === true)
+                    Active
+                    @else
+                    Not active
+                    @endif
+                </td>
+                <td>
+                    @if($category->is_active === true)
+                    <a href="#">Deactivate</a> |
+                    @else
+                    <a href="#">Activate</a> |
+                    @endif
+                    <a href="#">Edit</a> | <a href="#">Delete</a>
+                </td>
+            </tr>
+            @endforeach
+
+
+        </table>
+
+        <h4 class="text-center"><a href="#">Add a new patron category</a></h4>
 
         @else
-        There are no patron categories yet. <a href="#">Add some!</a>
+        <h4>There are no patron categories yet. <a href="#">Add some!</a></h4>
         @endif
 
-    </table>
-</div>
+    </div>
 
 </div>
 </div>
