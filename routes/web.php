@@ -7,5 +7,14 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/visits', 'VisitsLogController@index');
+
+/** 
+ * Visits Logs
+ */
+Route::get('/visits', 'VisitsLogController@index')->name('visits');
 Route::post('/visits', 'VisitsLogController@store');
+
+/**
+ * Application Settings
+ */
+Route::get('/settings/patron-categories', 'PatronCategoryController@index')->name('settings.patron-categories.index');

@@ -12,6 +12,10 @@ class PatronCategory extends Model
         'name', 'is_active'
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
     /**
      * Scope a query to only include active patron categories.
      * 
@@ -21,5 +25,13 @@ class PatronCategory extends Model
     public static function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /** 
+     * Get the visit logs for the patron category.
+     */
+    public function visitsLogs()
+    {
+        return $this->hasMany('App\Counters\VisitsLog');
     }
 }

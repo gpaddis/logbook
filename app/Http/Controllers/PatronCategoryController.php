@@ -14,7 +14,9 @@ class PatronCategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = PatronCategory::get();
+
+        return view('settings.patron-categories.index', compact('categories'));
     }
 
     /**

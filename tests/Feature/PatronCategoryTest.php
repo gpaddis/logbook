@@ -10,12 +10,17 @@ class PatronCategoryTest extends TestCase
 {
     use DatabaseMigrations;
 
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->category = factory('App\Counters\PatronCategory')->create();
+    }
+
     /** @test */
     public function a_newly_created_patron_category_is_active_by_default()
-    {
-        factory('App\Counters\PatronCategory')->create();
-        
-        // Using the instance just created is not enough: you have to retrieve
+    {   
+        // Using the instance created in the setUp() method is not enough: we have to retrieve
         // the instance in the database to check if it is active
         $category = PatronCategory::first();
 
@@ -25,9 +30,14 @@ class PatronCategoryTest extends TestCase
     /** @test */
     function a_category_name_is_visible_on_the_visitslog_page()
     {
-        $category = factory('App\Counters\PatronCategory')->create();
-
         $this->get('/visits')
-            ->assertSee($category->name);
+            ->assertSee($this->category->name);
+    }
+
+    /** @test */
+    public function a_category_name_is_visible_on_its_settings_page()
+    {
+        $this->get('/settings/patron-categories')
+            ->assertSee($this->category->name);
     }
 }
