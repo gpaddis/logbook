@@ -38,7 +38,7 @@
                     <ul class="nav navbar-nav">
 
                         <li>
-                            <a href="{{ route('visits') }}">Visits</a>
+                            <a href="{{ route('logbook') }}">Logbook</a>
                         </li>
 
                         <li class="dropdown">

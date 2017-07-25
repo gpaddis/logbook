@@ -9,10 +9,12 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 /** 
- * Visits Logs
+ * Logbook & Logbook Entries
+ * 
+ * TODO: the /logbook route should actually link to the @index route. Change that.
  */
-Route::get('/visits', 'EntryController@index')->name('visits');
-Route::post('/visits', 'EntryController@store');
+Route::get('/logbook', 'EntryController@create')->name('logbook');
+Route::post('/logbook', 'EntryController@store');
 
 /**
  * Application Settings

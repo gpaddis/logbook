@@ -16,7 +16,7 @@
         </div>
         
         {{-- Form begins --}}
-        <form method="POST" action="/visits">
+        <form method="POST" action="/logbook">
 
           {{ csrf_field() }}
           

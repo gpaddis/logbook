@@ -15,6 +15,16 @@ class EntryController extends Controller
      */
     public function index()
     {
+        // 
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
         $categories = PatronCategory::active()->get();
 
         // TODO: implement the method to return this array of timeslots
@@ -27,17 +37,7 @@ class EntryController extends Controller
             \App\Timeslot::now()->addHour(5)->get(),
         ];
 
-        return view('visitslog.index', compact('categories', 'timeslots'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return view('logbook.create', compact('categories', 'timeslots'));
     }
 
     /**

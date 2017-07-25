@@ -6,12 +6,27 @@ use Illuminate\Database\Eloquent\Model;
 
 class PatronCategory extends Model
 {
+    /**
+     * Disable timestamps for the patron_categories table.
+     * 
+     * @var boolean
+     */
     public $timestamps = false;
     
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     public $fillable = [
         'name', 'abbreviation', 'is_active'
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
     protected $casts = [
         'is_active' => 'boolean',
     ];
@@ -39,10 +54,11 @@ class PatronCategory extends Model
 
     /**
      * Return the full path of the current patron category.
+     * 
      * @return string
      */
     public function settingsPath()
     {
-        return '/settings/patron-categories/' . $this->id;
+        return "/settings/patron-categories/{$this->id}";
     }
 }

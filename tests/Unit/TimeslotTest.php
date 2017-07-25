@@ -48,8 +48,8 @@ class TimeslotTest extends TestCase
         $timeslot = Timeslot::today();
 
         // When I compare it with today's start and end date/time
-        $start = Carbon::now()->hour(0)->minute(0)->second(0);
-        $end = Carbon::now()->hour(23)->minute(59)->second(59);
+        $start = Carbon::now()->startOfDay();
+        $end = Carbon::now()->endOfDay();
 
         // The values correspond
         $this->assertEquals($start, $timeslot->start());

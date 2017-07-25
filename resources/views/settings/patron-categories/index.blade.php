@@ -49,7 +49,7 @@
                     @else
                     <a href="#">Activate</a> |
                     @endif
-                    <a href="#">Edit</a> | <a href="#">Delete</a>
+                    <a href="#">Edit</a>
                 </td>
             </tr>
             @endforeach
