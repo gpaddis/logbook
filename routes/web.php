@@ -11,8 +11,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 /** 
  * Visits Logs
  */
-Route::get('/visits', 'VisitsLogController@index')->name('visits');
-Route::post('/visits', 'VisitsLogController@store');
+Route::get('/visits', 'EntryController@index')->name('visits');
+Route::post('/visits', 'EntryController@store');
 
 /**
  * Application Settings

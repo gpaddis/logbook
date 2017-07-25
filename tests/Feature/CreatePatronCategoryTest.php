@@ -16,7 +16,7 @@ class CreatePatronCategoryTest extends TestCase
     // public function normal_users_may_not_create_patron_categories()
     // {
     //     $this->expectException('Illuminate\Auth\AuthenticationException');
-    //     $patronCategory = factory('App\Counters\PatronCategory')->make();
+    //     $patronCategory = factory('App\PatronCategory')->make();
 
     //     $this->post('/settings/patron-categories', $patronCategory->toArray());
     // }
@@ -27,7 +27,7 @@ class CreatePatronCategoryTest extends TestCase
         // Just a wrapping for the be() method
         $this->actingAs(factory('App\User')->create());
 
-        $patronCategory = factory('App\Counters\PatronCategory')->make();
+        $patronCategory = factory('App\PatronCategory')->make();
 
         // The post() method needs an array as a second argument!
         $this->post('/settings/patron-categories', $patronCategory->toArray());

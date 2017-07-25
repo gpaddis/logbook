@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Counters\Timeslot;
+use App\Timeslot;
 use Illuminate\Http\Request;
 
 class TimeslotController extends Controller
@@ -41,7 +41,7 @@ class TimeslotController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Counters\Timeslot  $timeslot
+     * @param  \App\Timeslot  $timeslot
      * @return \Illuminate\Http\Response
      */
     public function show(Timeslot $timeslot)
@@ -52,7 +52,7 @@ class TimeslotController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Counters\Timeslot  $timeslot
+     * @param  \App\Timeslot  $timeslot
      * @return \Illuminate\Http\Response
      */
     public function edit(Timeslot $timeslot)
@@ -64,7 +64,7 @@ class TimeslotController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Counters\Timeslot  $timeslot
+     * @param  \App\Timeslot  $timeslot
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Timeslot $timeslot)
@@ -75,7 +75,7 @@ class TimeslotController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Counters\Timeslot  $timeslot
+     * @param  \App\Timeslot  $timeslot
      * @return \Illuminate\Http\Response
      */
     public function destroy(Timeslot $timeslot)

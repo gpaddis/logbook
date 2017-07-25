@@ -4,18 +4,18 @@ namespace Tests\Feature;
 
 use Carbon\Carbon;
 use Tests\TestCase;
-use App\Counters\Timeslot;
-use App\Counters\VisitsLog;
+use App\Timeslot;
+use App\Logbook\Entry;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class VisitsLogTest extends TestCase
+class LogbookEntryTest extends TestCase
 {
     use DatabaseMigrations;
 
     /** @test */
     public function the_default_visits_log_is_well_formed()
     {
-        $log = factory('App\Counters\VisitsLog')->create();
+        $log = factory('App\Logbook\Entry')->create();
 
         // Start and end time are instance of the Carbon class
         $this->assertInstanceOf(Carbon::class, $log->start_time);
@@ -25,7 +25,7 @@ class VisitsLogTest extends TestCase
         $this->assertInternalType("int", $log->count);
 
         // The patron category just created exists in the database
-        $patronCategory = \App\Counters\PatronCategory::first();
+        $patronCategory = \App\PatronCategory::first();
 
         $this->assertEquals($patronCategory->id, $log->patron_category_id);
     }

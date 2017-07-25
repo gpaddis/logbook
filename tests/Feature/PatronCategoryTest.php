@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Counters\PatronCategory;
+use App\PatronCategory;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class PatronCategoryTest extends TestCase
@@ -14,7 +14,7 @@ class PatronCategoryTest extends TestCase
     {
         parent::setUp();
 
-        $this->category = factory('App\Counters\PatronCategory')->create();
+        $this->category = factory('App\PatronCategory')->create();
     }
 
     /** @test */

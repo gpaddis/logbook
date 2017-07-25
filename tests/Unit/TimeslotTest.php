@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Carbon\Carbon;
-Use App\Counters\Timeslot;
+Use App\Timeslot;
 
 class TimeslotTest extends TestCase
 {

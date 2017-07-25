@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Counters;
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,11 +28,13 @@ class PatronCategory extends Model
     }
 
     /** 
-     * Get the visit logs for the patron category.
+     * A patron category has many logbook entries.
+     * 
+     * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function visitsLogs()
+    public function logbookEntries()
     {
-        return $this->hasMany('App\Counters\VisitsLog');
+        return $this->hasMany('App\Logbook\Entry');
     }
 
     /**

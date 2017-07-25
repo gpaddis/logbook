@@ -2,17 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Logbook\Entry;
 use App\PatronCategory;
 use Illuminate\Http\Request;
 
-class PatronCategoryController extends Controller
+class EntryController extends Controller
 {
-    /**
-     * TODO: add a middleware in the constructor to only allow the admin
-     * to access store(), delete() and such methods. All other users are
-     * only allowed to see the index() and show() methods.
-     */
-    
     /**
      * Display a listing of the resource.
      *
@@ -20,9 +15,19 @@ class PatronCategoryController extends Controller
      */
     public function index()
     {
-        $categories = PatronCategory::get();
+        $categories = PatronCategory::active()->get();
 
-        return view('settings.patron-categories.index', compact('categories'));
+        // TODO: implement the method to return this array of timeslots
+        $timeslots = [
+            \App\Timeslot::now()->get(),
+            \App\Timeslot::now()->addHour(1)->get(),
+            \App\Timeslot::now()->addHour(2)->get(),
+            \App\Timeslot::now()->addHour(3)->get(),
+            \App\Timeslot::now()->addHour(4)->get(),
+            \App\Timeslot::now()->addHour(5)->get(),
+        ];
+
+        return view('visitslog.index', compact('categories', 'timeslots'));
     }
 
     /**
@@ -43,32 +48,31 @@ class PatronCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $patronCategory = PatronCategory::create([
-            'name' => request('name'),
-            'abbreviation' => request('abbreviation')
-        ]);
+        // $this->validate($request, [
+            // https://stackoverflow.com/questions/32092276/laravel-5-request-validate-multidimensional-array            
+        // ]);
 
-        return redirect()->route('settings.patron-categories.index');
+        dd($request->all());
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\PatronCategory  $patronCategory
+     * @param  \App\VisitsLog  $visitsLog
      * @return \Illuminate\Http\Response
      */
-    public function show(PatronCategory $patronCategory)
+    public function show(VisitsLog $visitsLog)
     {
-        return $patronCategory;
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\PatronCategory  $patronCategory
+     * @param  \App\VisitsLog  $visitsLog
      * @return \Illuminate\Http\Response
      */
-    public function edit(PatronCategory $patronCategory)
+    public function edit(VisitsLog $visitsLog)
     {
         //
     }
@@ -77,10 +81,10 @@ class PatronCategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\PatronCategory  $patronCategory
+     * @param  \App\VisitsLog  $visitsLog
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PatronCategory $patronCategory)
+    public function update(Request $request, VisitsLog $visitsLog)
     {
         //
     }
@@ -88,10 +92,10 @@ class PatronCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\PatronCategory  $patronCategory
+     * @param  \App\VisitsLog  $visitsLog
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PatronCategory $patronCategory)
+    public function destroy(VisitsLog $visitsLog)
     {
         //
     }

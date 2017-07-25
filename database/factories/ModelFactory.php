@@ -27,26 +27,26 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 /**
  * Counters
  */
-$factory->define(App\Counters\PatronCategory::class, function (Faker\Generator $faker) {
+$factory->define(App\PatronCategory::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->unique()->colorName,
         'abbreviation' => $faker->unique()->word,
     ];
 });
 
-$factory->define(App\Counters\RequestCategory::class, function (Faker\Generator $faker) {
+$factory->define(App\RequestCategory::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->unique()->colorName,
         'abbreviation' => $faker->unique()->word,
     ];
 });
 
-$factory->define(App\Counters\VisitsLog::class, function (Faker\Generator $faker) {
+$factory->define(App\Logbook\Entry::class, function (Faker\Generator $faker) {
     return [
-        'start_time' => \App\Counters\Timeslot::now()->start(),
-        'end_time' => \App\Counters\Timeslot::now()->end(),
+        'start_time' => \App\Timeslot::now()->start(),
+        'end_time' => \App\Timeslot::now()->end(),
         'patron_category_id' => function () {
-            return factory('App\Counters\PatronCategory')->create()->id;
+            return factory('App\PatronCategory')->create()->id;
         },
         'count' => $faker->randomDigitNotNull,
     ];

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Counters;
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
