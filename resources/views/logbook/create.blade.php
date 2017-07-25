@@ -3,62 +3,65 @@
 @section('content')
 
 <div class="container">
-  <div class="row">
-    <div class="col-md-8 col-md-offset-2">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
 
-      <div class="panel panel-default">
-        <!-- Default panel contents -->
-        <div class="panel-heading">
-          <h4>Visits Log</h4>
-        </div>
-        <div class="panel-body">
-          <h4>Insert or update the visits log for {{ $timeslots[0]['start']->toDateString() }}</h4>
-        </div>
-        
-        {{-- Form begins --}}
-        <form method="POST" action="/logbook">
+			<div class="panel panel-default">
+				<!-- Default panel contents -->
+				<div class="panel-heading">
+					<h4>Visits Log</h4>
+				</div>
+				<div class="panel-body">
+					<h4>Insert or update the visits log for {{ $timeslots[0]['start']->toDateString() }}</h4>
+				</div>
 
-          {{ csrf_field() }}
-          
-          <table class="table">
-            <tr>
-              <th>Timeslot / Category</th>
-              @foreach($categories as $category)
-              <th>{{ $category->name }}</th>
-              @endforeach
-            </tr>
+				{{-- Form begins --}}
+				<form method="POST" action="/logbook">
 
-            {{-- Table body: iterates through timeslots and active categories --}}
-            @foreach($timeslots as $timeslot)
-              <tr>
-                <td class="col-md-2">
-                  <p>
-                    From: {{ $timeslot['start']->toTimeString() }}
-                    To: {{ $timeslot['end']->toTimeString() }}
-                  </p>
-                </td>
-                
-                {{-- Data inputs --}}
-                @foreach($categories as $category)
-                <td class="col-md-1">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="count['{{ $timeslot['start']->toDateTimeString() }}'][{{ $category->id }}]" name="count['{{ $timeslot['start']->toDateTimeString() }}'][{{ $category->id }}]">
-                  </div>
-                </td>
-                @endforeach
+					{{ csrf_field() }}
 
-              </tr>
-            @endforeach
-          </table>
+					<table class="table">
+						<tr>
+							<th>Timeslot / Category</th>
+							@foreach($categories as $category)
+							<th><abbr title="{{ $category->name }}">{{ $category->abbreviation }}</abbr></th>
+							@endforeach
+						</tr>
 
-          <div class="form-group text-center">
-            <button type="submit" class="btn btn-default">Submit</button>
-          </div>
-        </form>
-      </div>
+						{{-- Table body: iterates through timeslots and active categories --}}
+						@foreach($timeslots as $timeslot)
+						<tr>
+							<td class="col-md-2">
+								<p>
+									From: {{ $timeslot['start']->toTimeString() }}
+									To: {{ $timeslot['end']->toTimeString() }}
+								</p>
+							</td>
 
-    </div>
-  </div>
+							{{-- Data inputs --}}
+							@foreach($categories as $category)
+							<td class="col-md-1">
+								<div class="input-group input-group-sm">
+									<input type="number" class="form-control" id="count['{{ $timeslot['start']->toDateTimeString() }}'][{{ $category->id }}]" name="count['{{ $timeslot['start']->toDateTimeString() }}'][{{ $category->id }}]">
+								</div>
+							</div>
+						</td>
+						@endforeach
+
+					</tr>
+					@endforeach
+
+				</table>
+
+				<div class="form-group text-center">
+					<button type="submit" class="btn btn-primary">Save the Log</button>
+					<a href="#" class="btn btn-default">Clear the Form</a>
+				</div>
+			</form>
+		</div>
+
+	</div>
+</div>
 </div>
 
 @endsection

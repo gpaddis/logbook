@@ -10,10 +10,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 /** 
  * Logbook & Logbook Entries
- * 
- * TODO: the /logbook route should actually link to the @index route. Change that.
  */
-Route::get('/logbook', 'EntryController@create')->name('logbook');
+Route::get('/logbook', 'EntryController@index')->name('logbook.index');
+Route::get('/logbook/edit', 'EntryController@create')->name('logbook.create');
 Route::post('/logbook', 'EntryController@store');
 
 /**

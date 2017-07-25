@@ -17,8 +17,8 @@ class CreateLogbookTable extends Migration
             $table->increments('id');
             $table->dateTime('start_time');
             $table->dateTime('end_time');
-            $table->integer('patron_category_id');
-            $table->integer('count');
+            $table->unsignedInteger('patron_category_id');
+            $table->unsignedSmallInteger('count');
             $table->timestamps();
         });
     }

@@ -15,7 +15,7 @@ class EntryController extends Controller
      */
     public function index()
     {
-        // 
+        return view('logbook.index');
     }
 
     /**
@@ -51,7 +51,12 @@ class EntryController extends Controller
         // $this->validate($request, [
             // https://stackoverflow.com/questions/32092276/laravel-5-request-validate-multidimensional-array            
         // ]);
-
+        // 
+        // To validate the input:
+        // $v = Validator::make($data, [
+        // 'something' => 'integer|min:0'
+        // ]);  
+        
         dd($request->all());
     }
 

@@ -35,18 +35,18 @@ class PatronCategoryTest extends TestCase
     }
 
     /** @test */
-    function an_active_category_name_is_visible_on_the_logbook_page()
+    function an_active_category_name_is_visible_on_the_create_logbook_entry_page()
     {
-        $this->get('/logbook')
+        $this->get('/logbook/edit')
             ->assertSee($this->category->name);
     }
 
     /** @test */
-    function an_inactive_category_name_is_not_visible_on_the_logbook_page()
+    function an_inactive_category_name_is_not_visible_on_the_creaete_logbook_entry_page()
     {
         $patronCategory = create('App\PatronCategory', ['is_active' => false]);
 
-        $this->get('/logbook')
+        $this->get('/logbook/edit')
             ->assertDontSee($patronCategory->name);
     }
 }
