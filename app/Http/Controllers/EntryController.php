@@ -62,8 +62,15 @@ class EntryController extends Controller
             'entry.*.count' => 'nullable|integer|min:1'
         ]);
 
+        $count = 0;
         foreach ($request->input('entry.*') as $entry) {
             Entry::updateOrCreateIfNotNull($entry);
+            
+            $entry['count'] === null ?: $count++;
+        }
+
+        if ($count === 0) {
+            return redirect()->route('logbook.create');
         }
 
         return redirect()->route('logbook.index');

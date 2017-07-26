@@ -41,7 +41,7 @@ class PatronCategoryTest extends TestCase
     {
         $this->signIn();
 
-        $this->get('/logbook/edit')
+        $this->get('/logbook/update')
             ->assertSee($this->category->name);
     }
 
@@ -52,7 +52,7 @@ class PatronCategoryTest extends TestCase
         
         $patronCategory = create('App\PatronCategory', ['is_active' => false]);
 
-        $this->get('/logbook/edit')
+        $this->get('/logbook/update')
             ->assertDontSee($patronCategory->name);
     }
 }

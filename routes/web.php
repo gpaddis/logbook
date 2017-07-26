@@ -12,7 +12,7 @@ Route::get('/home', 'HomeController@index')->name('home');
  * Logbook & Logbook Entries
  */
 Route::get('/logbook', 'EntryController@index')->name('logbook.index');
-Route::get('/logbook/edit', 'EntryController@create')->name('logbook.create');
+Route::get('/logbook/update', 'EntryController@create')->name('logbook.create');
 Route::post('/logbook', 'EntryController@store');
 
 /**

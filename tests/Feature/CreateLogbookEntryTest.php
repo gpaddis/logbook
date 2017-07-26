@@ -12,6 +12,20 @@ class CreateLogbookEntryTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
+    function an_unauthenticated_user_cannot_create_logbook_entries()
+    {
+        $this->withExceptionHandling();
+
+        $entry = make('App\Logbook\Entry');
+
+        $this->post('/logbook', [
+            'entry' => [
+                $entry->start_time->timestamp . $entry->patron_category_id => $entry->toArray()
+            ]
+        ])->assertRedirect('/login');
+    }
+    
+    /** @test */
     public function an_authenticated_user_can_create_multiple_logbook_entries()
     {
         $this->signIn();
@@ -22,7 +36,7 @@ class CreateLogbookEntryTest extends TestCase
             'end_time' => \App\Timeslot::now()->addHour()->end(),
         ]);
 
-        $response = $this->post('/logbook', [
+        $this->post('/logbook', [
             'entry' => [
                 $entry1->start_time->timestamp . $entry1->patron_category_id => $entry1->toArray(),
                 $entry2->start_time->timestamp . $entry2->patron_category_id => $entry2->toArray()

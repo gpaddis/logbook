@@ -45,7 +45,6 @@ class Entry extends Model
                     'end_time' => $entry['end_time'],
                     'patron_category_id' => $entry['patron_category_id']
                 ],
-
                 [
                     'count' => $entry['count']
                 ]);
