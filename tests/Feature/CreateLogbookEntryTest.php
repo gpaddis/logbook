@@ -22,13 +22,11 @@ class CreateLogbookEntryTest extends TestCase
             'end_time' => \App\Timeslot::now()->addHour()->end(),
         ]);
 
-        $this->post('/logbook', [
-            $entry1->start_time->toDateTimeString() => [
-                $entry1->patron_category_id => $entry1->toArray()
-            ],
-            $entry2->start_time->toDateTimeString() => [
-                $entry2->patron_category_id => $entry2->toArray()
-            ]
+        $response = $this->post('/logbook', [
+            'entry' => [
+                $entry1->start_time->timestamp . $entry1->patron_category_id => $entry1->toArray(),
+                $entry2->start_time->timestamp . $entry2->patron_category_id => $entry2->toArray()
+                ]
         ]);
 
         // TODO: This should assert that the date and count are visible on the /logbook/day/{date} page 
@@ -46,8 +44,8 @@ class CreateLogbookEntryTest extends TestCase
 
         $entry = make('App\Logbook\Entry', ['count' => -12]);
 
-        $this->post('/logbook', [$entry->start_time->toDateTimeString() => [$entry->patron_category_id => $entry->toArray()]])
-            ->assertSessionHasErrors('*.*.count');
+        $this->post('/logbook', ['entry' => [$entry->start_time->timestamp . $entry->patron_category_id => $entry->toArray()]])
+            ->assertSessionHasErrors('*.count');
     }
 
     // TEST addCount(): it adds a count for the current category in the current timeslot

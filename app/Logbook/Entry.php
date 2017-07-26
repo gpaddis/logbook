@@ -29,4 +29,26 @@ class Entry extends Model
     {
         return $this->belongsTo('App\PatronCategory');
     }
+
+    /**
+     * Persist an entry in the database only if the count is not null.
+     * 
+     * @param  array $entry
+     * @return
+     */
+    public static function updateOrCreateIfNotNull(array $entry)
+    {
+        if ($entry['count'] !== null) {
+            Entry::updateOrCreate(
+                [
+                    'start_time' => $entry['start_time'],
+                    'end_time' => $entry['end_time'],
+                    'patron_category_id' => $entry['patron_category_id']
+                ],
+
+                [
+                    'count' => $entry['count']
+                ]);
+        }
+    }
 }

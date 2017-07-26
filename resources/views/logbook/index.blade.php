@@ -8,15 +8,15 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h3>Logbook Index</h3>
+                    <div class="container">
+                        <a href="{{ route('logbook.create') }}" class="btn btn-primary">Create a New Entry</a>
+                    </div>
                     <ul>
-                    @foreach($entries as $entry)
-                    <li>
-                        {{ $entry->start_time }},
-                        {{ $entry->end_time }},
-                        {{ $entry->patronCategory->name }} = 
-                        {{ $entry->count }}
-                    </li>
-                    @endforeach
+                        @foreach($entries as $entry)
+                        <li>
+                            From {{ $entry->start_time }} to {{ $entry->end_time }} we had {{ $entry->count }} {{ $entry->patronCategory->name }}.
+                        </li>
+                        @endforeach
                     </ul>
                 </div>
             </div>

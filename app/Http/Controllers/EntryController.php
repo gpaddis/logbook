@@ -56,21 +56,14 @@ class EntryController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            '*.*.start_time' => 'required|date',
-            '*.*.end_time' => 'required|date|after:start_time',
-            '*.*.patron_category_id' => 'required|exists:patron_categories,id',
-            '*.*.count' => 'nullable|integer|min:1'
+            'entry.*.start_time' => 'required|date',
+            'entry.*.end_time' => 'required|date|after:start_time',
+            'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
+            'entry.*.count' => 'nullable|integer|min:1'
         ]);
 
-        foreach (request('*.*') as $entry) {
-            if ($entry['count'] !== null) {
-                Entry::create([
-                    'start_time' => $entry['start_time'],
-                    'end_time' => $entry['end_time'],
-                    'patron_category_id' => $entry['patron_category_id'],
-                    'count' => $entry['count']
-                ]);
-            }
+        foreach ($request->input('entry.*') as $entry) {
+            Entry::updateOrCreateIfNotNull($entry);
         }
 
         return redirect()->route('logbook.index');
