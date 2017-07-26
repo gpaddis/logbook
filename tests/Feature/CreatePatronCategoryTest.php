@@ -24,10 +24,9 @@ class CreatePatronCategoryTest extends TestCase
     /** @test */
     public function an_authenticated_user_can_create_new_patron_category()
     {
-        // Just a wrapping for the be() method
-        $this->actingAs(factory('App\User')->create());
+        $this->signIn();
 
-        $patronCategory = factory('App\PatronCategory')->make();
+        $patronCategory = make('App\PatronCategory');
 
         // The post() method needs an array as a second argument!
         $this->post('/settings/patron-categories', $patronCategory->toArray());

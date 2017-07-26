@@ -30,6 +30,8 @@ class PatronCategoryTest extends TestCase
     /** @test */
     public function a_category_name_is_visible_on_its_settings_page()
     {
+        $this->signIn();
+        
         $this->get('/settings/patron-categories')
             ->assertSee($this->category->name);
     }
@@ -37,13 +39,17 @@ class PatronCategoryTest extends TestCase
     /** @test */
     function an_active_category_name_is_visible_on_the_create_logbook_entry_page()
     {
+        $this->signIn();
+
         $this->get('/logbook/edit')
             ->assertSee($this->category->name);
     }
 
     /** @test */
-    function an_inactive_category_name_is_not_visible_on_the_creaete_logbook_entry_page()
+    function an_inactive_category_name_is_not_visible_on_the_create_logbook_entry_page()
     {
+        $this->signIn();
+        
         $patronCategory = create('App\PatronCategory', ['is_active' => false]);
 
         $this->get('/logbook/edit')

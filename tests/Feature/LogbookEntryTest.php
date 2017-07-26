@@ -15,23 +15,18 @@ class LogbookEntryTest extends TestCase
     /** @test */
     public function the_default_visits_log_is_well_formed()
     {
-        $log = factory('App\Logbook\Entry')->create();
+        $entry = create('App\Logbook\Entry');
 
         // Start and end time are instance of the Carbon class
-        $this->assertInstanceOf(Carbon::class, $log->start_time);
-        $this->assertInstanceOf(Carbon::class, $log->end_time);
+        $this->assertInstanceOf(Carbon::class, $entry->start_time);
+        $this->assertInstanceOf(Carbon::class, $entry->end_time);
 
         // The count is an integer
-        $this->assertInternalType("int", $log->count);
+        $this->assertInternalType("int", $entry->count);
 
-        // The patron category just created exists in the database
+        // The patron category just created is persisted in the database
         $patronCategory = \App\PatronCategory::first();
 
-        $this->assertEquals($patronCategory->id, $log->patron_category_id);
+        $this->assertEquals($patronCategory->id, $entry->patron_category_id);
     }
-
-    // TEST addCount(): it adds a count for the current category in the current timeslot
-    // TEST removeCount(): it removes a count for the current category in the current timeslot
-    // and avoids a negative count
-    // TEST removeCount(): if count < 1, it deletes the record from the database
 }

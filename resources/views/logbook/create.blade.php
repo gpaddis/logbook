@@ -41,9 +41,13 @@
 							{{-- Data inputs --}}
 							@foreach($categories as $category)
 							<td class="col-md-1">
-								<div class="input-group input-group-sm">
-									<input type="number" class="form-control" id="count['{{ $timeslot['start']->toDateTimeString() }}'][{{ $category->id }}]" name="count['{{ $timeslot['start']->toDateTimeString() }}'][{{ $category->id }}]">
-								</div>
+								    <input type="hidden" name="{{ $timeslot['start']->toDateTimeString() }}[{{ $category->id }}][start_time]" value="{{ $timeslot['start']->toDateTimeString() }}">
+								    <input type="hidden" name="{{ $timeslot['start']->toDateTimeString() }}[{{ $category->id }}][end_time]" value="{{ $timeslot['end']->toDateTimeString() }}">
+								    <input type="hidden" name="{{ $timeslot['start']->toDateTimeString() }}[{{ $category->id }}][patron_category_id]" value="{{ $category->id }}">
+
+								    <div class="form-group">
+								        <input type="number" class="form-control" id="{{ $timeslot['start']->toDateTimeString() }}[{{ $category->id }}][count]" name="{{ $timeslot['start']->toDateTimeString() }}[{{ $category->id }}][count]">
+								    </div>
 							</div>
 						</td>
 						@endforeach
@@ -58,6 +62,14 @@
 					<a href="#" class="btn btn-default">Clear the Form</a>
 				</div>
 			</form>
+
+			@if($errors)
+			<ul>
+				@foreach($errors->all() as $error)
+					<li>{{ $error }}</li>
+				@endforeach
+			</ul>
+			@endif
 		</div>
 
 	</div>

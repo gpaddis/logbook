@@ -13,6 +13,13 @@ class Entry extends Model
      */
     protected $table = 'logbook';
 
+    protected $fillable = [
+        'start_time',
+        'end_time',
+        'patron_category_id',
+        'count'
+    ];
+    
     /** 
      * A logbook entry belongs to a patron category.
      * 

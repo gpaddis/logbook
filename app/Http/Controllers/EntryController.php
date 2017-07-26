@@ -9,13 +9,23 @@ use Illuminate\Http\Request;
 class EntryController extends Controller
 {
     /**
+     * ThreadsController constructor
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return view('logbook.index');
+        $entries = Entry::all();
+
+        return view('logbook.index', compact('entries'));
     }
 
     /**
@@ -32,9 +42,6 @@ class EntryController extends Controller
             \App\Timeslot::now()->get(),
             \App\Timeslot::now()->addHour(1)->get(),
             \App\Timeslot::now()->addHour(2)->get(),
-            \App\Timeslot::now()->addHour(3)->get(),
-            \App\Timeslot::now()->addHour(4)->get(),
-            \App\Timeslot::now()->addHour(5)->get(),
         ];
 
         return view('logbook.create', compact('categories', 'timeslots'));
@@ -48,16 +55,25 @@ class EntryController extends Controller
      */
     public function store(Request $request)
     {
-        // $this->validate($request, [
-            // https://stackoverflow.com/questions/32092276/laravel-5-request-validate-multidimensional-array            
-        // ]);
-        // 
-        // To validate the input:
-        // $v = Validator::make($data, [
-        // 'something' => 'integer|min:0'
-        // ]);  
-        
-        dd($request->all());
+        $this->validate($request, [
+            '*.*.start_time' => 'required|date',
+            '*.*.end_time' => 'required|date|after:start_time',
+            '*.*.patron_category_id' => 'required|exists:patron_categories,id',
+            '*.*.count' => 'nullable|integer|min:1'
+        ]);
+
+        foreach (request('*.*') as $entry) {
+            if ($entry['count'] !== null) {
+                Entry::create([
+                    'start_time' => $entry['start_time'],
+                    'end_time' => $entry['end_time'],
+                    'patron_category_id' => $entry['patron_category_id'],
+                    'count' => $entry['count']
+                ]);
+            }
+        }
+
+        return redirect()->route('logbook.index');
     }
 
     /**
