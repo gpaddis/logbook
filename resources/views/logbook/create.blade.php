@@ -9,10 +9,11 @@
 			<div class="panel panel-default">
 				<!-- Default panel contents -->
 				<div class="panel-heading">
-					<h4>Visits Log</h4>
+					<h4>Update the logbook for {{ $timeslots[0]->start()->toFormattedDateString() }}</h4>
 				</div>
+
 				<div class="panel-body">
-					<h4>Insert or update the visits log for {{ $timeslots[0]['start']->toDateString() }}</h4>
+					<p>Insert the sum of the users who visited the library between a specific time range into the appropriate field. If there are no visits for a time range or category, leave the fields empty.</p>
 				</div>
 
 				{{-- Form begins --}}
@@ -22,7 +23,7 @@
 
 					<table class="table">
 						<tr>
-							<th>Timeslot / Category</th>
+							<th>Time Range</th>
 							@foreach($categories as $category)
 							<th><abbr title="{{ $category->name }}">{{ $category->abbreviation }}</abbr></th>
 							@endforeach
@@ -33,48 +34,50 @@
 						<tr>
 							<td class="col-md-2">
 								<p>
-									From: {{ $timeslot['start']->toTimeString() }}
-									To: {{ $timeslot['end']->toTimeString() }}
+									From {{ $timeslot->start()->format('G:i') }}
+									to {{ $timeslot->end()->format('G:i') }}
 								</p>
 							</td>
 
 							{{-- Data inputs --}}
 							@foreach($categories as $category)
-							<td class="col-md-1">
-								<input type="hidden" name="entry[{{ $timeslot['start']->timestamp . $category->id }}][start_time]" value="{{ $timeslot['start']->toDateTimeString() }}">
-								<input type="hidden" name="entry[{{ $timeslot['start']->timestamp . $category->id }}][end_time]" value="{{ $timeslot['end']->toDateTimeString() }}">
-								<input type="hidden" name="entry[{{ $timeslot['start']->timestamp . $category->id }}][patron_category_id]" value="{{ $category->id }}">
+							<td>
+								<input type="hidden" name="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][start_time]" value="{{ $timeslot->start()->toDateTimeString() }}">
 
-								<div class="form-group">
-									<input type="number" class="form-control" id="entry[{{ $timeslot['start']->timestamp . $category->id }}][count]" name="entry[{{ $timeslot['start']->timestamp . $category->id }}][count]">
+								<input type="hidden" name="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][end_time]" value="{{ $timeslot->start()->toDateTimeString() }}">
+
+								<input type="hidden" name="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][patron_category_id]" value="{{ $category->id }}">
+
+								<div class="form-group{{ 
+									$errors->has('entry.' . App\Logbook\Entry::identifier($timeslot, $category) . '.count') ? ' has-error' : '' }}">
+									<input type="number" class="form-control" id="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][count]" name="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][count]" value="{{ old('entry.' . App\Logbook\Entry::identifier($timeslot, $category) . '.count') }}">
 								</div>
-							</div>
-						</td>
+							</td>
+							@endforeach
+
+						</tr>
 						@endforeach
 
-					</tr>
-					@endforeach
+					</table>
 
-				</table>
+					<div class="form-group text-center">
+						<button type="submit" class="btn btn-primary">Save the Log</button>
+						<a href="#" class="btn btn-default">Clear the Form</a>
+					</div>
 
-				<div class="form-group text-center">
-					<button type="submit" class="btn btn-primary">Save the Log</button>
-					<a href="#" class="btn btn-default">Clear the Form</a>
-				</div>
-			</form>
-			
-			{{-- TODO: fix the error output. Check this: https://ericlbarnes.com/2015/04/04/laravel-array-validation/ --}}
-			@if($errors)
-			<ul>
-				@foreach($errors->all() as $error)
-				<li>{{ $error }}</li>
-				@endforeach
-			</ul>
-			@endif
+					@if (count($errors))
+					<ul class="alert alert-danger">
+						<li>{{ $errors->first() }}</li>
+					</ul>
+					@endif
+				</form>
+
+
+
+			</div>
+
 		</div>
-
 	</div>
-</div>
 </div>
 
 @endsection

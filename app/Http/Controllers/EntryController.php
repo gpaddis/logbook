@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Logbook\Entry;
 use App\PatronCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class EntryController extends Controller
 {
@@ -39,9 +40,9 @@ class EntryController extends Controller
 
         // TODO: implement the method to return this array of timeslots
         $timeslots = [
-            \App\Timeslot::now()->get(),
-            \App\Timeslot::now()->addHour(1)->get(),
-            \App\Timeslot::now()->addHour(2)->get(),
+        \App\Timeslot::now(),
+        \App\Timeslot::now()->addHour(1),
+        \App\Timeslot::now()->addHour(2),
         ];
 
         return view('logbook.create', compact('categories', 'timeslots'));
@@ -55,12 +56,29 @@ class EntryController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $messages = [
+            'min' => 'The count must be a positive number. Correct the fields in red and try again.',
+        ];
+
+        $validator = Validator::make($request->all(), [
             'entry.*.start_time' => 'required|date',
             'entry.*.end_time' => 'required|date|after:start_time',
             'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
             'entry.*.count' => 'nullable|integer|min:1'
-        ]);
+        ], $messages);
+
+        if ($validator->fails()) {
+            return redirect()->route('logbook.create')
+            ->withErrors($validator)
+            ->withInput();
+        }
+
+        // $this->validate($request, [
+        //     'entry.*.start_time' => 'required|date',
+        //     'entry.*.end_time' => 'required|date|after:start_time',
+        //     'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
+        //     'entry.*.count' => 'nullable|integer|min:1'
+        // ]);
 
         $count = 0;
         foreach ($request->input('entry.*') as $entry) {

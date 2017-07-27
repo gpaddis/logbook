@@ -8,13 +8,19 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h3>Logbook Index</h3>
-                    <div class="container">
-                        <a href="{{ route('logbook.create') }}" class="btn btn-primary">Create a New Entry</a>
-                    </div>
+                    {{-- TODO: implement the functionality. --}}
+                    <form class="form-inline" method="GET" action="{{ route('logbook.create') }}">
+                        <div class="form-group">
+                            <label class="sr-only" for="date">Pick a date:</label>
+                            <input type="date" class="form-control" id="date" name="date" max="{{ Carbon\Carbon::now()->toDateString() }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update the Logbook</button>
+                    </form>
+
                     <ul>
                         @foreach($entries as $entry)
                         <li>
-                            From {{ $entry->start_time }} to {{ $entry->end_time }} we had {{ $entry->count }} {{ $entry->patronCategory->name }}.
+                            <p>From {{ $entry->start_time }} to {{ $entry->end_time }} we had {{ $entry->count }} {{ $entry->patronCategory->name }}.</p>
                         </li>
                         @endforeach
                     </ul>

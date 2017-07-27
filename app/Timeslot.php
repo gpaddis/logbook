@@ -86,11 +86,10 @@ class Timeslot
 
     /**
      * Get an array of start and end date / time.
-     * TODO: rename this method to toArray().
      * 
      * @return array
      */
-    public function get()
+    public function toArray()
     {
         return [
             'start' => $this->start(),

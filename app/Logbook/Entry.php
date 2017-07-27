@@ -2,6 +2,8 @@
 
 namespace App\Logbook;
 
+use App\Timeslot;
+use App\PatronCategory;
 use Illuminate\Database\Eloquent\Model;
 
 class Entry extends Model
@@ -49,5 +51,17 @@ class Entry extends Model
                     'count' => $entry['count']
                 ]);
         }
+    }
+
+    /**
+     * Return a string with the unique timeslot + category identifier (for the form).
+     * 
+     * @param  App\Timeslot       $timeslot
+     * @param  App\PatronCategory $category
+     * @return string
+     */
+    public static function identifier(Timeslot $timeslot, PatronCategory $category)
+    {
+        return "{$timeslot->start()->timestamp}{$category->id}";
     }
 }
