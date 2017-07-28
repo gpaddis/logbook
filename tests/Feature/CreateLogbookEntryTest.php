@@ -26,7 +26,7 @@ class CreateLogbookEntryTest extends TestCase
     }
     
     /** @test */
-    public function an_authenticated_user_can_create_multiple_logbook_entries()
+    public function an_authenticated_user_can_create_logbook_entries()
     {
         $this->signIn();
 
@@ -58,8 +58,29 @@ class CreateLogbookEntryTest extends TestCase
 
         $entry = make('App\Logbook\Entry', ['count' => -12]);
 
-        $this->post('/logbook', ['entry' => [$entry->start_time->timestamp . $entry->patron_category_id => $entry->toArray()]])
-            ->assertSessionHasErrors('*.count');
+        $response = $this->post('/logbook', ['entry' => [$entry->start_time->timestamp . $entry->patron_category_id => $entry->toArray()]]);
+        
+        $response->assertRedirect(route('logbook.create'))
+            ->assertSessionHasErrors('entry.*.count');
+    }
+
+    /** @test */
+    public function the_entry_date_cannot_be_in_the_future()
+    {
+        $this->withExceptionHandling()->signIn();
+
+        $entry = make('App\Logbook\Entry', [
+            'start_time' => \Carbon\Carbon::tomorrow(),
+            'end_time' => \Carbon\Carbon::tomorrow()->addHour()
+        ]);
+
+        $response = $this->post('/logbook', ['entry' => 
+            [$entry->start_time->timestamp . $entry->patron_category_id => $entry->toArray()]
+        ]);
+        
+        $response->assertRedirect(route('logbook.create'))
+            ->assertSessionHasErrors('entry.*.start_time');
+
     }
 
     // TEST addCount(): it adds a count for the current category in the current timeslot

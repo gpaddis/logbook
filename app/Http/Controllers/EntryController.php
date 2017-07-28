@@ -58,14 +58,17 @@ class EntryController extends Controller
     {
         $messages = [
             'min' => 'The count must be a positive number. Correct the fields in red and try again.',
+            'before' => 'The start date cannot be in the future.'
         ];
 
         $validator = Validator::make($request->all(), [
-            'entry.*.start_time' => 'required|date',
+            'entry.*.start_time' => 'required|date|before:' . \Carbon\Carbon::tomorrow()->toDateString(),
             'entry.*.end_time' => 'required|date|after:start_time',
             'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
             'entry.*.count' => 'nullable|integer|min:1'
         ], $messages);
+
+        // dd($validator);
 
         if ($validator->fails()) {
             return redirect()->route('logbook.create')
