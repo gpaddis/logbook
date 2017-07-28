@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Timeslot;
+use Carbon\Carbon;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class CreateLogbookEntryTest extends TestCase
 {
@@ -18,11 +18,8 @@ class CreateLogbookEntryTest extends TestCase
 
         $entry = make('App\Logbook\Entry');
 
-        $this->post('/logbook', [
-            'entry' => [
-                $entry->start_time->timestamp . $entry->patron_category_id => $entry->toArray()
-            ]
-        ])->assertRedirect('/login');
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
+            ->assertRedirect('/login');
     }
     
     /** @test */
@@ -30,57 +27,54 @@ class CreateLogbookEntryTest extends TestCase
     {
         $this->signIn();
 
+        $timeslot = Timeslot::now()->addHour();
+
         $entry1 = make('App\Logbook\Entry');
         $entry2 = make('App\Logbook\Entry', [
-            'start_time' => \App\Timeslot::now()->addHour()->start(),
-            'end_time' => \App\Timeslot::now()->addHour()->end(),
+            'start_time' => $timeslot->start(),
+            'end_time' => $timeslot->end(),
         ]);
 
-        $this->post('/logbook', [
-            'entry' => [
-                $entry1->start_time->timestamp . $entry1->patron_category_id => $entry1->toArray(),
-                $entry2->start_time->timestamp . $entry2->patron_category_id => $entry2->toArray()
-                ]
-        ]);
+        $this->post('/logbook', ['entry' => [
+            'any_entry_id' => $entry1->toArray(),
+            'another_entry_id' => $entry2->toArray()
+        ]]);
 
-        // TODO: This should assert that the date and count are visible on the /logbook/day/{date} page 
+        // TODO: This should assert that the date and count are visible on the /logbook/show?day=yyyy-mm-dd page 
         $this->get('/logbook')
             ->assertSee($entry1->start_time->toDateString())
-            ->assertSee($entry2->start_time->toDateString())
             ->assertSee($entry1->patronCategory->name)
+            ->assertSee($entry2->start_time->toDateString())
             ->assertSee($entry2->patronCategory->name);
     }
 
     /** @test */
-    public function the_count_value_must_be_a_valid_integer()
+    public function the_count_value_must_be_a_valid_positive_integer()
     {
         $this->withExceptionHandling()->signIn();
 
-        $entry = make('App\Logbook\Entry', ['count' => -12]);
+        $entry = make('App\Logbook\Entry', ['count' => -999]);
 
-        $response = $this->post('/logbook', ['entry' => [$entry->start_time->timestamp . $entry->patron_category_id => $entry->toArray()]]);
-        
-        $response->assertRedirect(route('logbook.create'))
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
+            ->assertRedirect(route('logbook.create'))
             ->assertSessionHasErrors('entry.*.count');
     }
 
     /** @test */
-    public function the_entry_date_cannot_be_in_the_future()
+    public function the_entry_start_date_cannot_be_in_the_future()
     {
         $this->withExceptionHandling()->signIn();
 
+        $timeslot = Timeslot::custom(Carbon::tomorrow());
+
         $entry = make('App\Logbook\Entry', [
-            'start_time' => \Carbon\Carbon::tomorrow(),
-            'end_time' => \Carbon\Carbon::tomorrow()->addHour()
+            'start_time' => $timeslot->start(),
+            'end_time' => $timeslot->end()
         ]);
 
-        $response = $this->post('/logbook', ['entry' => 
-            [$entry->start_time->timestamp . $entry->patron_category_id => $entry->toArray()]
-        ]);
-        
-        $response->assertRedirect(route('logbook.create'))
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
+            ->assertRedirect(route('logbook.create'))
             ->assertSessionHasErrors('entry.*.start_time');
-
     }
 
     // TEST addCount(): it adds a count for the current category in the current timeslot
