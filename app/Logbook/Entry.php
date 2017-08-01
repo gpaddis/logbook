@@ -53,6 +53,33 @@ class Entry extends Model
         }
     }
 
+    /////////////////////////////////////////////////
+    ///////////////// LIVE COUNTER //////////////////
+    /////////////////////////////////////////////////
+
+    public static function add($click)
+    {
+        $existingEntry = Entry::where('start_time', $click['start_time'])
+            ->where('end_time', $click['end_time'])
+            ->where('patron_category_id', $click['patron_category_id'])
+            ->first();
+
+        $count = 0;
+
+        if ($existingEntry) {
+            $count = $existingEntry->count;
+        }
+
+        Entry::updateOrCreate([
+                'start_time' => $click['start_time'],
+                'end_time' => $click['end_time'],
+                'patron_category_id' => $click['patron_category_id']
+            ],
+        [
+            'count' => ++$count
+        ]);
+    }
+
     /**
      * Return a string with the unique timeslot + category identifier (for the form).
      * 

@@ -29,4 +29,32 @@ class LogbookEntryTest extends TestCase
 
         $this->assertEquals($patronCategory->id, $entry->patron_category_id);
     }
+
+    /** @test */
+    public function it_can_record_a_visit_if_it_does_not_yet_exist()
+    {
+        $click = [
+        'start_time' => Timeslot::now()->start(),
+        'end_time' => Timeslot::now()->end(),
+        'patron_category_id' => create('App\PatronCategory')->id
+        ];
+
+        Entry::add($click);
+
+        $this->assertEquals(1, Entry::first()->count);
+    }
+
+    /** @test */
+    public function it_adds_a_visit_to_the_count_if_the_entry_already_exists()
+    {
+        $existingEntry = create('App\Logbook\Entry');
+
+        Entry::add([
+        'start_time' => $existingEntry->start_time,
+        'end_time' => $existingEntry->end_time,
+        'patron_category_id' => $existingEntry->patron_category_id
+        ]);
+
+        $this->assertEquals($existingEntry->count + 1, Entry::first()->count);
+    }
 }

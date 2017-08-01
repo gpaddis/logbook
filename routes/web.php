@@ -16,6 +16,11 @@ Route::get('/logbook/update', 'EntryController@create')->name('logbook.create');
 Route::post('/logbook', 'EntryController@store');
 
 /**
+ * Live Counter
+ */
+Route::get('/logbook/store', 'LiveCounterController@store');
+
+/**
  * Application Settings
  */
 Route::get('/settings/patron-categories', 'PatronCategoryController@index')->name('settings.patron-categories.index');
