@@ -35,7 +35,7 @@ class CreateLogbookEntryTest extends TestCase
             'end_time' => $timeslot->end(),
         ]);
 
-        $this->post('/logbook', ['entry' => [
+        $response = $this->post('/logbook', ['entry' => [
             'any_entry_id' => $entry1->toArray(),
             'another_entry_id' => $entry2->toArray()
         ]]);
@@ -58,6 +58,23 @@ class CreateLogbookEntryTest extends TestCase
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
             ->assertRedirect(route('logbook.create'))
             ->assertSessionHasErrors('entry.*.count');
+    }
+
+    /** @test */
+    public function start_time_and_end_time_must_be_different()
+    {
+        $this->withExceptionHandling()->signIn();
+
+        $now = Carbon::now();
+
+        $entry = make('App\Logbook\Entry', [
+            'start_time' => $now,
+            'end_time' => $now
+        ]);
+
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
+            ->assertRedirect(route('logbook.create'))
+            ->assertSessionHasErrors('entry.*.end_time');
     }
 
     /** @test */

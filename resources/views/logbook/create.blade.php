@@ -13,7 +13,7 @@
 				</div>
 
 				<div class="panel-body">
-					<p>Insert the sum of the users who visited the library between a specific time range into the appropriate field. If there are no visits for a time range or category, leave the fields empty.</p>
+					<p>Insert the user count for a specific time range into the appropriate field. If no users of a specific category visited the library during a given time range, simply leave the according fields empty.</p>
 				</div>
 
 				{{-- Form begins --}}
@@ -21,7 +21,7 @@
 
 					{{ csrf_field() }}
 
-					<table class="table">
+					<table class="table table-hover">
 						<tr>
 							<th>Time Range</th>
 							@foreach($categories as $category)
@@ -44,13 +44,13 @@
 							<td>
 								<input type="hidden" name="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][start_time]" value="{{ $timeslot->start()->toDateTimeString() }}">
 
-								<input type="hidden" name="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][end_time]" value="{{ $timeslot->start()->toDateTimeString() }}">
+								<input type="hidden" name="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][end_time]" value="{{ $timeslot->end()->toDateTimeString() }}">
 
 								<input type="hidden" name="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][patron_category_id]" value="{{ $category->id }}">
 
 								<div class="form-group{{ 
 									$errors->has('entry.' . App\Logbook\Entry::identifier($timeslot, $category) . '.count') ? ' has-error' : '' }}">
-									<input type="number" class="form-control" id="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][count]" name="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][count]" value="{{ old('entry.' . App\Logbook\Entry::identifier($timeslot, $category) . '.count') }}">
+									<input type="number" class="form-control input-count" id="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][count]" name="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][count]" value="{{ old('entry.' . App\Logbook\Entry::identifier($timeslot, $category) . '.count') }}">
 								</div>
 							</td>
 							@endforeach
@@ -64,7 +64,8 @@
 						<button type="submit" class="btn btn-primary">Save the Log</button>
 						<a href="#" class="btn btn-default">Clear the Form</a>
 					</div>
-
+					
+					{{-- Errors --}}
 					@if (count($errors))
 					<ul class="alert alert-danger">
 						<li>{{ $errors->first() }}</li>
@@ -72,10 +73,7 @@
 					@endif
 				</form>
 
-
-
 			</div>
-
 		</div>
 	</div>
 </div>
