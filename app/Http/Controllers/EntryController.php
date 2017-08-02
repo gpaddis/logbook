@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Logbook\Entry;
 use App\PatronCategory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\LogbookUpdateForm;
 
 class EntryController extends Controller
 {
@@ -54,36 +54,9 @@ class EntryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(LogbookUpdateForm $form)
     {
-        $messages = [
-            'min' => 'The count must be a positive number. Correct the fields in red and try again.',
-            'before' => 'You cannot save a logbook entry for the future.'
-        ];
-
-        $validator = Validator::make($request->all(), [
-            'entry.*.start_time' => 'required|date|before:' . \Carbon\Carbon::tomorrow()->toDateString(),
-            'entry.*.end_time' => 'required|date|after:entry.*.start_time',
-            'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
-            'entry.*.count' => 'nullable|integer|min:1'
-        ], $messages);
-
-        if ($validator->fails()) {
-            return redirect()->route('logbook.create')
-            ->withErrors($validator)
-            ->withInput();
-        }
-
-        $fieldsFilled = 0;
-        foreach ($request->input('entry.*') as $entry) {
-            Entry::updateOrCreateIfNotNull($entry);
-            
-            $entry['count'] === null ?: $fieldsFilled++;
-        }
-
-        if ($fieldsFilled === 0) {
-            return redirect()->route('logbook.create');
-        }
+        $form->persist();
 
         return redirect()->route('logbook.index');
     }

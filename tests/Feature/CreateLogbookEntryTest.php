@@ -49,6 +49,17 @@ class CreateLogbookEntryTest extends TestCase
     }
 
     /** @test */
+    public function it_cannot_submit_an_empty_form()
+    {
+        $this->withExceptionHandling()->signIn();
+
+        $entry = make('App\Logbook\Entry', ['count' => null]);
+
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
+            ->assertSessionHasErrors('empty-form');
+    }
+
+    /** @test */
     public function the_count_value_must_be_a_valid_positive_integer()
     {
         $this->withExceptionHandling()->signIn();
@@ -56,7 +67,6 @@ class CreateLogbookEntryTest extends TestCase
         $entry = make('App\Logbook\Entry', ['count' => -999]);
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-            ->assertRedirect(route('logbook.create'))
             ->assertSessionHasErrors('entry.*.count');
     }
 
@@ -73,7 +83,6 @@ class CreateLogbookEntryTest extends TestCase
         ]);
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-            ->assertRedirect(route('logbook.create'))
             ->assertSessionHasErrors('entry.*.end_time');
     }
 
@@ -90,12 +99,6 @@ class CreateLogbookEntryTest extends TestCase
         ]);
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-            ->assertRedirect(route('logbook.create'))
             ->assertSessionHasErrors('entry.*.start_time');
     }
-
-    // TEST addCount(): it adds a count for the current category in the current timeslot
-    // TEST removeCount(): it removes a count for the current category in the current timeslot
-    // and avoids a negative count
-    // TEST removeCount(): if count < 1, it deletes the record from the database
 }
