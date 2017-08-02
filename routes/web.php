@@ -19,11 +19,16 @@ Route::post('/logbook', 'EntryController@store');
  * Live Counter
  */
 Route::get('/logbook/livecounter', 'LiveCounterController@index')->name('livecounter.index');
-Route::get('/logbook/store', 'LiveCounterController@store');
+Route::get('/logbook/livecounter/store', 'LiveCounterController@store');
+
+/**
+ * Patron Categories
+ */
+Route::get('/patron-categories', 'PatronCategoryController@index')->name('patron-categories.index');
+Route::get('/patron-categories/{patronCategory}', 'PatronCategoryController@show')->name('patron-category.index');
+Route::post('/patron-categories', 'PatronCategoryController@store');
+
 
 /**
  * Application Settings
  */
-Route::get('/settings/patron-categories', 'PatronCategoryController@index')->name('settings.patron-categories.index');
-Route::post('/settings/patron-categories', 'PatronCategoryController@store');
-Route::get('/settings/patron-categories/{patronCategory}', 'PatronCategoryController@show');

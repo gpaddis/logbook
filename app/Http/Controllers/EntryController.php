@@ -36,8 +36,6 @@ class EntryController extends Controller
      */
     public function create()
     {
-        $categories = PatronCategory::active()->get();
-
         // TODO: implement the method to return this array of timeslots
         $timeslots = [
         \App\Timeslot::now(),
@@ -45,7 +43,7 @@ class EntryController extends Controller
         \App\Timeslot::now()->addHour(2),
         ];
 
-        return view('logbook.create', compact('categories', 'timeslots'));
+        return view('logbook.create', compact('timeslots'));
     }
 
     /**

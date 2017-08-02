@@ -25,7 +25,7 @@ class LiveCounterController extends Controller
      */
     public function index()
     {
-        dd('Live counter index.');
+        return view('logbook.livecounter.index');
     }
 
     /**

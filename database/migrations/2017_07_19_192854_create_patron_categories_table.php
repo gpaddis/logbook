@@ -18,6 +18,7 @@ class CreatePatronCategoriesTable extends Migration
             $table->string('name')->unique();
             $table->string('abbreviation')->unique()->nullable();
             $table->boolean('is_active')->default(true);
+            $table->timestamps();
         });
     }
 

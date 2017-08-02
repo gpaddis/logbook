@@ -11,7 +11,7 @@ class PatronCategory extends Model
      * 
      * @var boolean
      */
-    public $timestamps = false;
+    // public $timestamps = false;
     
     /**
      * The attributes that are mass assignable.
@@ -57,8 +57,8 @@ class PatronCategory extends Model
      * 
      * @return string
      */
-    public function settingsPath()
+    public function path()
     {
-        return "/settings/patron-categories/{$this->id}";
+        return "/patron-categories/{$this->id}";
     }
 }

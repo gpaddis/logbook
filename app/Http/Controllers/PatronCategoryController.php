@@ -28,9 +28,9 @@ class PatronCategoryController extends Controller
      */
     public function index()
     {
-        $categories = PatronCategory::get();
+        $patronCategories = PatronCategory::all();
 
-        return view('settings.patron-categories.index', compact('categories'));
+        return view('patron-categories.index', compact('patronCategories'));
     }
 
     /**
@@ -56,7 +56,7 @@ class PatronCategoryController extends Controller
             'abbreviation' => request('abbreviation')
         ]);
 
-        return redirect()->route('settings.patron-categories.index');
+        return redirect()->route('patron-categories.index');
     }
 
     /**
@@ -67,7 +67,7 @@ class PatronCategoryController extends Controller
      */
     public function show(PatronCategory $patronCategory)
     {
-        return $patronCategory;
+        return view('patron-categories.show', compact('patronCategory'));
     }
 
     /**

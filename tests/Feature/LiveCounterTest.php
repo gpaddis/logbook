@@ -18,7 +18,7 @@ class LiveCounterTest extends TestCase
 
         $patronCategory = create('App\PatronCategory');
 
-        $this->get('/logbook/store?id='. $patronCategory->id .'&operation=add');
+        $this->get('/logbook/livecounter/store?id='. $patronCategory->id .'&operation=add');
 
         $entry = Entry::first();
         $timeslot = Timeslot::now();
@@ -35,7 +35,7 @@ class LiveCounterTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $this->get('/logbook/store?id=1&operation=add')
+        $this->get('/logbook/livecounter/store?id=1&operation=add')
             ->assertRedirect('login');
     }
 
@@ -46,7 +46,7 @@ class LiveCounterTest extends TestCase
 
         create('App\PatronCategory', ['id' => 1]);
 
-        $this->get('/logbook/store?id=1&operation=deleteallrecords')
+        $this->get('/logbook/livecounter/store?id=1&operation=deleteallrecords')
             ->assertSessionHasErrors('operation');
     }
 
@@ -57,7 +57,7 @@ class LiveCounterTest extends TestCase
 
         create('App\PatronCategory', ['id' => 1]);
 
-        $this->get('/logbook/store?id=6&operation=add')
+        $this->get('/logbook/livecounter/store?id=6&operation=add')
             ->assertSessionHasErrors('id');
     }
 
@@ -68,13 +68,13 @@ class LiveCounterTest extends TestCase
 
         create('App\PatronCategory', ['id' => 1]);
 
-        $this->get('/logbook/store?id=6')
+        $this->get('/logbook/livecounter/store?id=6')
             ->assertSessionHasErrors('operation');
 
-        $this->get('/logbook/store?operation=add')
+        $this->get('/logbook/livecounter/store?operation=add')
             ->assertSessionHasErrors('id');
 
-        $this->get('/logbook/store')
+        $this->get('/logbook/livecounter/store')
             ->assertSessionHasErrors('id', 'operation');
     }
 }

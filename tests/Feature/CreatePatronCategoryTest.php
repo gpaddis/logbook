@@ -29,9 +29,9 @@ class CreatePatronCategoryTest extends TestCase
         $patronCategory = make('App\PatronCategory');
 
         // The post() method needs an array as a second argument!
-        $this->post('/settings/patron-categories', $patronCategory->toArray());
+        $this->post('/patron-categories', $patronCategory->toArray());
 
-        $this->get('/settings/patron-categories')
+        $this->get('/patron-categories')
             ->assertSee($patronCategory->name)
             ->assertSee($patronCategory->abbreviation);
     }

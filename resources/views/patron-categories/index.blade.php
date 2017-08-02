@@ -11,7 +11,7 @@
         <div class="panel-body">
           <h3>List of Patron Categories</h3>
 
-          @if($categories->count())
+          @if($patronCategories->count())
           <div class="table-responsive">
             <table class="table table-hover">
 
@@ -23,13 +23,13 @@
               <th>Actions</th>
             </tr>
 
-            @foreach($categories as $category)
+            @foreach($patronCategories as $category)
             <tr>
               <td>
                 {{ $category->id }}
               </td>
               <td>
-                <a href="{{ $category->settingsPath() }}">
+                <a href="{{ $category->path() }}">
                   {{ $category->name }}
                 </a>
               </td>

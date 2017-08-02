@@ -24,7 +24,7 @@
 					<table class="table table-hover">
 						<tr>
 							<th>Time Range</th>
-							@foreach($categories as $category)
+							@foreach($active_patron_categories as $category)
 							<th><abbr title="{{ $category->name }}">{{ $category->abbreviation }}</abbr></th>
 							@endforeach
 						</tr>
@@ -40,7 +40,7 @@
 							</td>
 
 							{{-- Data inputs --}}
-							@foreach($categories as $category)
+							@foreach($active_patron_categories as $category)
 							<td>
 								<input type="hidden" name="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][start_time]" value="{{ $timeslot->start()->toDateTimeString() }}">
 

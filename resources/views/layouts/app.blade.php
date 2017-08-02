@@ -41,12 +41,20 @@
                             <a href="{{ route('logbook.index') }}">Logbook</a>
                         </li>
 
+                        <li>
+                            <a href="{{ route('livecounter.index') }}">Live Counter</a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('patron-categories.index') }}">Patron Categories</a>
+                        </li>
+
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                              Settings<span class="caret"></span>
                          </a>
                          <ul class="dropdown-menu" aria-labelledby="settings">
-                            <li><a href="{{ route('settings.patron-categories.index') }}">Patron Categories</a></li>
+                            <li><a href="#">Patron Categories</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="#">All Settings</a></li>
                         </ul>

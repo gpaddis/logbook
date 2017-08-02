@@ -32,8 +32,19 @@ class PatronCategoryTest extends TestCase
     {
         $this->signIn();
         
-        $this->get('/settings/patron-categories')
+        $this->get('/patron-categories')
             ->assertSee($this->category->name);
+    }
+
+    /** @test */
+    public function an_inactive_patron_category_name_is_visible_on_the_settings_page()
+    {
+        $this->signIn();
+
+        $inactiveCategory = create('App\PatronCategory', ['is_active' => false]);
+
+        $this->get('/patron-categories')
+            ->assertSee($inactiveCategory->name);
     }
 
     /** @test */
