@@ -77,7 +77,7 @@ class LogbookUpdateForm extends FormRequest
     }
 
     /** 
-     * Persists non-empty fields in the database.
+     * Persist non-empty fields in the database.
      * 
      * @return void
      */

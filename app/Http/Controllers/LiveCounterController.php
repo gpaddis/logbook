@@ -6,6 +6,7 @@ use App\Timeslot;
 use App\Logbook\Entry;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Http\Requests\LiveCounterRequest;
 
 class LiveCounterController extends Controller
 {
@@ -24,7 +25,7 @@ class LiveCounterController extends Controller
      */
     public function index()
     {
-        //
+        dd('Live counter index.');
     }
 
     /**
@@ -43,27 +44,18 @@ class LiveCounterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(LiveCounterRequest $request)
     {
-        $this->validate($request, [
-            'id' => 'required|exists:patron_categories,id',
-            'operation' => [
-                'required',
-                Rule::in(['add', 'subtract'])
-            ]
-        ]);
-
-        $click = [
-            'start_time' => Timeslot::now()->start(),
-            'end_time' => Timeslot::now()->end(),
-            'patron_category_id' => $request->input('id')
-        ];
-
+        $timeslot = Timeslot::now();
+        $patron_category_id = $request->input('id');
+        
         if ($request->input('operation') == 'add') {
-            Entry::add($click);
+            Entry::add($patron_category_id, $timeslot);
         } else {
-            Entry::subtract($click);
+            Entry::subtract($patron_category_id, $timeslot);
         }
+
+        return redirect()->route('livecounter.index');
     }
 
 

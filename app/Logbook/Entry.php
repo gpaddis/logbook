@@ -57,11 +57,17 @@ class Entry extends Model
     ///////////////// LIVE COUNTER //////////////////
     /////////////////////////////////////////////////
 
-    public static function add($click)
+    /**
+     * Increment the count for a given timeslot and category by one.
+     * 
+     * @param int $patron_category_id
+     * @param App\Timeslot $timeslot
+     */
+    public static function add($patron_category_id, $timeslot)
     {
-        $existingEntry = Entry::where('start_time', $click['start_time'])
-            ->where('end_time', $click['end_time'])
-            ->where('patron_category_id', $click['patron_category_id'])
+        $existingEntry = Entry::where('start_time', $timeslot->start())
+            ->where('end_time', $timeslot->end())
+            ->where('patron_category_id', $patron_category_id)
             ->first();
 
         $count = 0;
@@ -71,9 +77,9 @@ class Entry extends Model
         }
 
         Entry::updateOrCreate([
-                'start_time' => $click['start_time'],
-                'end_time' => $click['end_time'],
-                'patron_category_id' => $click['patron_category_id']
+                'start_time' => $timeslot->start(),
+                'end_time' => $timeslot->end(),
+                'patron_category_id' => $patron_category_id
             ],
         [
             'count' => ++$count

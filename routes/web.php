@@ -18,6 +18,7 @@ Route::post('/logbook', 'EntryController@store');
 /**
  * Live Counter
  */
+Route::get('/logbook/livecounter', 'LiveCounterController@index')->name('livecounter.index');
 Route::get('/logbook/store', 'LiveCounterController@store');
 
 /**
