@@ -104,6 +104,14 @@ class Entry extends Model
         $entry->save();
     }
 
+    public function scopeCurrent($query)
+    {
+        $timeslot = \App\Timeslot::now();
+
+        return $query->where('start_time', $timeslot->start())
+            ->where('end_time', $timeslot->end());
+    }
+
     /////////////////////////////////////////////////
     //////////////// MISCELLANEOUS  /////////////////
     /////////////////////////////////////////////////

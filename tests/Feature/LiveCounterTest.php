@@ -77,4 +77,19 @@ class LiveCounterTest extends TestCase
         $this->get('/logbook/livecounter/store')
             ->assertSessionHasErrors('id', 'operation');
     }
+
+    /** @test */
+    public function the_current_count_is_visible_on_the_livecounter_index_page()
+    {
+        $this->signIn();
+
+        $timeslot = Timeslot::now();
+        $entry = create('App\Logbook\Entry', [
+            'start_time' => $timeslot->start(),
+            'end_time' => $timeslot->end(),
+        ]);
+
+        $this->get('logbook/livecounter')
+            ->assertSee((string) $entry->count);
+    }
 }
