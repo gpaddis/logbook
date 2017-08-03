@@ -86,6 +86,28 @@ class Entry extends Model
         ]);
     }
 
+    public static function subtract($patron_category_id, $timeslot)
+    {
+        $entry = Entry::where('start_time', $timeslot->start())
+            ->where('end_time', $timeslot->end())
+            ->where('patron_category_id', $patron_category_id)
+            ->first();
+
+        if ($entry == null) return;
+
+        if ($entry->count <= 1) {
+            $entry->delete();
+            return;            
+        }
+
+        $entry->count -= 1;
+        $entry->save();
+    }
+
+    /////////////////////////////////////////////////
+    //////////////// MISCELLANEOUS  /////////////////
+    /////////////////////////////////////////////////
+
     /**
      * Return a string with the unique timeslot + category identifier (for the form).
      * 

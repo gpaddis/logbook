@@ -40,7 +40,7 @@ class LiveCounterTest extends TestCase
     }
 
     /** @test */
-    public function it_may_not_submit_an_invalid_operation()
+    public function it_rejects_an_invalid_operation()
     {
         $this->signIn()->withExceptionHandling();
 
@@ -51,7 +51,7 @@ class LiveCounterTest extends TestCase
     }
 
     /** @test */
-    public function it_may_not_submit_an_invalid_patron_category_id()
+    public function it_rejects_an_invalid_patron_category_id()
     {
         $this->signIn()->withExceptionHandling();
 

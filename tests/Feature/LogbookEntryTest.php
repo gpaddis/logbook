@@ -54,4 +54,55 @@ class LogbookEntryTest extends TestCase
 
         $this->assertEquals($existingEntry->count + 1, Entry::first()->count);
     }
+
+    /** @test */
+    public function it_subtracts_a_visit_from_the_count()
+    {
+        $timeslot = Timeslot::now();
+        $existingEntry = create('App\Logbook\Entry', [
+            'start_time' => $timeslot->start(),
+            'end_time' => $timeslot->end(),
+            'count' => 6
+        ]);
+
+        Entry::subtract($existingEntry->patron_category_id, $timeslot);
+
+        $this->assertEquals($existingEntry->count - 1, Entry::first()->count);
+    }
+
+    /** @test */
+    public function it_deletes_the_entry_if_count_is_equal_to_1()
+    {
+        $timeslot = Timeslot::now();
+        $existingEntry = create('App\Logbook\Entry', [
+            'start_time' => $timeslot->start(),
+            'end_time' => $timeslot->end(),
+            'count' => 1
+        ]);
+
+        Entry::subtract($existingEntry->patron_category_id, $timeslot);
+
+        $this->assertEquals(null, Entry::first());
+    }
+
+    /** @test */
+    public function it_deletes_the_entry_if_count_is_equal_to_0()
+    {
+        $timeslot = Timeslot::now();
+        $existingEntry = create('App\Logbook\Entry', [
+            'start_time' => $timeslot->start(),
+            'end_time' => $timeslot->end(),
+            'count' => 0
+        ]);
+
+        Entry::subtract($existingEntry->patron_category_id, $timeslot);
+
+        $this->assertEquals(null, Entry::first());
+    }
+
+    /** @test */
+    public function it_does_nothing_if_theres_no_corresponding_entry()
+    {
+        $this->assertEquals(null, Entry::subtract(1, Timeslot::now()));
+    }
 }
