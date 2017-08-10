@@ -4,27 +4,41 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col">
+
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h3>Live Counter Index</h3>
 
-                    <table class="table">
-                        <tr>
+                    <div class="container">
+                        <div class="row">
+
                             @foreach($active_patron_categories as $category)
-                            <td>
+                            <div class="col-md-2 col-xs-3">
                                 <p>{{ $category->name }}</p>
-                                <h1>
+
+                                <strong>
                                     @if($category->logbookEntries()->current()->count())
                                     {{ $category->logbookEntries()->current()->first()->count }}
                                     @else
                                     0
                                     @endif
-                                </h1>
-                            </td>
+                                </strong>
+                                <div>
+                                    <a href="/logbook/livecounter/store?id={{ $category->id }}&operation=add" class="btn btn-success btn-lg" aria-label="Add">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </a>
+
+                                    <a href="/logbook/livecounter/store?id={{ $category->id }}&operation=subtract" class="btn btn-danger btn-lg" aria-label="Subtract">
+                                        <span class="glyphicon glyphicon-minus"></span>
+                                    </a>
+                                </div>
+
+                            </div>
                             @endforeach
-                        </tr>    
-                    </table>
+
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -32,5 +46,9 @@
         </div>
     </div>
 </div>
+
+{{-- Second experiment --}}
+
+
 
 @endsection

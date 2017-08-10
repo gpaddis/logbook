@@ -69,8 +69,6 @@ class LogbookUpdateForm extends FormRequest
     {
         $fieldsFilled = 0;  
 
-        dd($this->input('entry.*'));
-        
         foreach ($this->input('entry.*') as $entry) {
             $entry['count'] === null ?: $fieldsFilled++;
         }
