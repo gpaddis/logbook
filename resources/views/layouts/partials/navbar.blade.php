@@ -1,76 +1,67 @@
-<nav class="navbar navbar-default navbar-static-top">
-    <div class="container">
-        <div class="navbar-header">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- Branding Image -->
+    <a class="navbar-brand" href="{{ url('/') }}">
+        {{ config('app.name') }}
+    </a>
 
-            <!-- Collapsed Hamburger -->
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
-                <span class="sr-only">Toggle Navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-            <!-- Branding Image -->
-            <a class="navbar-brand" href="{{ url('/') }}">
-                {{ config('app.name', 'Laravel') }}
-            </a>
-        </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('logbook.index') }}">Logbook</a>
+            </li>
 
-        <div class="collapse navbar-collapse" id="app-navbar-collapse">
-            <!-- Left Side Of Navbar -->
-            <ul class="nav navbar-nav">
-                <li>
-                    <a href="{{ route('logbook.index') }}">Logbook</a>
-                </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('livecounter.index') }}">Live Counter</a>
+            </li>
 
-                <li>
-                    <a href="{{ route('livecounter.index') }}">Live Counter</a>
-                </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('patron-categories.index') }}">Patron Categories</a>
+            </li>
 
-                <li>
-                    <a href="{{ route('patron-categories.index') }}">Patron Categories</a>
-                </li>
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarDropdownMenuLink" aria-haspopup="true" aria-expanded="false">
+                    Settings<span class="caret"></span>
+                </a>
+                <div class="dropdown-menu">
+                    <a href="" class="dropdown-item">Patron Categories</a>
+                    <a href="" class="dropdown-item">All Settings</a>
+                </div>
+            </li>
+        </ul>
 
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                        Settings<span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="settings">
-                        <li><a href="#">Patron Categories</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">All Settings</a></li>
-                    </ul>
-                </li>
-            </ul>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            @if(Auth::guest())
+            <!-- Authentication Links -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('login') }}">Login</a>
+            </li>
 
-            <!-- Right Side Of Navbar -->
-            <ul class="nav navbar-nav navbar-right">
-                <!-- Authentication Links -->
-                @if (Auth::guest())
-                <li><a href="{{ route('login') }}">Login</a></li>
-                <li><a href="{{ route('register') }}">Register</a></li>
-                @else
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                        {{ Auth::user()->first_name }} <span class="caret"></span>
-                    </a>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('register') }}">Register</a>
+            </li>
+            @else
 
-                    <ul class="dropdown-menu" role="menu">
-                        <li>
-                            <a href="{{ route('logout') }}"
-                                onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();">
-                                Logout
-                            </a>
+            <!-- User menu -->
+            <li class="nav-item dropdown">
+                <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ Auth::user()->first_name }} <span class="caret"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="user">
+                    <a class="dropdown-item" href="{{ route('logout') }}"
+                    onclick="event.preventDefault();
+                    document.getElementById('logout-form').submit();">
+                    Logout</a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form>
+                </div>
+            </li>
+            @endif
 
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                {{ csrf_field() }}
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-                @endif
-            </ul>
-        </div>
+        </ul>
     </div>
 </nav>
