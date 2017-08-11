@@ -19,7 +19,7 @@
         <!-- Navbar start -->
         @include('layouts.partials.navbar')
         <!-- Navbar end -->
-        
+
         <!-- Content start -->
         @yield('content')
         <!-- Content end -->
