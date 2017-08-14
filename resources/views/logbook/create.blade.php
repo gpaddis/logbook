@@ -6,14 +6,18 @@
 	<div class="col">
 		<div class="card">
 			<div class="card-header">Update the logbook for {{ $timeslots[0]->start()->toFormattedDateString() }}</div>
+			
 			{{-- Start main if clause --}}
 			@if($active_patron_categories->count() == 0)
 			<div class="card-body">
-				<p>It looks like there are no active patron categories yet. Ask the admin to <a href="#">create some</a>!</p>
+				<p>It looks like there are no active patron categories yet. <a href="#">Ask the admin</a> to create some!</p>
 			</div>
+			
 			@else
 			<div class="card-body">
-				<p>Insert the user count for a specific time range into the appropriate field. If no users of a specific category visited the library during a given time range, simply leave the according fields empty.</p>
+				<p class="card-text">
+					Insert the user count for a specific time range into the appropriate field. If no users of a specific category visited the library during a given time range, simply leave the according fields empty.
+				</p>
 			</div>
 			{{-- Form begins --}}
 			<form method="POST" action="/logbook">
@@ -22,7 +26,9 @@
 					<tr>
 						<th>Time Range</th>
 						@foreach($active_patron_categories as $category)
-						<th><abbr title="{{ $category->name }}">{{ $category->abbreviation }}</abbr></th>
+						<th>
+							<abbr title="{{ $category->name }}">{{ $category->abbreviation }}</abbr>
+						</th>
 						@endforeach
 					</tr>
 
@@ -47,7 +53,9 @@
 
 							<div class="form-group{{
 								$errors->has('entry.' . App\Logbook\Entry::identifier($timeslot, $category) . '.count') ? ' has-error' : '' }}">
-								<input type="number" class="form-control input-count" id="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][count]" name="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][count]" value="{{ old('entry.' . App\Logbook\Entry::identifier($timeslot, $category) . '.count') }}">
+								<input type="number" class="form-control input-count" id="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][count]" name="entry[{{ App\Logbook\Entry::identifier($timeslot, $category) }}][count]" value="{{ 
+									old('entry.' . App\Logbook\Entry::identifier($timeslot, $category) . '.count') 
+									}}">
 							</div>
 						</td>
 						@endforeach

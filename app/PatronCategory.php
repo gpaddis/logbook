@@ -19,7 +19,7 @@ class PatronCategory extends Model
      * @var array
      */
     public $fillable = [
-        'name', 'abbreviation', 'is_active'
+        'name', 'abbreviation', 'is_active', 'is_primary'
     ];
 
     /**
@@ -40,6 +40,28 @@ class PatronCategory extends Model
     public static function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Scope a query to only include primary patron categories.
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public static function scopePrimary($query)
+    {
+        return $query->where('is_primary', true);
+    }
+
+    /**
+     * Scope a query to only include secondary patron categories.
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public static function scopeSecondary($query)
+    {
+        return $query->where('is_primary', false);
     }
 
     /** 

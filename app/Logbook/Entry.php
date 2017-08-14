@@ -104,13 +104,27 @@ class Entry extends Model
         $entry->save();
     }
 
-    public function scopeCurrent($query)
-    {
-        $timeslot = \App\Timeslot::now();
 
+    /**
+     * Scope a query to only include logbook entries within the custom timeslot.
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \App\Timeslot  $timeslot
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithin($query, $timeslot)
+    {
         return $query->where('start_time', $timeslot->start())
             ->where('end_time', $timeslot->end());
     }
+
+    // Scope the query to get the entry with the parameters indicated.
+    // public function scopeProva($query, Timeslot $timeslot, PatronCategory $patronCategory)
+    // {
+    //     return $query->where('start_time', $timeslot->start())
+    //         ->where('end_time', $timeslot->end())
+    //         ->where('patron_category_id', $patronCategory->id);
+    // }
 
     /////////////////////////////////////////////////
     //////////////// MISCELLANEOUS  /////////////////

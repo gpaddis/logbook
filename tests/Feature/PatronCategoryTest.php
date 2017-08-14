@@ -28,7 +28,15 @@ class PatronCategoryTest extends TestCase
     }
 
     /** @test */
-    public function a_category_name_is_visible_on_its_settings_page()
+    public function a_newly_created_patron_category_is_primary_by_default()
+    {   
+        $category = PatronCategory::first();
+
+        $this->assertEquals(true, $category->is_primary);
+    }
+
+    /** @test */
+    public function a_category_name_is_visible_on_the_patron_categories_page()
     {
         $this->signIn();
         
@@ -37,7 +45,7 @@ class PatronCategoryTest extends TestCase
     }
 
     /** @test */
-    public function an_inactive_patron_category_name_is_visible_on_the_settings_page()
+    public function an_inactive_patron_category_name_is_visible_on_the_patron_categories_page()
     {
         $this->signIn();
 
@@ -66,4 +74,6 @@ class PatronCategoryTest extends TestCase
         $this->get('/logbook/update')
             ->assertDontSee($patronCategory->name);
     }
+
+    // Write a test for the primary patron category check
 }

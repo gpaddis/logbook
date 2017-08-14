@@ -10,16 +10,17 @@
             <div class="card-body">
 
                 <div class="row justify-content-center">
+                    {{-- <div class="card-deck"> --}}
                     @foreach($active_patron_categories as $category)
-                    <div class="col-lg-3 col-md-6 col-sm-6 isolated">
+                    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
                         <div class="card">
                             <h4 class="card-header">
-                                {{ $category->abbreviation }}
+                                {{ $category->name }}
                             </h4>
                             <div class="card-body text-center">
                                 <h2 class="display-2 text-center">
-                                    @if($category->logbookEntries()->current()->count())
-                                    {{ $category->logbookEntries()->current()->first()->count }}
+                                    @if($category->logbookEntries()->within(\App\Timeslot::now())->count())
+                                    {{ $category->logbookEntries()->within(\App\Timeslot::now())->first()->count }}
                                     @else
                                     0
                                     @endif
@@ -27,15 +28,15 @@
 
                                 <div class="card-footer">
                                     <p>
-                                        <a href="/logbook/livecounter/store?id={{ $category->id }}&operation=add" class="btn btn-success btn-xl" aria-label="Add">+ Add User +</a>
+                                        <a href="/logbook/livecounter/store?id={{ $category->id }}&operation=add" class="btn btn-success btn-xl" aria-label="Add">Add User</a>
                                     </p>
-
-                                    <a href="/logbook/livecounter/store?id={{ $category->id }}&operation=subtract">- Subtract -</a>
+                                    <a href="/logbook/livecounter/store?id={{ $category->id }}&operation=subtract" class="text-danger">Subtract</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                     @endforeach
+                    {{-- </div> --}}
                 </div>
 
             </div>

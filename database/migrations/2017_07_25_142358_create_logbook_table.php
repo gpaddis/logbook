@@ -20,6 +20,8 @@ class CreateLogbookTable extends Migration
             $table->unsignedInteger('patron_category_id');
             $table->unsignedSmallInteger('count');
             $table->timestamps();
+
+            $table->unique(['start_time', 'end_time', 'patron_category_id']);
         });
     }
 
