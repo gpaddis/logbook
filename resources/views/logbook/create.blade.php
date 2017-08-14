@@ -5,7 +5,7 @@
 <div class="row">
 	<div class="col">
 		<div class="card">
-			<h1 class="card-header">Update the logbook for {{ $timeslots[0]->start()->toFormattedDateString() }}</h1>
+			<div class="card-header">Update the logbook for {{ $timeslots[0]->start()->toFormattedDateString() }}</div>
 			{{-- Start main if clause --}}
 			@if($active_patron_categories->count() == 0)
 			<div class="card-body">
