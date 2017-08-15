@@ -3,45 +3,89 @@
 @section('content')
 
 <div class="row justify-content-center">
-    <div class="col">
-        <div class="card">
-            <div class="card-header">Live Counter Index</div>
+  <div class="col">
+    <div class="card">
+      <div class="card-header">Live Counter Index</div>
 
-            <div class="card-body">
+      <div class="card-body">
 
-                <div class="row justify-content-center">
-                    {{-- <div class="card-deck"> --}}
-                    @foreach($active_patron_categories as $category)
-                    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                        <div class="card">
-                            <h4 class="card-header">
-                                {{ $category->name }}
-                            </h4>
-                            <div class="card-body text-center">
-                                <h2 class="display-2 text-center">
-                                    @if($category->logbookEntries()->withinTimeslot(\App\Timeslot::now())->count())
-                                    {{ $category->logbookEntries()->withinTimeslot(\App\Timeslot::now())->first()->visits_count }}
-                                    @else
-                                    0
-                                    @endif
-                                </h3>
+        {{-- Start primary categories cards. --}}
+        <div class="row justify-content-center">
+          @foreach($primary_active_patron_categories as $primaryCategory)
+          <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+            <div class="card">
+              <h4 class="card-header">
+                {{ $primaryCategory->name }}
+              </h4>
+              <div class="card-body text-center">
+                <h2 class="display-2 text-center">
+                  @if($primaryCategory->logbookEntries()->withinTimeslot(\App\Timeslot::now())->count())
+                  {{ $primaryCategory->logbookEntries()->withinTimeslot(\App\Timeslot::now())->first()->visits_count }}
+                  @else
+                  0
+                  @endif
+                </h3>
 
-                                <div class="card-footer">
-                                <div>
-                                    <a href="/logbook/livecounter/store?id={{ $category->id }}&operation=add" class="btn btn-success btn-xl" aria-label="Add">Add User</a>
-                                    </div>
-                                    <a href="/logbook/livecounter/store?id={{ $category->id }}&operation=subtract" class="badge badge-danger">Subtract</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                    {{-- </div> --}}
+                <div class="card-footer">
+                  <div>
+                    <a href="/logbook/livecounter/store?id={{ $primaryCategory->id }}&operation=add" class="btn btn-success btn-xl" aria-label="Add">Add User</a>
+                  </div>
+                  <a href="/logbook/livecounter/store?id={{ $primaryCategory->id }}&operation=subtract" class="badge badge-danger">Subtract</a>
                 </div>
-
+              </div>
             </div>
+          </div>
+          @endforeach
+          {{-- End primary categories cards. --}}
         </div>
+
+        @if($secondary_active_patron_categories->count())
+        <div class="col text-center">
+          <p>
+            <a data-toggle="collapse" href="#secondaryCategories" aria-expanded="false" aria-controls="secondaryCategories">
+              Toggle secondary categories...
+            </a>
+          </p>
+        </div>
+
+        {{-- Start secondary categories cards. --}}
+        <div class="collapse" id="secondaryCategories">
+          <div class="row justify-content-center">
+            {{-- Card. --}}
+            @foreach($secondary_active_patron_categories as $secondaryCategory)
+            <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+              <div class="card">
+                <h4 class="card-header">
+                  {{ $secondaryCategory->name }}
+                </h4>
+                <div class="card-body text-center">
+                  <h2 class="display-2 text-center">
+                    @if($secondaryCategory->logbookEntries()->withinTimeslot(\App\Timeslot::now())->count())
+                    {{ $secondaryCategory->logbookEntries()->withinTimeslot(\App\Timeslot::now())->first()->visits_count }}
+                    @else
+                    0
+                    @endif
+                  </h3>
+
+                  <div class="card-footer">
+                    <div>
+                      <a href="/logbook/livecounter/store?id={{ $secondaryCategory->id }}&operation=add" class="btn btn-success btn-xl" aria-label="Add">Add User</a>
+                    </div>
+                    <a href="/logbook/livecounter/store?id={{ $secondaryCategory->id }}&operation=subtract" class="badge badge-danger">Subtract</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            @endforeach
+            {{-- End card. --}}
+          </div>
+        </div>
+        {{-- End secondary categories cards. --}}
+        @endif
+
+      </div>
     </div>
+  </div>
 </div>
 
 {{-- <div class="col">

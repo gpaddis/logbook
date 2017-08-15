@@ -8,11 +8,11 @@ class PatronCategory extends Model
 {
     /**
      * Disable timestamps for the patron_categories table.
-     * 
+     *
      * @var boolean
      */
     // public $timestamps = false;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -29,11 +29,12 @@ class PatronCategory extends Model
      */
     protected $casts = [
         'is_active' => 'boolean',
+        'is_primary' => 'boolean',
     ];
 
     /**
      * Scope a query to only include active patron categories.
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -44,7 +45,7 @@ class PatronCategory extends Model
 
     /**
      * Scope a query to only include primary patron categories.
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -55,7 +56,7 @@ class PatronCategory extends Model
 
     /**
      * Scope a query to only include secondary patron categories.
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -64,9 +65,9 @@ class PatronCategory extends Model
         return $query->where('is_primary', false);
     }
 
-    /** 
+    /**
      * A patron category has many logbook entries.
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function logbookEntries()
@@ -76,7 +77,7 @@ class PatronCategory extends Model
 
     /**
      * Return the full path of the current patron category.
-     * 
+     *
      * @return string
      */
     public function path()

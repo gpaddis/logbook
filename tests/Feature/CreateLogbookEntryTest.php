@@ -87,7 +87,7 @@ class CreateLogbookEntryTest extends TestCase
     }
 
     /** @test */
-    public function the_entry_start_date_cannot_be_in_the_future()
+    public function the_start_date_cannot_be_in_the_future()
     {
         $this->withExceptionHandling()->signIn();
 

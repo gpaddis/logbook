@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Timeslot;
 use App\Logbook\Entry;
+use App\PatronCategory;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Requests\LiveCounterRequest;
@@ -17,7 +18,7 @@ class LiveCounterController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -48,7 +49,7 @@ class LiveCounterController extends Controller
     {
         $timeslot = Timeslot::now();
         $patron_category_id = $request->input('id');
-        
+
         if ($request->input('operation') == 'add') {
             Entry::add($patron_category_id, $timeslot);
         } else {

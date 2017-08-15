@@ -8,7 +8,7 @@ use App\Timeslot;
 use App\Logbook\Entry;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class LogbookEntryTest extends TestCase
+class ReadLogbookEntryTest extends TestCase
 {
     use DatabaseMigrations;
 

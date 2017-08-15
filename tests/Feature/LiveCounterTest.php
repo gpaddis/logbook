@@ -36,7 +36,7 @@ class LiveCounterTest extends TestCase
         $this->withExceptionHandling();
 
         $this->get('/logbook/livecounter/store?id=1&operation=add')
-        ->assertRedirect('login');
+            ->assertRedirect('login');
     }
 
     /** @test */
@@ -47,7 +47,7 @@ class LiveCounterTest extends TestCase
         create('App\PatronCategory', ['id' => 1]);
 
         $this->get('/logbook/livecounter/store?id=1&operation=deleteallrecords')
-        ->assertSessionHasErrors('operation');
+            ->assertSessionHasErrors('operation');
     }
 
     /** @test */
@@ -58,7 +58,7 @@ class LiveCounterTest extends TestCase
         create('App\PatronCategory', ['id' => 1]);
 
         $this->get('/logbook/livecounter/store?id=6&operation=add')
-        ->assertSessionHasErrors('id');
+            ->assertSessionHasErrors('id');
     }
 
     /** @test */
@@ -69,13 +69,13 @@ class LiveCounterTest extends TestCase
         create('App\PatronCategory', ['id' => 1]);
 
         $this->get('/logbook/livecounter/store?id=6')
-        ->assertSessionHasErrors('operation');
+            ->assertSessionHasErrors('operation');
 
         $this->get('/logbook/livecounter/store?operation=add')
-        ->assertSessionHasErrors('id');
+            ->assertSessionHasErrors('id');
 
         $this->get('/logbook/livecounter/store')
-        ->assertSessionHasErrors('id', 'operation');
+            ->assertSessionHasErrors('id', 'operation');
     }
 
     /** @test */
@@ -90,7 +90,7 @@ class LiveCounterTest extends TestCase
             ]);
 
         $this->get('logbook/livecounter')
-        ->assertSee((string) $entry->visits_count);
+            ->assertSee((string) $entry->visits_count);
     }
 
     /** @test */
