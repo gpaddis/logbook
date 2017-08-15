@@ -18,7 +18,7 @@
   <link href="{{ asset('css/statistics-app.css') }}" rel="stylesheet">
 </head>
 
-<body>
+<body class="bg-light">
   <!-- Navbar start -->
   @include('layouts.partials.navbar')
   <!-- Navbar end -->

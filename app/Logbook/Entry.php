@@ -19,12 +19,12 @@ class Entry extends Model
         'start_time',
         'end_time',
         'patron_category_id',
-        'count'
+        'visits_count'
     ];
-    
-    /** 
+
+    /**
      * A logbook entry belongs to a patron category.
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function patronCategory()
@@ -34,13 +34,13 @@ class Entry extends Model
 
     /**
      * Persist an entry in the database only if the count is not null.
-     * 
+     *
      * @param  array $entry
      * @return
      */
     public static function updateOrCreateIfNotNull(array $entry)
     {
-        if ($entry['count'] !== null) {
+        if ($entry['visits_count'] !== null) {
             Entry::updateOrCreate(
                 [
                     'start_time' => $entry['start_time'],
@@ -48,7 +48,7 @@ class Entry extends Model
                     'patron_category_id' => $entry['patron_category_id']
                 ],
                 [
-                    'count' => $entry['count']
+                    'visits_count' => $entry['visits_count']
                 ]);
         }
     }
@@ -59,7 +59,7 @@ class Entry extends Model
 
     /**
      * Increment the count for a given timeslot and category by one.
-     * 
+     *
      * @param int $patron_category_id
      * @param App\Timeslot $timeslot
      */
@@ -70,10 +70,10 @@ class Entry extends Model
             ->where('patron_category_id', $patron_category_id)
             ->first();
 
-        $count = 0;
+        $visits_count = 0;
 
         if ($existingEntry) {
-            $count = $existingEntry->count;
+            $visits_count = $existingEntry->visits_count;
         }
 
         Entry::updateOrCreate([
@@ -82,7 +82,7 @@ class Entry extends Model
                 'patron_category_id' => $patron_category_id
             ],
         [
-            'count' => ++$count
+            'visits_count' => ++$visits_count
         ]);
     }
 
@@ -95,50 +95,40 @@ class Entry extends Model
 
         if ($entry == null) return;
 
-        if ($entry->count <= 1) {
+        if ($entry->visits_count <= 1) {
             $entry->delete();
-            return;            
+            return;
         }
 
-        $entry->count -= 1;
+        $entry->visits_count -= 1;
         $entry->save();
     }
 
 
     /**
      * Scope a query to only include logbook entries within the custom timeslot.
-     * 
+     *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param \App\Timeslot  $timeslot
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeWithin($query, $timeslot)
+    public function scopeWithinTimeslot($query, $timeslot)
     {
         return $query->where('start_time', $timeslot->start())
             ->where('end_time', $timeslot->end());
     }
 
-    // Scope the query to get the entry with the parameters indicated.
-    // public function scopeProva($query, Timeslot $timeslot, PatronCategory $patronCategory)
-    // {
-    //     return $query->where('start_time', $timeslot->start())
-    //         ->where('end_time', $timeslot->end())
-    //         ->where('patron_category_id', $patronCategory->id);
-    // }
-
-    /////////////////////////////////////////////////
-    //////////////// MISCELLANEOUS  /////////////////
-    /////////////////////////////////////////////////
-
     /**
-     * Return a string with the unique timeslot + category identifier (for the form).
-     * 
-     * @param  App\Timeslot       $timeslot
-     * @param  App\PatronCategory $category
-     * @return string
+     * Scope a query to only include logbook entries within the custom timeslot and patron category.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \App\Timeslot  $timeslot
+     * @param \App\PatronCategory  $patronCategory
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public static function identifier(Timeslot $timeslot, PatronCategory $category)
+    public function scopeWithinTimeslotAndPatronCategory($query, $timeslot, $patronCategory)
     {
-        return "{$timeslot->start()->timestamp}{$category->id}";
+        return $query->withinTimeslot($timeslot)
+            ->where('patron_category_id', $patronCategory->id);
     }
 }

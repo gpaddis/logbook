@@ -21,7 +21,7 @@ class CreateLogbookEntryTest extends TestCase
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
             ->assertRedirect('/login');
     }
-    
+
     /** @test */
     public function an_authenticated_user_can_create_logbook_entries()
     {
@@ -40,7 +40,7 @@ class CreateLogbookEntryTest extends TestCase
             'another_entry_id' => $entry2->toArray()
         ]]);
 
-        // TODO: This should assert that the date and count are visible on the /logbook/show?day=yyyy-mm-dd page 
+        // TODO: This should assert that the date and count are visible on the /logbook/show?day=yyyy-mm-dd page
         $this->get('/logbook')
             ->assertSee($entry1->start_time->toDateString())
             ->assertSee($entry1->patronCategory->name)
@@ -53,7 +53,7 @@ class CreateLogbookEntryTest extends TestCase
     {
         $this->withExceptionHandling()->signIn();
 
-        $entry = make('App\Logbook\Entry', ['count' => null]);
+        $entry = make('App\Logbook\Entry', ['visits_count' => null]);
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
             ->assertSessionHasErrors('empty-form');
@@ -64,10 +64,10 @@ class CreateLogbookEntryTest extends TestCase
     {
         $this->withExceptionHandling()->signIn();
 
-        $entry = make('App\Logbook\Entry', ['count' => -999]);
+        $entry = make('App\Logbook\Entry', ['visits_count' => -999]);
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-            ->assertSessionHasErrors('entry.*.count');
+            ->assertSessionHasErrors('entry.*.visits_count');
     }
 
     /** @test */

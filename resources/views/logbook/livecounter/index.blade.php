@@ -19,18 +19,18 @@
                             </h4>
                             <div class="card-body text-center">
                                 <h2 class="display-2 text-center">
-                                    @if($category->logbookEntries()->within(\App\Timeslot::now())->count())
-                                    {{ $category->logbookEntries()->within(\App\Timeslot::now())->first()->count }}
+                                    @if($category->logbookEntries()->withinTimeslot(\App\Timeslot::now())->count())
+                                    {{ $category->logbookEntries()->withinTimeslot(\App\Timeslot::now())->first()->visits_count }}
                                     @else
                                     0
                                     @endif
                                 </h3>
 
                                 <div class="card-footer">
-                                    <p>
-                                        <a href="/logbook/livecounter/store?id={{ $category->id }}&operation=add" class="btn btn-success btn-xl" aria-label="Add">Add User</a>
-                                    </p>
-                                    <a href="/logbook/livecounter/store?id={{ $category->id }}&operation=subtract" class="text-danger">Subtract</a>
+                                <div>
+                                    <a href="/logbook/livecounter/store?id={{ $category->id }}&operation=add" class="btn btn-success btn-xl" aria-label="Add">Add User</a>
+                                    </div>
+                                    <a href="/logbook/livecounter/store?id={{ $category->id }}&operation=subtract" class="badge badge-danger">Subtract</a>
                                 </div>
                             </div>
                         </div>
@@ -48,7 +48,7 @@
 <p>{{ $category->name }}</p>
 <strong>
 @if($category->logbookEntries()->current()->count())
-{{ $category->logbookEntries()->current()->first()->count }}
+{{ $category->logbookEntries()->current()->first()->visits_count }}
 @else
 0
 @endif
@@ -63,7 +63,7 @@
 <div class="mr-auto p-2">
 <p>{{ $category->name }}: <strong>
 @if($category->logbookEntries()->current()->count())
-{{ $category->logbookEntries()->current()->first()->count }}
+{{ $category->logbookEntries()->current()->first()->visits_count }}
 @else
 0
 @endif

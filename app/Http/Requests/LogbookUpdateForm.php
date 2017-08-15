@@ -28,7 +28,7 @@ class LogbookUpdateForm extends FormRequest
         'entry.*.start_time' => 'required|date|before:' . \Carbon\Carbon::tomorrow()->toDateString(),
         'entry.*.end_time' => 'required|date|after:entry.*.start_time',
         'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
-        'entry.*.count' => 'nullable|integer|min:1'
+        'entry.*.visits_count' => 'nullable|integer|min:1'
         ];
     }
 
@@ -62,23 +62,23 @@ class LogbookUpdateForm extends FormRequest
 
     /**
      * Check if at least one value was typed in.
-     * 
+     *
      * @return bool
      */
     public function filled()
     {
-        $fieldsFilled = 0;  
+        $fieldsFilled = 0;
 
         foreach ($this->input('entry.*') as $entry) {
-            $entry['count'] === null ?: $fieldsFilled++;
+            $entry['visits_count'] === null ?: $fieldsFilled++;
         }
 
         return (bool) $fieldsFilled;
     }
 
-    /** 
+    /**
      * Persist non-empty fields in the database.
-     * 
+     *
      * @return void
      */
     public function persist()

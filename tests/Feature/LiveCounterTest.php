@@ -25,7 +25,7 @@ class LiveCounterTest extends TestCase
 
         // Check whether the data was stored correctly
         $this->assertEquals($patronCategory->id, $entry->patron_category_id);
-        $this->assertEquals(1, $entry->count);
+        $this->assertEquals(1, $entry->visits_count);
         $this->assertEquals($timeslot->start(), $entry->start_time);
         $this->assertEquals($timeslot->end(), $entry->end_time);
     }
@@ -36,7 +36,7 @@ class LiveCounterTest extends TestCase
         $this->withExceptionHandling();
 
         $this->get('/logbook/livecounter/store?id=1&operation=add')
-            ->assertRedirect('login');
+        ->assertRedirect('login');
     }
 
     /** @test */
@@ -47,7 +47,7 @@ class LiveCounterTest extends TestCase
         create('App\PatronCategory', ['id' => 1]);
 
         $this->get('/logbook/livecounter/store?id=1&operation=deleteallrecords')
-            ->assertSessionHasErrors('operation');
+        ->assertSessionHasErrors('operation');
     }
 
     /** @test */
@@ -58,7 +58,7 @@ class LiveCounterTest extends TestCase
         create('App\PatronCategory', ['id' => 1]);
 
         $this->get('/logbook/livecounter/store?id=6&operation=add')
-            ->assertSessionHasErrors('id');
+        ->assertSessionHasErrors('id');
     }
 
     /** @test */
@@ -69,13 +69,13 @@ class LiveCounterTest extends TestCase
         create('App\PatronCategory', ['id' => 1]);
 
         $this->get('/logbook/livecounter/store?id=6')
-            ->assertSessionHasErrors('operation');
+        ->assertSessionHasErrors('operation');
 
         $this->get('/logbook/livecounter/store?operation=add')
-            ->assertSessionHasErrors('id');
+        ->assertSessionHasErrors('id');
 
         $this->get('/logbook/livecounter/store')
-            ->assertSessionHasErrors('id', 'operation');
+        ->assertSessionHasErrors('id', 'operation');
     }
 
     /** @test */
@@ -87,9 +87,85 @@ class LiveCounterTest extends TestCase
         $entry = create('App\Logbook\Entry', [
             'start_time' => $timeslot->start(),
             'end_time' => $timeslot->end(),
-        ]);
+            ]);
 
         $this->get('logbook/livecounter')
-            ->assertSee((string) $entry->count);
+        ->assertSee((string) $entry->visits_count);
+    }
+
+    /** @test */
+    public function it_can_record_a_visit_if_it_does_not_yet_exist()
+    {
+        $timeslot = Timeslot::now();
+        $patron_category_id = create('App\PatronCategory')->id;
+
+        Entry::add($patron_category_id, $timeslot);
+
+        $this->assertEquals(1, Entry::first()->visits_count);
+    }
+
+    /** @test */
+    public function it_adds_a_visit_to_the_count_if_the_entry_already_exists()
+    {
+        $timeslot = Timeslot::now();
+        $existingEntry = create('App\Logbook\Entry', [
+            'start_time' => $timeslot->start(),
+            'end_time' => $timeslot->end()
+            ]);
+
+        Entry::add($existingEntry->patron_category_id, $timeslot);
+
+        $this->assertEquals($existingEntry->visits_count + 1, Entry::first()->visits_count);
+    }
+
+    /** @test */
+    public function it_subtracts_a_visit_from_the_count()
+    {
+        $timeslot = Timeslot::now();
+        $existingEntry = create('App\Logbook\Entry', [
+            'start_time' => $timeslot->start(),
+            'end_time' => $timeslot->end(),
+            'visits_count' => 6
+            ]);
+
+        Entry::subtract($existingEntry->patron_category_id, $timeslot);
+
+        $this->assertEquals($existingEntry->visits_count - 1, Entry::first()->visits_count);
+    }
+
+    /** @test */
+    public function it_deletes_the_entry_if_count_is_equal_to_1()
+    {
+        $timeslot = Timeslot::now();
+        $existingEntry = create('App\Logbook\Entry', [
+            'start_time' => $timeslot->start(),
+            'end_time' => $timeslot->end(),
+            'visits_count' => 1
+            ]);
+
+        Entry::subtract($existingEntry->patron_category_id, $timeslot);
+
+        $this->assertEquals(null, Entry::first());
+    }
+
+    /** @test */
+    public function it_deletes_the_entry_if_count_is_equal_to_0()
+    {
+        $timeslot = Timeslot::now();
+        $existingEntry = create('App\Logbook\Entry', [
+            'start_time' => $timeslot->start(),
+            'end_time' => $timeslot->end(),
+            'visits_count' => 0
+            ]);
+
+        Entry::subtract($existingEntry->patron_category_id, $timeslot);
+
+        $this->assertEquals(null, Entry::first());
+    }
+
+    /** @test */
+    public function it_does_nothing_if_theres_no_corresponding_entry()
+    {
+        $this->assertEquals(null, Entry::subtract(1, Timeslot::now()));
     }
 }

@@ -22,7 +22,7 @@ class LogbookEntryTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $entry->end_time);
 
         // The count is an integer
-        $this->assertInternalType("int", $entry->count);
+        $this->assertInternalType("int", $entry->visits_count);
 
         // The patron category just created is persisted in the database
         $patronCategory = \App\PatronCategory::first();
@@ -31,78 +31,27 @@ class LogbookEntryTest extends TestCase
     }
 
     /** @test */
-    public function it_can_record_a_visit_if_it_does_not_yet_exist()
+    public function it_filters_entries_within_a_given_timeslot()
     {
-        $timeslot = Timeslot::now();
-        $patron_category_id = create('App\PatronCategory')->id;
+        $patronCategory = create('App\PatronCategory');
+        $entry = create('App\Logbook\Entry', ['patron_category_id' => $patronCategory->id]);
 
-        Entry::add($patron_category_id, $timeslot);
+        $result = Entry::withinTimeslot(Timeslot::now())->first();
 
-        $this->assertEquals(1, Entry::first()->count);
+        $this->assertEquals($entry->visits_count, $result->visits_count);
     }
 
     /** @test */
-    public function it_adds_a_visit_to_the_count_if_the_entry_already_exists()
+    public function it_filters_entries_within_a_given_timeslot_and_patron_category()
     {
-        $timeslot = Timeslot::now();
-        $existingEntry = create('App\Logbook\Entry', [
-            'start_time' => $timeslot->start(),
-            'end_time' => $timeslot->end()
-        ]);
+        $patronCategoryOne = create('App\PatronCategory');
+        $patronCategoryTwo = create('App\PatronCategory');
 
-        Entry::add($existingEntry->patron_category_id, $timeslot);
+        $entryWithPatronCategoryOne = create('App\Logbook\Entry', ['patron_category_id' => $patronCategoryOne->id]);
+        $entryWithPatronCategoryTwo = create('App\Logbook\Entry', ['patron_category_id' => $patronCategoryTwo->id]);
 
-        $this->assertEquals($existingEntry->count + 1, Entry::first()->count);
-    }
+        $result = Entry::withinTimeslotAndPatronCategory(Timeslot::now(), $patronCategoryOne)->first();
 
-    /** @test */
-    public function it_subtracts_a_visit_from_the_count()
-    {
-        $timeslot = Timeslot::now();
-        $existingEntry = create('App\Logbook\Entry', [
-            'start_time' => $timeslot->start(),
-            'end_time' => $timeslot->end(),
-            'count' => 6
-        ]);
-
-        Entry::subtract($existingEntry->patron_category_id, $timeslot);
-
-        $this->assertEquals($existingEntry->count - 1, Entry::first()->count);
-    }
-
-    /** @test */
-    public function it_deletes_the_entry_if_count_is_equal_to_1()
-    {
-        $timeslot = Timeslot::now();
-        $existingEntry = create('App\Logbook\Entry', [
-            'start_time' => $timeslot->start(),
-            'end_time' => $timeslot->end(),
-            'count' => 1
-        ]);
-
-        Entry::subtract($existingEntry->patron_category_id, $timeslot);
-
-        $this->assertEquals(null, Entry::first());
-    }
-
-    /** @test */
-    public function it_deletes_the_entry_if_count_is_equal_to_0()
-    {
-        $timeslot = Timeslot::now();
-        $existingEntry = create('App\Logbook\Entry', [
-            'start_time' => $timeslot->start(),
-            'end_time' => $timeslot->end(),
-            'count' => 0
-        ]);
-
-        Entry::subtract($existingEntry->patron_category_id, $timeslot);
-
-        $this->assertEquals(null, Entry::first());
-    }
-
-    /** @test */
-    public function it_does_nothing_if_theres_no_corresponding_entry()
-    {
-        $this->assertEquals(null, Entry::subtract(1, Timeslot::now()));
+        $this->assertEquals($entryWithPatronCategoryOne->visits_count, $result->visits_count);
     }
 }
