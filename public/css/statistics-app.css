@@ -13,3 +13,10 @@ body {
 body > .container {
   padding: 20px 0px 20px;
 }
+
+.btn-xs, .btn-group-xs > .btn {
+  padding: 0.15rem 0.25rem;
+  font-size: 0.675rem;
+  line-height: 1.1;
+  border-radius: 0.2rem;
+}

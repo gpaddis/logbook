@@ -28,9 +28,11 @@
                       {{ csrf_field() }}
                       <input type="hidden" name="id" value="{{ $category->id }}">
                       {{-- Add User button --}}
-                      <button type="submit" class="btn btn-success btn-xl mb-2" name="operation" value="add">Add User</button>
+                      <button type="submit" class="btn btn-success btn-xl" name="operation" value="add">Add User</button>
                       {{-- Subtract button --}}
-                      <button type="submit" class="btn btn-sm btn-outline-danger" name="operation" value="subtract">Subtract</button>
+                      <div>
+                        <button type="submit" class="btn btn-xs btn-outline-danger" name="operation" value="subtract">Subtract</button>
+                      </div>
                     </form>
                   </div>
                 </div>
@@ -71,25 +73,26 @@
                         {{ csrf_field() }}
                         <input type="hidden" name="id" value="{{ $category->id }}">
                         {{-- Add User button --}}
-                        <button type="submit" class="btn btn-success btn-xl mb-2" name="operation" value="add">Add User</button>
+                        <button type="submit" class="btn btn-success btn-xl" name="operation" value="add">Add User</button>
                         {{-- Subtract button --}}
-                        <button type="submit" class="btn btn-sm btn-outline-danger" name="operation" value="subtract">Subtract</button>
-                      </form>
+                        <div>
+                          <button type="submit" class="btn btn-xs btn-outline-danger" name="operation" value="subtract">Subtract</button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              @endforeach
+              {{-- End card. --}}
             </div>
-            @endforeach
-            {{-- End card. --}}
           </div>
-        </div>
-        {{-- End secondary categories cards. --}}
-        @endif
+          {{-- End secondary categories cards. --}}
+          @endif
 
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-@endsection
+  @endsection
