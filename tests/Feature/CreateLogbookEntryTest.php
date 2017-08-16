@@ -101,4 +101,16 @@ class CreateLogbookEntryTest extends TestCase
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
             ->assertSessionHasErrors('entry.*.start_time');
     }
+
+    /** @test */
+    public function the_form_shows_data_already_stored_in_the_database()
+    {
+        $this->signIn();
+        $entry = create('App\Logbook\Entry', ['visits_count' => 1234567890]);
+
+        // dd($entry);
+
+        $this->get('/logbook/update')
+            ->assertSee((string) $entry->visits_count);
+    }
 }
