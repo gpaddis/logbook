@@ -8,7 +8,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-/** 
+/**
  * Logbook & Logbook Entries
  */
 Route::get('/logbook', 'EntryController@index')->name('logbook.index');
@@ -19,7 +19,7 @@ Route::post('/logbook', 'EntryController@store');
  * Live Counter
  */
 Route::get('/logbook/livecounter', 'LiveCounterController@index')->name('livecounter.index');
-Route::get('/logbook/livecounter/store', 'LiveCounterController@store');
+Route::post('/logbook/livecounter', 'LiveCounterController@store');
 
 /**
  * Patron Categories

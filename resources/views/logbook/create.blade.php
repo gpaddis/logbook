@@ -59,8 +59,8 @@
 								id="entry[{{ entry_id($timeslot, $category) }}][visits_count]"
 								name="entry[{{ entry_id($timeslot, $category) }}][visits_count]"
 								value=
-								@if($value = App\Logbook\Entry::withinTimeslotAndPatronCategory($timeslot, $category)->first())
-								"{{ $value->visits_count }}"
+								@if($category->hasVisited($timeslot))
+								"{{ $category->currentVisits($timeslot) }}"
 								@else
 								{{ old('entry.' . entry_id($timeslot, $category) . '.visits_count') }}
 								@endif

@@ -112,23 +112,11 @@ class Entry extends Model
      * @param \App\Timeslot  $timeslot
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeWithinTimeslot($query, $timeslot)
+    public function scopeWithinTimeslot($query, $timeslot = null)
     {
+        $timeslot = $timeslot ?: Timeslot::now();
+
         return $query->where('start_time', $timeslot->start())
             ->where('end_time', $timeslot->end());
-    }
-
-    /**
-     * Scope a query to only include logbook entries within the custom timeslot and patron category.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \App\Timeslot  $timeslot
-     * @param \App\PatronCategory  $patronCategory
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeWithinTimeslotAndPatronCategory($query, $timeslot, $patronCategory)
-    {
-        return $query->withinTimeslot($timeslot)
-            ->where('patron_category_id', $patronCategory->id);
     }
 }

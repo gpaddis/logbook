@@ -18,7 +18,10 @@ class LiveCounterTest extends TestCase
 
         $patronCategory = create('App\PatronCategory');
 
-        $this->get('/logbook/livecounter/store?id='. $patronCategory->id .'&operation=add');
+        $this->post('/logbook/livecounter', [
+            'id' => $patronCategory->id,
+            'operation' => 'add'
+        ]);
 
         $entry = Entry::first();
         $timeslot = Timeslot::now();
@@ -35,8 +38,10 @@ class LiveCounterTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $this->get('/logbook/livecounter/store?id=1&operation=add')
-            ->assertRedirect('login');
+        $this->post('/logbook/livecounter', [
+            'id' => 1,
+            'operation' => 'add'
+        ])->assertRedirect('login');
     }
 
     /** @test */
@@ -46,8 +51,10 @@ class LiveCounterTest extends TestCase
 
         create('App\PatronCategory', ['id' => 1]);
 
-        $this->get('/logbook/livecounter/store?id=1&operation=deleteallrecords')
-            ->assertSessionHasErrors('operation');
+        $this->post('/logbook/livecounter', [
+            'id' => 1,
+            'operation' => 'deleteallrecords'
+        ])->assertSessionHasErrors('operation');
     }
 
     /** @test */
@@ -57,8 +64,10 @@ class LiveCounterTest extends TestCase
 
         create('App\PatronCategory', ['id' => 1]);
 
-        $this->get('/logbook/livecounter/store?id=6&operation=add')
-            ->assertSessionHasErrors('id');
+        $this->post('/logbook/livecounter', [
+            'id' => 6,
+            'operation' => 'add'
+        ])->assertSessionHasErrors('id');
     }
 
     /** @test */
@@ -68,13 +77,13 @@ class LiveCounterTest extends TestCase
 
         create('App\PatronCategory', ['id' => 1]);
 
-        $this->get('/logbook/livecounter/store?id=6')
+        $this->post('/logbook/livecounter', ['id' => 1])
             ->assertSessionHasErrors('operation');
 
-        $this->get('/logbook/livecounter/store?operation=add')
+        $this->post('/logbook/livecounter', ['operation' => 'add'])
             ->assertSessionHasErrors('id');
 
-        $this->get('/logbook/livecounter/store')
+        $this->post('/logbook/livecounter')
             ->assertSessionHasErrors('id', 'operation');
     }
 

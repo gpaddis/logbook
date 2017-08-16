@@ -76,6 +76,33 @@ class PatronCategory extends Model
     }
 
     /**
+     * Check if a patron category has visited within the given timeslot.
+     *
+     * @param  App\Timeslot  $timeslot
+     * @return boolean
+     */
+    public function hasVisited($timeslot = null)
+    {
+        return $this->logbookEntries()->withinTimeslot($timeslot)->exists();
+    }
+
+    /**
+     * Return the number of visits within the current timeslot or 0 if there were none.
+     *
+     * @param  $timeslot
+     * @return int
+     */
+    public function currentVisits($timeslot = null)
+    {
+        if ($this->hasVisited($timeslot))
+        {
+            return $this->logbookEntries()->withinTimeslot($timeslot)->first()->visits_count;
+        }
+
+        return 0;
+    }
+
+    /**
      * Return the full path of the current patron category.
      *
      * @return string

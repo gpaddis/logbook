@@ -11,26 +11,28 @@
 
         {{-- Start primary categories cards. --}}
         <div class="row justify-content-center">
-          @foreach($primary_active_patron_categories as $primaryCategory)
+          @foreach($primary_active_patron_categories as $category)
           <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
             <div class="card">
               <h4 class="card-header">
-                {{ $primaryCategory->name }}
+                {{ $category->name }}
               </h4>
               <div class="card-body text-center">
                 <h2 class="display-2 text-center">
-                  @if($primaryCategory->logbookEntries()->withinTimeslot(\App\Timeslot::now())->count())
-                  {{ $primaryCategory->logbookEntries()->withinTimeslot(\App\Timeslot::now())->first()->visits_count }}
-                  @else
-                  0
-                  @endif
-                </h3>
+                  {{ $category->currentVisits() }}
+                </h2>
 
                 <div class="card-footer">
                   <div>
-                    <a href="/logbook/livecounter/store?id={{ $primaryCategory->id }}&operation=add" class="btn btn-success btn-xl" aria-label="Add">Add User</a>
+                    <form method="POST" action="{{ route('livecounter.index') }}">
+                      {{ csrf_field() }}
+                      <input type="hidden" name="id" value="{{ $category->id }}">
+                      {{-- Add User button --}}
+                      <button type="submit" class="btn btn-success btn-xl mb-2" name="operation" value="add">Add User</button>
+                      {{-- Subtract button --}}
+                      <button type="submit" class="btn btn-sm btn-outline-danger" name="operation" value="subtract">Subtract</button>
+                    </form>
                   </div>
-                  <a href="/logbook/livecounter/store?id={{ $primaryCategory->id }}&operation=subtract" class="badge badge-danger">Subtract</a>
                 </div>
               </div>
             </div>
@@ -52,26 +54,28 @@
         <div class="collapse" id="secondaryCategories">
           <div class="row justify-content-center">
             {{-- Card. --}}
-            @foreach($secondary_active_patron_categories as $secondaryCategory)
+            @foreach($secondary_active_patron_categories as $category)
             <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
               <div class="card">
                 <h4 class="card-header">
-                  {{ $secondaryCategory->name }}
+                  {{ $category->name }}
                 </h4>
                 <div class="card-body text-center">
                   <h2 class="display-2 text-center">
-                    @if($secondaryCategory->logbookEntries()->withinTimeslot(\App\Timeslot::now())->count())
-                    {{ $secondaryCategory->logbookEntries()->withinTimeslot(\App\Timeslot::now())->first()->visits_count }}
-                    @else
-                    0
-                    @endif
-                  </h3>
+                    {{ $category->currentVisits() }}
+                  </h2>
 
                   <div class="card-footer">
                     <div>
-                      <a href="/logbook/livecounter/store?id={{ $secondaryCategory->id }}&operation=add" class="btn btn-success btn-xl" aria-label="Add">Add User</a>
+                      <form method="POST" action="{{ route('livecounter.index') }}">
+                        {{ csrf_field() }}
+                        <input type="hidden" name="id" value="{{ $category->id }}">
+                        {{-- Add User button --}}
+                        <button type="submit" class="btn btn-success btn-xl mb-2" name="operation" value="add">Add User</button>
+                        {{-- Subtract button --}}
+                        <button type="submit" class="btn btn-sm btn-outline-danger" name="operation" value="subtract">Subtract</button>
+                      </form>
                     </div>
-                    <a href="/logbook/livecounter/store?id={{ $secondaryCategory->id }}&operation=subtract" class="badge badge-danger">Subtract</a>
                   </div>
                 </div>
               </div>
@@ -87,38 +91,5 @@
     </div>
   </div>
 </div>
-
-{{-- <div class="col">
-<p>{{ $category->name }}</p>
-<strong>
-@if($category->logbookEntries()->current()->count())
-{{ $category->logbookEntries()->current()->first()->visits_count }}
-@else
-0
-@endif
-</strong>
-<div>
-<a href="/logbook/livecounter/store?id={{ $category->id }}&operation=add" class="btn btn-success btn-lg" aria-label="Add">+</a>
-<a href="/logbook/livecounter/store?id={{ $category->id }}&operation=subtract" class="btn btn-danger btn-lg" aria-label="Subtract">-</a>
-</div>
-</div> --}}
-
-{{-- <div class="d-flex justify-content-end">
-<div class="mr-auto p-2">
-<p>{{ $category->name }}: <strong>
-@if($category->logbookEntries()->current()->count())
-{{ $category->logbookEntries()->current()->first()->visits_count }}
-@else
-0
-@endif
-</strong></p>
-</div>
-<div class="p-2">
-<a href="/logbook/livecounter/store?id={{ $category->id }}&operation=add" class="btn btn-success btn-sm" aria-label="Add">Add user</a>
-</div>
-<div class="p-2">
-<a href="/logbook/livecounter/store?id={{ $category->id }}&operation=subtract" class="btn btn-outline-danger btn-sm" aria-label="Add">Remove user</a>
-</div>
-</div> --}}
 
 @endsection

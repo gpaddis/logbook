@@ -108,8 +108,6 @@ class CreateLogbookEntryTest extends TestCase
         $this->signIn();
         $entry = create('App\Logbook\Entry', ['visits_count' => 1234567890]);
 
-        // dd($entry);
-
         $this->get('/logbook/update')
             ->assertSee((string) $entry->visits_count);
     }
