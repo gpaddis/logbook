@@ -36,12 +36,9 @@ class EntryController extends Controller
      */
     public function create()
     {
-        // TODO: implement the method to return this array of timeslots
-        $timeslots = [
-        \App\Timeslot::now(),
-        \App\Timeslot::now()->addHour(1),
-        \App\Timeslot::now()->addHour(2),
-        ];
+        // TODO: fetch opening time from application settings
+        $opening_time = \Carbon\Carbon::now()->hour(11)->minute(0)->second(0);
+        $timeslots = \App\TimeslotCollection::make($opening_time, 5)->getCollection();
 
         return view('logbook.create', compact('timeslots'));
     }

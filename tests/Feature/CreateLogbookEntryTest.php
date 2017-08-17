@@ -43,9 +43,9 @@ class CreateLogbookEntryTest extends TestCase
         // TODO: This should assert that the date and count are visible on the /logbook/show?day=yyyy-mm-dd page
         $this->get('/logbook')
             ->assertSee($entry1->start_time->toDateString())
-            ->assertSee($entry1->patronCategory->name)
+            ->assertSee($entry1->patron_category->name)
             ->assertSee($entry2->start_time->toDateString())
-            ->assertSee($entry2->patronCategory->name);
+            ->assertSee($entry2->patron_category->name);
     }
 
     /** @test */

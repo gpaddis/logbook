@@ -23,11 +23,18 @@ class Entry extends Model
     ];
 
     /**
+     * Related models to be eager loaded each time an Entry model is loaded.
+     *
+     * @var array
+     */
+    protected $with = ['patron_category'];
+
+    /**
      * A logbook entry belongs to a patron category.
      *
      * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function patronCategory()
+    public function patron_category()
     {
         return $this->belongsTo('App\PatronCategory');
     }

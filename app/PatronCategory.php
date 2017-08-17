@@ -33,6 +33,13 @@ class PatronCategory extends Model
     ];
 
     /**
+     * Related models to be eager loaded each time a Patron Category model is loaded.
+     *
+     * @var array
+     */
+    // protected $with = ['current_visits_count'];
+
+    /**
      * Scope a query to only include active patron categories.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
@@ -101,6 +108,11 @@ class PatronCategory extends Model
 
         return 0;
     }
+
+    // public function current_entry()
+    // {
+    //     return $this->logbookEntries()->withinTimeslot(Timeslot::now());
+    // }
 
     /**
      * Return the full path of the current patron category.

@@ -37,8 +37,8 @@ class TimeslotTest extends TestCase
         $timeslot = Timeslot::custom($datetime, 3);
 
         // Start and end time should be as expected
-        $this->assertEquals('2019-11-04 12:00:00', $timeslot->start()->toDateTimeString());       
-        $this->assertEquals('2019-11-04 14:59:59', $timeslot->end()->toDateTimeString());  
+        $this->assertEquals('2019-11-04 12:00:00', $timeslot->start()->toDateTimeString());
+        $this->assertEquals('2019-11-04 14:59:59', $timeslot->end()->toDateTimeString());
     }
 
     /** @test */
@@ -114,5 +114,16 @@ class TimeslotTest extends TestCase
         // The values correspond
         $this->assertEquals($start, $timeslot->start());
         $this->assertEquals($end, $timeslot->end());
+    }
+
+    /** @test */
+    public function it_moves_the_current_timeslot_two_hours_in_the_future()
+    {
+        $timeslot = Timeslot::custom(Carbon::parse('2017-01-18 13:00:00'));
+
+        $timeslot->addHour(2);
+
+        $this->assertEquals('2017-01-18 15:00:00', $timeslot->start());
+        $this->assertEquals('2017-01-18 15:59:59', $timeslot->end());
     }
 }
