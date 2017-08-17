@@ -15,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
     {
         \View::composer([
                 'logbook.create',
+                // 'logbook.update',
                 'logbook.livecounter.index'
             ], function($view) {
             $view->with('active_patron_categories', \App\PatronCategory::active()->get());

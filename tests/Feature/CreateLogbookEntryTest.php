@@ -106,7 +106,16 @@ class CreateLogbookEntryTest extends TestCase
     public function the_form_shows_data_already_stored_in_the_database()
     {
         $this->signIn();
-        $entry = create('App\Logbook\Entry', ['visits_count' => 1234567890]);
+
+        // TODO: adapt this test when the function to update the logbook for a specific date
+        // is implemented.
+        $timeslot = Timeslot::custom(Carbon::now()->hour(12));
+
+        $entry = create('App\Logbook\Entry', [
+            'visits_count' => 1234567890,
+            'start_time' => $timeslot->start(),
+            'end_time' => $timeslot->end()
+            ]);
 
         $this->get('/logbook/update')
             ->assertSee((string) $entry->visits_count);

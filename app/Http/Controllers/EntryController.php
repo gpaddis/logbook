@@ -37,10 +37,17 @@ class EntryController extends Controller
     public function create()
     {
         // TODO: fetch opening time from application settings
+        // TODO: fetch day from the request
         $opening_time = \Carbon\Carbon::now()->hour(11)->minute(0)->second(0);
         $timeslots = \App\TimeslotCollection::make($opening_time, 5)->getCollection();
 
-        return view('logbook.create', compact('timeslots'));
+        $patron_categories = \App\PatronCategory::active()->with(['logbookEntries' => function ($query) use ($opening_time) {
+            $query->whereDate('start_time', $opening_time->toDateString());
+        }])->get();
+
+        // return $patron_categories;
+
+        return view('logbook.update', compact('timeslots', 'patron_categories'));
     }
 
     /**
