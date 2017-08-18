@@ -27,7 +27,7 @@ class Entry extends Model
      *
      * @var array
      */
-    protected $with = ['patron_category'];
+    // protected $with = ['patron_category'];
 
     /**
      * A logbook entry belongs to a patron category.

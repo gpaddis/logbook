@@ -49,6 +49,15 @@ class CreateLogbookEntryTest extends TestCase
     }
 
     /** @test */
+    public function it_displays_a_warning_if_there_are_no_active_patron_categories()
+    {
+        $this->signIn();
+
+        $this->get('/logbook/update')
+            ->assertSee('It looks like there are no active patron categories yet');
+    }
+
+    /** @test */
     public function it_cannot_submit_an_empty_form()
     {
         $this->withExceptionHandling()->signIn();
