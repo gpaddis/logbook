@@ -26,7 +26,9 @@ class LiveCounterController extends Controller
      */
     public function index()
     {
-        return view('logbook.livecounter.index');
+        $patron_categories = PatronCategory::active()->orderBy('is_primary', 'desc')->get();
+
+        return view('logbook.livecounter.index', compact('patron_categories'));
     }
 
     /**

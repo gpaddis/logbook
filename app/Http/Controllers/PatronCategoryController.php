@@ -12,7 +12,7 @@ class PatronCategoryController extends Controller
      * to access store(), delete() and such methods. All other users are
      * only allowed to see the index() and show() methods.
      */
-    
+
     /**
      * ThreadsController constructor
      */
@@ -20,7 +20,7 @@ class PatronCategoryController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -28,9 +28,9 @@ class PatronCategoryController extends Controller
      */
     public function index()
     {
-        $patronCategories = PatronCategory::all();
+        $patron_categories = PatronCategory::all();
 
-        return view('patron-categories.index', compact('patronCategories'));
+        return view('patron-categories.index', compact('patron_categories'));
     }
 
     /**

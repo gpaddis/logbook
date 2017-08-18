@@ -7,8 +7,12 @@
     <div class="card">
       <div class="card-header">List of Patron Categories</div>
 
+      @if($patron_categories->isEmpty())
       <div class="card-body">
-        @if($patronCategories->count())
+        @include('layouts.partials.no-patron-categories')
+      </div>
+      @else
+      <div class="card-body">
         <div class="table-responsive">
           <table class="table table-hover">
             <thead class="thead-default">
@@ -22,7 +26,7 @@
             </tr>
           </thead>
           <tbody>
-            @foreach($patronCategories as $category)
+            @foreach($patron_categories as $category)
             <tr>
               <th scope="row">
                 {{ $category->id }}
@@ -64,9 +68,6 @@
         <div class="text-center">
           <a href="#" class="btn btn-primary">Add a new patron category</a>
         </div>
-
-        @else
-        <h4>There are no patron categories yet. <a href="#">Add some!</a></h4>
         @endif
 
       </div>

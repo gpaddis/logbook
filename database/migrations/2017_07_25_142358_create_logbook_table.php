@@ -22,6 +22,9 @@ class CreateLogbookTable extends Migration
             $table->timestamps();
 
             $table->unique(['start_time', 'end_time', 'patron_category_id']);
+            $table->foreign('patron_category_id')
+                ->references('id')->on('patron_categories')
+                ->onDelete('cascade');
         });
     }
 
