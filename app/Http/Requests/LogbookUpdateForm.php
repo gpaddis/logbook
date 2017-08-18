@@ -28,7 +28,7 @@ class LogbookUpdateForm extends FormRequest
         'entry.*.start_time' => 'required|date|before:' . \Carbon\Carbon::tomorrow()->toDateString(),
         'entry.*.end_time' => 'required|date|after:entry.*.start_time',
         'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
-        'entry.*.visits_count' => 'nullable|integer|min:1'
+        'entry.*.visits_count' => 'nullable|integer|min:0'
         ];
     }
 

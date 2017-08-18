@@ -15,7 +15,7 @@
       @else
       <div class="card-body">
         <p class="card-text">
-          Insert the user count for a specific time range into the appropriate field. If no users of a specific category visited the library during a given time range, simply leave the according fields empty.
+          Insert the user count for a specific time range into the appropriate field. If no users of a specific category visited the library during a given time range, simply leave the according fields empty. If you want to delete an existing record, write a 0 in the according field.
         </p>
       </div>
 

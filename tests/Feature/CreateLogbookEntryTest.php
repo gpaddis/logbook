@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Timeslot;
 use Carbon\Carbon;
 use Tests\TestCase;
+use App\Logbook\Entry;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class CreateLogbookEntryTest extends TestCase
@@ -19,7 +20,7 @@ class CreateLogbookEntryTest extends TestCase
         $entry = make('App\Logbook\Entry');
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-            ->assertRedirect('/login');
+        ->assertRedirect('/login');
     }
 
     /** @test */
@@ -33,19 +34,19 @@ class CreateLogbookEntryTest extends TestCase
         $entry2 = make('App\Logbook\Entry', [
             'start_time' => $timeslot->start(),
             'end_time' => $timeslot->end(),
-        ]);
+            ]);
 
         $response = $this->post('/logbook', ['entry' => [
             'any_entry_id' => $entry1->toArray(),
             'another_entry_id' => $entry2->toArray()
-        ]]);
+            ]]);
 
         // TODO: This should assert that the date and count are visible on the /logbook/show?day=yyyy-mm-dd page
         $this->get('/logbook')
-            ->assertSee($entry1->start_time->toDateString())
-            ->assertSee($entry1->patron_category->name)
-            ->assertSee($entry2->start_time->toDateString())
-            ->assertSee($entry2->patron_category->name);
+        ->assertSee($entry1->start_time->toDateString())
+        ->assertSee($entry1->patron_category->name)
+        ->assertSee($entry2->start_time->toDateString())
+        ->assertSee($entry2->patron_category->name);
     }
 
     /** @test */
@@ -54,7 +55,7 @@ class CreateLogbookEntryTest extends TestCase
         $this->signIn();
 
         $this->get('/logbook/update')
-            ->assertSee('It looks like there are no active patron categories yet');
+        ->assertSee('It looks like there are no active patron categories yet');
     }
 
     /** @test */
@@ -65,7 +66,7 @@ class CreateLogbookEntryTest extends TestCase
         $entry = make('App\Logbook\Entry', ['visits_count' => null]);
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-            ->assertSessionHasErrors('empty-form');
+        ->assertSessionHasErrors('empty-form');
     }
 
     /** @test */
@@ -76,7 +77,7 @@ class CreateLogbookEntryTest extends TestCase
         $entry = make('App\Logbook\Entry', ['visits_count' => -999]);
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-            ->assertSessionHasErrors('entry.*.visits_count');
+        ->assertSessionHasErrors('entry.*.visits_count');
     }
 
     /** @test */
@@ -89,10 +90,10 @@ class CreateLogbookEntryTest extends TestCase
         $entry = make('App\Logbook\Entry', [
             'start_time' => $now,
             'end_time' => $now
-        ]);
+            ]);
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-            ->assertSessionHasErrors('entry.*.end_time');
+        ->assertSessionHasErrors('entry.*.end_time');
     }
 
     /** @test */
@@ -105,10 +106,10 @@ class CreateLogbookEntryTest extends TestCase
         $entry = make('App\Logbook\Entry', [
             'start_time' => $timeslot->start(),
             'end_time' => $timeslot->end()
-        ]);
+            ]);
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-            ->assertSessionHasErrors('entry.*.start_time');
+        ->assertSessionHasErrors('entry.*.start_time');
     }
 
     /** @test */
@@ -127,6 +128,35 @@ class CreateLogbookEntryTest extends TestCase
             ]);
 
         $this->get('/logbook/update')
-            ->assertSee((string) $entry->visits_count);
+        ->assertSee((string) $entry->visits_count);
+    }
+
+    /** @test */
+    public function it_deletes_an_entry_if_a_0_is_submitted()
+    {
+        $this->signIn();
+        $storedEntry = create('App\Logbook\Entry');
+
+        $zeroEntry = make('App\Logbook\Entry', [
+            'start_time' => $storedEntry->start_time,
+            'end_time' => $storedEntry->end_time,
+            'patron_category_id' => $storedEntry->patron_category_id,
+            'visits_count' => 0
+            ]);
+
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $zeroEntry->toArray()]]);
+        $this->assertEquals(null, Entry::where('start_time', $storedEntry->start_time)->first());
+    }
+
+    /** @test */
+    public function it_does_nothing_if_we_sumbit_a_0_for_a_nonexisting_entry()
+    {
+        $this->signIn()->withExceptionHandling();
+
+        $zeroEntry = make('App\Logbook\Entry', ['visits_count' => 0]);
+        $response = $this->post('/logbook', ['entry' => ['any_entry_id' => $zeroEntry->toArray()]]);
+
+        $this->assertEquals(null, Entry::where('start_time', $zeroEntry->start_time)->first());
+        $response->assertRedirect('/logbook');
     }
 }

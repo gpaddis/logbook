@@ -16,10 +16,10 @@ class Entry extends Model
     protected $table = 'logbook';
 
     protected $fillable = [
-        'start_time',
-        'end_time',
-        'patron_category_id',
-        'visits_count'
+    'start_time',
+    'end_time',
+    'patron_category_id',
+    'visits_count'
     ];
 
     /**
@@ -47,17 +47,33 @@ class Entry extends Model
      */
     public static function updateOrCreateIfNotNull(array $entry)
     {
+        if($entry['visits_count'] == 0) return static::deleteZeroes($entry);
+
         if ($entry['visits_count'] !== null) {
             Entry::updateOrCreate(
                 [
-                    'start_time' => $entry['start_time'],
-                    'end_time' => $entry['end_time'],
-                    'patron_category_id' => $entry['patron_category_id']
+                'start_time' => $entry['start_time'],
+                'end_time' => $entry['end_time'],
+                'patron_category_id' => $entry['patron_category_id']
                 ],
                 [
-                    'visits_count' => $entry['visits_count']
+                'visits_count' => $entry['visits_count']
                 ]);
         }
+    }
+
+    /**
+     * Delete an entry in the database if the count is zero.
+     *
+     * @param  array $entry
+     * @return
+     */
+    public static function deleteZeroes(array $entry)
+    {
+        Entry::where('start_time', $entry['start_time'])
+            ->where('end_time', $entry['end_time'])
+            ->where('patron_category_id', $entry['patron_category_id'])
+            ->delete();
     }
 
     /////////////////////////////////////////////////
@@ -73,9 +89,9 @@ class Entry extends Model
     public static function add($patron_category_id, $timeslot)
     {
         $existingEntry = Entry::where('start_time', $timeslot->start())
-            ->where('end_time', $timeslot->end())
-            ->where('patron_category_id', $patron_category_id)
-            ->first();
+        ->where('end_time', $timeslot->end())
+        ->where('patron_category_id', $patron_category_id)
+        ->first();
 
         $visits_count = 0;
 
@@ -84,21 +100,21 @@ class Entry extends Model
         }
 
         Entry::updateOrCreate([
-                'start_time' => $timeslot->start(),
-                'end_time' => $timeslot->end(),
-                'patron_category_id' => $patron_category_id
+            'start_time' => $timeslot->start(),
+            'end_time' => $timeslot->end(),
+            'patron_category_id' => $patron_category_id
             ],
-        [
+            [
             'visits_count' => ++$visits_count
-        ]);
+            ]);
     }
 
     public static function subtract($patron_category_id, $timeslot)
     {
         $entry = Entry::where('start_time', $timeslot->start())
-            ->where('end_time', $timeslot->end())
-            ->where('patron_category_id', $patron_category_id)
-            ->first();
+        ->where('end_time', $timeslot->end())
+        ->where('patron_category_id', $patron_category_id)
+        ->first();
 
         if ($entry == null) return;
 
@@ -124,6 +140,6 @@ class Entry extends Model
         $timeslot = $timeslot ?: Timeslot::now();
 
         return $query->where('start_time', $timeslot->start())
-            ->where('end_time', $timeslot->end());
+        ->where('end_time', $timeslot->end());
     }
 }
