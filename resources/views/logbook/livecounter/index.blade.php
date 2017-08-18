@@ -7,9 +7,9 @@
     <div class="card">
       <div class="card-header">Live Counter Index</div>
       <div class="card-body">
-      @if($patron_categories->isEmpty())
+        @if($patron_categories->isEmpty())
         @include('layouts.partials.no-patron-categories')
-      @endif
+        @endif
         {{-- Start categories cards. --}}
         <div class="row justify-content-center">
           @foreach($patron_categories as $category)
@@ -21,7 +21,8 @@
               </h4>
               <div class="card-body text-center">
                 <h2 class="display-2 text-center">
-                  {{ $category->currentVisits() }}
+                  {{-- If there is a logbook entry retrieve the visits_count, otherwise 0. --}}
+                  {{ $category->logbookEntries->first() ? $category->logbookEntries->first()->visits_count : '0'}}
                 </h2>
 
                 <div class="card-footer">
