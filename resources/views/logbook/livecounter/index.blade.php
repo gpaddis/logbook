@@ -7,12 +7,9 @@
     <div class="card">
       <div class="card-header">Live Counter Index</div>
       <div class="card-body">
-        @if($patron_categories->isEmpty())
-        @include('layouts.partials.no-patron-categories')
-        @endif
-        {{-- Start categories cards. --}}
         <div class="row justify-content-center">
-          @foreach($patron_categories as $category)
+        {{-- Start categories cards. --}}
+          @forelse($patron_categories as $category)
           {{-- If the category is secondary it adds the classes collapse multi-collapse. --}}
           <div class="col-lg-3 col-md-6 col-sm-6 mb-4{{ $category->is_primary ? '' : ' collapse multi-collapse' }}">
             <div class="card">
@@ -21,8 +18,8 @@
               </h4>
               <div class="card-body text-center">
                 <h2 class="display-2 text-center">
-                  {{-- If there is a logbook entry retrieve the visits_count, otherwise 0. --}}
-                  {{ $category->logbookEntries->first() ? $category->logbookEntries->first()->visits_count : '0'}}
+                  {{-- If there is a logbook entry retrieve the visits count, otherwise 0. --}}
+                  {{ $category->logbookEntries->first()->visits_count or '0'}}
                 </h2>
 
                 <div class="card-footer">
@@ -42,7 +39,11 @@
               </div>
             </div>
           </div>
-          @endforeach
+          @empty
+          <div class="col">
+            @include('layouts.partials.no-patron-categories')
+          </div>
+          @endforelse
         </div>
         {{-- End categories cards. --}}
 

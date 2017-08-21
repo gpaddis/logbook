@@ -72,11 +72,7 @@
                     id="entry[{{ entry_id($timeslot, $category) }}][visits_count]"
                     name="entry[{{ entry_id($timeslot, $category) }}][visits_count]"
                     {{-- Retrieve existing values for the single fields or get the old request value --}}
-                    @if($category->logbookEntries->where('start_time', $timeslot->start())->isNotEmpty())
-                    value="{{ $category->logbookEntries->where('start_time', $timeslot->start())->first()->visits_count }}"
-                    @else
-                    value="{{ old('entry.' . entry_id($timeslot, $category) . '.visits_count') }}"
-                    @endif>
+                    value="{{ $category->logbookEntries->where('start_time', $timeslot->start())->first()->visits_count or old('entry.' . entry_id($timeslot, $category) . '.visits_count') }}">
                   </div>
                 </td>
                 @endforeach
@@ -86,7 +82,7 @@
           </table>
           <div class="form-group text-center">
             <button type="submit" class="btn btn-primary">Save the Log</button>
-            <a href="#" class="btn btn-secondary">Clear the Form</a>
+            <a href="{{ route('logbook.index') }}" class="btn btn-secondary">Discard Changes</a>
           </div>
         </form>
 
