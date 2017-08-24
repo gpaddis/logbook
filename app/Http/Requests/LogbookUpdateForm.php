@@ -28,7 +28,7 @@ class LogbookUpdateForm extends FormRequest
         'entry.*.start_time' => 'required|date|before:' . \Carbon\Carbon::tomorrow()->toDateString(),
         'entry.*.end_time' => 'required|date|after:entry.*.start_time',
         'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
-        'entry.*.visits_count' => 'nullable|integer|min:0'
+        'entry.*.visits_count' => 'nullable|integer|min:0|max:65535'
         ];
     }
 
@@ -41,6 +41,7 @@ class LogbookUpdateForm extends FormRequest
     {
         return [
         'min' => 'The count must be a positive number. Correct the fields in red and try again.',
+        'max' => 'Either your library is a stadium or you entered a wrong visits count. Correct the fields in red and try again.',
         'before' => 'You cannot save a logbook entry for the future.'
         ];
     }

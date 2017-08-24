@@ -8,7 +8,7 @@ use Tests\TestCase;
 use App\Logbook\Entry;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class CreateLogbookEntryTest extends TestCase
+class UpdateLogbookTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -81,6 +81,17 @@ class CreateLogbookEntryTest extends TestCase
     }
 
     /** @test */
+    public function the_count_value_must_be_less_or_equal_to_65535()
+    {
+        $this->withExceptionHandling()->signIn();
+
+        $entry = make('App\Logbook\Entry', ['visits_count' => 99999999999999]);
+
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
+        ->assertSessionHasErrors('entry.*.visits_count');
+    }
+
+    /** @test */
     public function start_time_and_end_time_must_be_different()
     {
         $this->withExceptionHandling()->signIn();
@@ -113,13 +124,27 @@ class CreateLogbookEntryTest extends TestCase
     }
 
     /** @test */
+    public function it_displays_the_form_for_the_date_requested()
+    {
+        $this->signIn()->get('/logbook/update?date=2017-08-18')
+            ->assertSee('Update the logbook for Aug 18, 2017');
+    }
+
+    /** @test */
+    public function an_invalid_date_does_not_pass_validation()
+    {
+        $this->signIn()->withExceptionHandling()
+            ->get('/logbook/update?date=invalid-string')
+            ->assertSessionHasErrors('date');
+    }
+
+    /** @test */
     public function the_form_shows_data_already_stored_in_the_database()
     {
         $this->signIn();
+        $date = '1985-02-13';
 
-        // TODO: adapt this test when the function to update the logbook for a specific date
-        // is implemented.
-        $timeslot = Timeslot::custom(Carbon::now()->hour(12));
+        $timeslot = Timeslot::custom(Carbon::parse($date)->hour(12));
 
         $entry = create('App\Logbook\Entry', [
             'visits_count' => 1234567890,
@@ -127,8 +152,8 @@ class CreateLogbookEntryTest extends TestCase
             'end_time' => $timeslot->end()
             ]);
 
-        $this->get('/logbook/update')
-        ->assertSee((string) $entry->visits_count);
+        $this->get('/logbook/update?date=' . $date)
+            ->assertSee('value="' . $entry->visits_count . '"');
     }
 
     /** @test */

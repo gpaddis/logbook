@@ -9,10 +9,10 @@
 
       <div class="card-body">
         {{-- TODO: implement the functionality. --}}
-        <form class="form-inline" method="GET" action="{{ route('logbook.create') }}">
+        <form class="form-inline" method="GET" action="{{ route('logbook.update') }}">
           <div class="form-group">
             <label class="sr-only" for="date">Pick a date:</label>
-            <input type="date" class="form-control" id="date" name="date" max="{{ Carbon\Carbon::now()->toDateString() }}">
+            <input type="date" class="form-control" id="date" name="date" max="{{ Carbon\Carbon::now()->toDateString() }}" value="{{ Carbon\Carbon::now()->toDateString() }}">
           </div>
           <button type="submit" class="btn btn-primary">Update the Logbook</button>
         </form>
