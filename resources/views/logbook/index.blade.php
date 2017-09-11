@@ -8,7 +8,6 @@
       <div class="card-header">Logbook Index</div>
 
       <div class="card-body">
-        {{-- TODO: implement the functionality. --}}
         <form class="form-inline" method="GET" action="{{ route('logbook.update') }}">
           <div class="form-group">
             <label class="sr-only" for="date">Pick a date:</label>

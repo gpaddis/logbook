@@ -25,7 +25,7 @@ class EntryController extends Controller
      */
     public function index()
     {
-        $entries = Entry::with('patron_category')->get();
+        $entries = Entry::with('patron_category')->latest()->get();
 
         return view('logbook.index', compact('entries'));
     }
