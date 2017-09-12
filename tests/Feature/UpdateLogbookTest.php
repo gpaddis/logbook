@@ -63,7 +63,7 @@ class UpdateLogbookTest extends TestCase
     {
         $this->withExceptionHandling()->signIn();
 
-        $entry = make('App\Logbook\Entry', ['visits_count' => null]);
+        $entry = make('App\Logbook\Entry', ['visits' => null]);
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
         ->assertSessionHasErrors('empty-form');
@@ -74,10 +74,10 @@ class UpdateLogbookTest extends TestCase
     {
         $this->withExceptionHandling()->signIn();
 
-        $entry = make('App\Logbook\Entry', ['visits_count' => -999]);
+        $entry = make('App\Logbook\Entry', ['visits' => -999]);
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-        ->assertSessionHasErrors('entry.*.visits_count');
+        ->assertSessionHasErrors('entry.*.visits');
     }
 
     /** @test */
@@ -85,10 +85,10 @@ class UpdateLogbookTest extends TestCase
     {
         $this->withExceptionHandling()->signIn();
 
-        $entry = make('App\Logbook\Entry', ['visits_count' => 99999999999999]);
+        $entry = make('App\Logbook\Entry', ['visits' => 99999999999999]);
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-        ->assertSessionHasErrors('entry.*.visits_count');
+        ->assertSessionHasErrors('entry.*.visits');
     }
 
     /** @test */
@@ -147,13 +147,13 @@ class UpdateLogbookTest extends TestCase
         $timeslot = Timeslot::custom(Carbon::parse($date)->hour(12));
 
         $entry = create('App\Logbook\Entry', [
-            'visits_count' => 1234567890,
+            'visits' => 1234567890,
             'start_time' => $timeslot->start(),
             'end_time' => $timeslot->end()
             ]);
 
         $this->get('/logbook/update?date=' . $date)
-            ->assertSee('value="' . $entry->visits_count . '"');
+            ->assertSee('value="' . $entry->visits . '"');
     }
 
     /** @test */
@@ -166,7 +166,7 @@ class UpdateLogbookTest extends TestCase
             'start_time' => $storedEntry->start_time,
             'end_time' => $storedEntry->end_time,
             'patron_category_id' => $storedEntry->patron_category_id,
-            'visits_count' => 0
+            'visits' => 0
             ]);
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $zeroEntry->toArray()]]);
@@ -178,7 +178,7 @@ class UpdateLogbookTest extends TestCase
     {
         $this->signIn()->withExceptionHandling();
 
-        $zeroEntry = make('App\Logbook\Entry', ['visits_count' => 0]);
+        $zeroEntry = make('App\Logbook\Entry', ['visits' => 0]);
         $response = $this->post('/logbook', ['entry' => ['any_entry_id' => $zeroEntry->toArray()]]);
 
         $this->assertEquals(null, Entry::where('start_time', $zeroEntry->start_time)->first());

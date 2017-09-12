@@ -37,7 +37,7 @@ class PatronCategory extends Model
      *
      * @var array
      */
-    // protected $with = ['current_visits_count'];
+    // protected $with = ['current_visits'];
 
     /**
      * Scope a query to only include active patron categories.
@@ -103,7 +103,7 @@ class PatronCategory extends Model
     {
         if ($this->hasVisited($timeslot))
         {
-            return $this->logbookEntries()->withinTimeslot($timeslot)->first()->visits_count;
+            return $this->logbookEntries()->withinTimeslot($timeslot)->first()->visits;
         }
 
         return 0;

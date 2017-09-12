@@ -68,11 +68,11 @@
 
                   <div class="form-group">
                     <input type="number" class="form-control form-control-sm
-                    {{ $errors->has('entry.' . entry_id($timeslot, $category) . '.visits_count') ? ' is-invalid' : '' }}"
-                    id="entry[{{ entry_id($timeslot, $category) }}][visits_count]"
-                    name="entry[{{ entry_id($timeslot, $category) }}][visits_count]"
+                    {{ $errors->has('entry.' . entry_id($timeslot, $category) . '.visits') ? ' is-invalid' : '' }}"
+                    id="entry[{{ entry_id($timeslot, $category) }}][visits]"
+                    name="entry[{{ entry_id($timeslot, $category) }}][visits]"
                     {{-- Retrieve existing values for the single fields or get the old request value --}}
-                    value="{{ $category->logbookEntries->where('start_time', $timeslot->start())->first()->visits_count or old('entry.' . entry_id($timeslot, $category) . '.visits_count') }}">
+                    value="{{ $category->logbookEntries->where('start_time', $timeslot->start())->first()->visits or old('entry.' . entry_id($timeslot, $category) . '.visits') }}">
                   </div>
                 </td>
                 @endforeach

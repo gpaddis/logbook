@@ -19,7 +19,7 @@ class Entry extends Model
     'start_time',
     'end_time',
     'patron_category_id',
-    'visits_count'
+    'visits'
     ];
 
     /**
@@ -47,9 +47,9 @@ class Entry extends Model
      */
     public static function updateOrCreateIfNotNull(array $entry)
     {
-        if($entry['visits_count'] == 0) return static::deleteZeroes($entry);
+        if($entry['visits'] == 0) return static::deleteZeroes($entry);
 
-        if ($entry['visits_count'] !== null) {
+        if ($entry['visits'] !== null) {
             Entry::updateOrCreate(
                 [
                 'start_time' => $entry['start_time'],
@@ -57,7 +57,7 @@ class Entry extends Model
                 'patron_category_id' => $entry['patron_category_id']
                 ],
                 [
-                'visits_count' => $entry['visits_count']
+                'visits' => $entry['visits']
                 ]);
         }
     }
@@ -93,10 +93,10 @@ class Entry extends Model
         ->where('patron_category_id', $patron_category_id)
         ->first();
 
-        $visits_count = 0;
+        $visits = 0;
 
         if ($existingEntry) {
-            $visits_count = $existingEntry->visits_count;
+            $visits = $existingEntry->visits;
         }
 
         Entry::updateOrCreate([
@@ -105,7 +105,7 @@ class Entry extends Model
             'patron_category_id' => $patron_category_id
             ],
             [
-            'visits_count' => ++$visits_count
+            'visits' => ++$visits
             ]);
     }
 
@@ -118,12 +118,12 @@ class Entry extends Model
 
         if ($entry == null) return;
 
-        if ($entry->visits_count <= 1) {
+        if ($entry->visits <= 1) {
             $entry->delete();
             return;
         }
 
-        $entry->visits_count -= 1;
+        $entry->visits -= 1;
         $entry->save();
     }
 

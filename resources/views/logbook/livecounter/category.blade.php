@@ -6,7 +6,7 @@
     </h4>
     <div class="card-body text-center">
       <h2 class="display-2 text-center">
-        {{ $category->logbookEntries->first()->visits_count or '0'}} {{-- If there is a logbook entry retrieve the visits count, otherwise 0. --}}
+        {{ $category->logbookEntries->first()->visits or '0'}} {{-- If there is a logbook entry retrieve the visits count, otherwise 0. --}}
       </h2>
       <div class="card-footer">
         <div>

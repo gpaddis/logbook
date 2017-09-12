@@ -48,6 +48,6 @@ $factory->define(App\Logbook\Entry::class, function (Faker\Generator $faker) {
         'patron_category_id' => function () {
             return factory('App\PatronCategory')->create()->id;
         },
-        'visits_count' => $faker->randomDigitNotNull,
+        'visits' => $faker->randomDigitNotNull,
     ];
 });

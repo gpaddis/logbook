@@ -22,7 +22,7 @@ class ReadLogbookEntryTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $entry->end_time);
 
         // The count is an integer
-        $this->assertInternalType("int", $entry->visits_count);
+        $this->assertInternalType("int", $entry->visits);
 
         // The patron category just created is persisted in the database
         $patronCategory = \App\PatronCategory::first();
@@ -38,7 +38,7 @@ class ReadLogbookEntryTest extends TestCase
 
         $result = Entry::withinTimeslot(Timeslot::now())->first();
 
-        $this->assertEquals($entry->visits_count, $result->visits_count);
+        $this->assertEquals($entry->visits, $result->visits);
     }
 
     // /** @test */
@@ -53,6 +53,6 @@ class ReadLogbookEntryTest extends TestCase
     //     // If no timeslot is passed as second argument, the timeslot is now.
     //     $result = Entry::withinTimeslotAndPatronCategory($patronCategoryOne)->first();
 
-    //     $this->assertEquals($entryWithPatronCategoryOne->visits_count, $result->visits_count);
+    //     $this->assertEquals($entryWithPatronCategoryOne->visits, $result->visits);
     // }
 }

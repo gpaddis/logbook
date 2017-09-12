@@ -28,7 +28,7 @@ class LiveCounterTest extends TestCase
 
         // Check whether the data was stored correctly
         $this->assertEquals($patronCategory->id, $entry->patron_category_id);
-        $this->assertEquals(1, $entry->visits_count);
+        $this->assertEquals(1, $entry->visits);
         $this->assertEquals($timeslot->start(), $entry->start_time);
         $this->assertEquals($timeslot->end(), $entry->end_time);
     }
@@ -99,7 +99,7 @@ class LiveCounterTest extends TestCase
             ]);
 
         $this->get('logbook/livecounter')
-            ->assertSee((string) $entry->visits_count);
+            ->assertSee((string) $entry->visits);
     }
 
     /** @test */
@@ -110,7 +110,7 @@ class LiveCounterTest extends TestCase
 
         Entry::add($patron_category_id, $timeslot);
 
-        $this->assertEquals(1, Entry::first()->visits_count);
+        $this->assertEquals(1, Entry::first()->visits);
     }
 
     /** @test */
@@ -124,7 +124,7 @@ class LiveCounterTest extends TestCase
 
         Entry::add($existingEntry->patron_category_id, $timeslot);
 
-        $this->assertEquals($existingEntry->visits_count + 1, Entry::first()->visits_count);
+        $this->assertEquals($existingEntry->visits + 1, Entry::first()->visits);
     }
 
     /** @test */
@@ -134,12 +134,12 @@ class LiveCounterTest extends TestCase
         $existingEntry = create('App\Logbook\Entry', [
             'start_time' => $timeslot->start(),
             'end_time' => $timeslot->end(),
-            'visits_count' => 6
+            'visits' => 6
             ]);
 
         Entry::subtract($existingEntry->patron_category_id, $timeslot);
 
-        $this->assertEquals($existingEntry->visits_count - 1, Entry::first()->visits_count);
+        $this->assertEquals($existingEntry->visits - 1, Entry::first()->visits);
     }
 
     /** @test */
@@ -149,7 +149,7 @@ class LiveCounterTest extends TestCase
         $existingEntry = create('App\Logbook\Entry', [
             'start_time' => $timeslot->start(),
             'end_time' => $timeslot->end(),
-            'visits_count' => 1
+            'visits' => 1
             ]);
 
         Entry::subtract($existingEntry->patron_category_id, $timeslot);
@@ -164,7 +164,7 @@ class LiveCounterTest extends TestCase
         $existingEntry = create('App\Logbook\Entry', [
             'start_time' => $timeslot->start(),
             'end_time' => $timeslot->end(),
-            'visits_count' => 0
+            'visits' => 0
             ]);
 
         Entry::subtract($existingEntry->patron_category_id, $timeslot);
