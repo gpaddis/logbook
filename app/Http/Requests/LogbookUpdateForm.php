@@ -55,7 +55,7 @@ class LogbookUpdateForm extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            if ($this->filled() === false) {
+            if ($this->wasFilled() === false) {
                 $validator->errors()->add('empty-form', 'You cannot submit an empty form.');
             }
         });
@@ -66,7 +66,7 @@ class LogbookUpdateForm extends FormRequest
      *
      * @return bool
      */
-    public function filled()
+    public function wasFilled()
     {
         $fieldsFilled = 0;
 
