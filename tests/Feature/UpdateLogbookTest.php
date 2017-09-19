@@ -142,9 +142,8 @@ class UpdateLogbookTest extends TestCase
     public function the_form_shows_data_already_stored_in_the_database()
     {
         $this->signIn();
-        $date = '1985-02-13';
 
-        $timeslot = Timeslot::create(Carbon::parse($date)->hour(12));
+        $timeslot = Timeslot::create('1985-02-13 12:00:00');
 
         $entry = create('App\Logbook\Entry', [
             'visits' => 1234567890,
@@ -152,7 +151,7 @@ class UpdateLogbookTest extends TestCase
             'end_time' => $timeslot->end()
             ]);
 
-        $this->get('/logbook/update?date=' . $date)
+        $this->get('/logbook/update?date=1985-02-13')
             ->assertSee('value="' . $entry->visits . '"');
     }
 
