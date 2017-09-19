@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use Carbon\Carbon;
 use Tests\TestCase;
-use App\Timeslot;
+use Timeslot\Timeslot;
 use App\Logbook\Entry;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 

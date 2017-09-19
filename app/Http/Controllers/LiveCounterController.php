@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Timeslot;
 use App\Logbook\Entry;
+use Timeslot\Timeslot;
 use App\PatronCategory;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -28,7 +28,7 @@ class LiveCounterController extends Controller
     {
         $patron_categories = PatronCategory::active()
             ->with(['logbookEntries' => function ($query) {
-            $query->where('start_time', \App\Timeslot::now()->start());
+            $query->where('start_time', Timeslot::now()->start());
             }])->orderBy('is_primary', 'desc')->get();
         // return $patron_categories;
 

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Timeslot;
+use Timeslot\Timeslot;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Logbook\Entry;
@@ -28,7 +28,7 @@ class UpdateLogbookTest extends TestCase
     {
         $this->signIn();
 
-        $timeslot = Timeslot::now()->addHour();
+        $timeslot = Timeslot::after(Timeslot::now());
 
         $entry1 = make('App\Logbook\Entry');
         $entry2 = make('App\Logbook\Entry', [
@@ -112,7 +112,7 @@ class UpdateLogbookTest extends TestCase
     {
         $this->withExceptionHandling()->signIn();
 
-        $timeslot = Timeslot::custom(Carbon::tomorrow());
+        $timeslot = Timeslot::create(Carbon::tomorrow());
 
         $entry = make('App\Logbook\Entry', [
             'start_time' => $timeslot->start(),
@@ -144,7 +144,7 @@ class UpdateLogbookTest extends TestCase
         $this->signIn();
         $date = '1985-02-13';
 
-        $timeslot = Timeslot::custom(Carbon::parse($date)->hour(12));
+        $timeslot = Timeslot::create(Carbon::parse($date)->hour(12));
 
         $entry = create('App\Logbook\Entry', [
             'visits' => 1234567890,

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Timeslot;
+use Timeslot\Timeslot;
 use Tests\TestCase;
 use App\Logbook\Entry;
 use Illuminate\Foundation\Testing\DatabaseMigrations;

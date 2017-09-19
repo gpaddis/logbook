@@ -5,7 +5,7 @@
 <div class="row">
   <div class="col">
     <div class="card">
-      <div class="card-header">Update the logbook for {{ $timeslots[0]->start()->toFormattedDateString() }}</div>
+      <div class="card-header">Update the logbook for {{ $timeslots->start()->toFormattedDateString() }}</div>
 
       {{-- Start main if clause --}}
       @if($patron_categories->isEmpty())
@@ -28,7 +28,7 @@
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
-              <strong>Be careful:</strong> You already saved some data for {{ $timeslots[0]->start()->toFormattedDateString() }} in the logbook. Check the values in the table below.
+              <strong>Be careful:</strong> You already saved some data for {{ $timeslots->start()->toFormattedDateString() }} in the logbook. Check the values in the table below.
             </div>
           </div>
         </div>
