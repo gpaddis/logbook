@@ -17,7 +17,7 @@ class CreateLogbookEntriesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('patron_category_id');
             $table->dateTime('visited_at');
-            $table->dateTime('created_at');
+            $table->dateTime('recorded_at');
 
             $table->foreign('patron_category_id')
                 ->references('id')->on('patron_categories')
