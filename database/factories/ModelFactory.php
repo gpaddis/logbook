@@ -51,3 +51,13 @@ $factory->define(App\Logbook\Entry::class, function (Faker\Generator $faker) {
         'visits' => $faker->randomDigitNotNull,
     ];
 });
+
+$factory->define(App\LogbookEntry::class, function (Faker\Generator $faker) {
+    return [
+        'patron_category_id' => function () {
+            return factory('App\PatronCategory')->create()->id;
+        },
+        'visited_at' => \Timeslot\Timeslot::now()->start(),
+        'created_at' => \Timeslot\Timeslot::now()->start(),
+    ];
+});
