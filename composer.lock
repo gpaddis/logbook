@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "5789b58638026c2020c7e28fcf438094",
+    "content-hash": "5cccfa921fabc32482bbe1644e626e75",
     "packages": [
         {
             "name": "barryvdh/laravel-debugbar",
@@ -307,6 +307,45 @@
                 "parser"
             ],
             "time": "2017-05-14T14:47:48+00:00"
+        },
+        {
+            "name": "gpaddis/timeslot",
+            "version": "v0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gpaddis/timeslot.git",
+                "reference": "bd0e18d6e412b7a3ae35338aa834b124b2f75197"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gpaddis/timeslot/zipball/bd0e18d6e412b7a3ae35338aa834b124b2f75197",
+                "reference": "bd0e18d6e412b7a3ae35338aa834b124b2f75197",
+                "shasum": ""
+            },
+            "require": {
+                "nesbot/carbon": "^1.22"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Timeslot\\": "src/Timeslot/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gianpiero Addis",
+                    "email": "gianpiero.addis@gmail.com"
+                }
+            ],
+            "description": "A PHP library for managing timeslots.",
+            "time": "2017-09-19T10:46:38+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",

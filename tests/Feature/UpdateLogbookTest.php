@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Timeslot;
+use Timeslot\Timeslot;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Logbook\Entry;
@@ -28,7 +28,7 @@ class UpdateLogbookTest extends TestCase
     {
         $this->signIn();
 
-        $timeslot = Timeslot::now()->addHour();
+        $timeslot = Timeslot::after(Timeslot::now());
 
         $entry1 = make('App\Logbook\Entry');
         $entry2 = make('App\Logbook\Entry', [
@@ -112,7 +112,7 @@ class UpdateLogbookTest extends TestCase
     {
         $this->withExceptionHandling()->signIn();
 
-        $timeslot = Timeslot::custom(Carbon::tomorrow());
+        $timeslot = Timeslot::create(Carbon::tomorrow());
 
         $entry = make('App\Logbook\Entry', [
             'start_time' => $timeslot->start(),
@@ -142,9 +142,8 @@ class UpdateLogbookTest extends TestCase
     public function the_form_shows_data_already_stored_in_the_database()
     {
         $this->signIn();
-        $date = '1985-02-13';
 
-        $timeslot = Timeslot::custom(Carbon::parse($date)->hour(12));
+        $timeslot = Timeslot::create('1985-02-13 12:00:00');
 
         $entry = create('App\Logbook\Entry', [
             'visits' => 1234567890,
@@ -152,7 +151,7 @@ class UpdateLogbookTest extends TestCase
             'end_time' => $timeslot->end()
             ]);
 
-        $this->get('/logbook/update?date=' . $date)
+        $this->get('/logbook/update?date=1985-02-13')
             ->assertSee('value="' . $entry->visits . '"');
     }
 

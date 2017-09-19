@@ -43,8 +43,8 @@ $factory->define(App\RequestCategory::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Logbook\Entry::class, function (Faker\Generator $faker) {
     return [
-        'start_time' => \App\Timeslot::now()->start(),
-        'end_time' => \App\Timeslot::now()->end(),
+        'start_time' => \Timeslot\Timeslot::now()->start(),
+        'end_time' => \Timeslot\Timeslot::now()->end(),
         'patron_category_id' => function () {
             return factory('App\PatronCategory')->create()->id;
         },

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Logbook\Entry;
+use Timeslot\Timeslot;
 use App\PatronCategory;
 use Illuminate\Http\Request;
+use Timeslot\TimeslotCollection;
 use App\Http\Requests\LogbookUpdateForm;
 
 class EntryController extends Controller
@@ -38,9 +40,9 @@ class EntryController extends Controller
     public function update(Request $request)
     {
         $today = Carbon::now()->toDateString();
-        
+
         $this->validate($request, [
-            'date' => 'date|before_or_equal:' . $today 
+            'date' => 'date|before_or_equal:' . $today
             ]);
 
         // Fetch date from the request or default to today if no date is passed.
@@ -48,9 +50,9 @@ class EntryController extends Controller
 
         // TODO: fetch opening time from application settings
         $opening_time = Carbon::parse($date)->hour(11)->minute(0)->second(0);
-        $timeslots = \App\TimeslotCollection::make($opening_time, 5)->getCollection();
+        $timeslots = TimeslotCollection::create(Timeslot::create($opening_time), 5);
 
-        $patron_categories = \App\PatronCategory::active()->with(['logbookEntries' => function ($query) use ($opening_time) {
+        $patron_categories = PatronCategory::active()->with(['logbookEntries' => function ($query) use ($opening_time) {
             $query->whereDate('start_time', $opening_time->toDateString());
         }])->get();
 

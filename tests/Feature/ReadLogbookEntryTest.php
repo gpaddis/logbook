@@ -4,8 +4,9 @@ namespace Tests\Feature;
 
 use Carbon\Carbon;
 use Tests\TestCase;
-use App\Timeslot;
 use App\Logbook\Entry;
+use Timeslot\Timeslot;
+use App\PatronCategory;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class ReadLogbookEntryTest extends TestCase
@@ -25,7 +26,7 @@ class ReadLogbookEntryTest extends TestCase
         $this->assertInternalType("int", $entry->visits);
 
         // The patron category just created is persisted in the database
-        $patronCategory = \App\PatronCategory::first();
+        $patronCategory = PatronCategory::first();
 
         $this->assertEquals($patronCategory->id, $entry->patron_category_id);
     }
