@@ -26,7 +26,8 @@ class LogbookUpdateForm extends FormRequest
     public function rules()
     {
         return [
-        'entry.*.visited_at' => 'required|date|before_or_equal:' . Carbon::now()->toDateTimeString(),
+        'entry.*.start_time' => 'required|date|before_or_equal:' . Carbon::now()->toDateTimeString(),
+        'entry.*.end_time' => 'required|date|after:start_time',
         'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
         'entry.*.visits' => 'integer|min:0',
         ];
@@ -82,12 +83,13 @@ class LogbookUpdateForm extends FormRequest
      */
     public function persist()
     {
+        // TODO: refactor this mess
         foreach ($this->input('entry.*') as $entry) {
             if ($entry['visits'] > 0) {
                 for ($i = 0; $i < $entry['visits']; $i++) {
                     LogbookEntry::create([
                         'patron_category_id' => $entry['patron_category_id'],
-                        'visited_at' => $entry['visited_at'],
+                        'visited_at' => $entry['start_time'],
                         'recorded_at' => Carbon::now()
                         ]);
                 }

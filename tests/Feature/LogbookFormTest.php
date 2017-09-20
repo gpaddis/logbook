@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\LogbookEntry;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,14 +28,16 @@ class LogbookFormTest extends TestCase
         create('App\PatronCategory', [], 2);
 
         $entry1 = [
+        'start_time' => '2017-08-21 12:00:00',
+        'end_time' => '2017-08-21 13:00:00',
         'patron_category_id' => 1,
-        'visited_at' => '2017-08-21 12:00:00',
         'visits' => 8
         ];
 
         $entry2 = [
+        'start_time' => '2017-08-21 12:00:00',
+        'end_time' => '2017-08-21 13:00:00',
         'patron_category_id' => 2,
-        'visited_at' => '2017-08-21 13:00:00',
         'visits' => 2
         ];
 
@@ -67,8 +70,9 @@ class LogbookFormTest extends TestCase
         $this->withExceptionHandling()->signIn();
 
         $entry = [
+        'start_time' => '2017-08-21 12:00:00',
+        'end_time' => '2017-08-21 13:00:00',
         'patron_category_id' => 1,
-        'visited_at' => '2017-08-21 12:00:00',
         'visits' => null
         ];
 
@@ -82,12 +86,29 @@ class LogbookFormTest extends TestCase
         $this->withExceptionHandling()->signIn();
 
         $entry = [
-        'patron_category_id' => make('App\PatronCategory')->id,
-        'visited_at' => '2017-08-21 12:00:00',
+        'start_time' => '2017-08-21 12:00:00',
+        'end_time' => '2017-08-21 13:00:00',
+        'patron_category_id' => create('App\PatronCategory')->id,
         'visits' => -999
         ];
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry]])
         ->assertSessionHasErrors('entry.*.visits');
+    }
+
+    /** @test */
+    public function it_does_not_pass_validation_if_visited_at_is_in_the_future()
+    {
+        $this->withExceptionHandling()->signIn();
+
+        $entry = [
+        'start_time' => Carbon::now()->addHour(),
+        'end_time' => Carbon::now()->addHours(2),
+        'patron_category_id' => create('App\PatronCategory')->id,
+        'visits' => null
+        ];
+
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry]])
+        ->assertSessionHasErrors('entry.*.start_time');
     }
 }
