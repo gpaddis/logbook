@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -21,7 +22,9 @@ class LiveCounterTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('logbook_entries', [
-            'patron_category_id' => $patronCategory->id
+            'patron_category_id' => $patronCategory->id,
+            'visited_at' => Carbon::now(),
+            'recorded_at' => Carbon::now()
             ]);
     }
 }
