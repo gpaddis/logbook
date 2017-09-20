@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Timeslot\Timeslot;
-use Carbon\Carbon;
 use Tests\TestCase;
 use App\Logbook\Entry;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -50,37 +49,6 @@ class UpdateLogbookTest extends TestCase
     }
 
     /** @test */
-    public function it_displays_a_warning_if_there_are_no_active_patron_categories()
-    {
-        $this->signIn();
-
-        $this->get('/logbook/update')
-        ->assertSee('It looks like there are no active patron categories yet');
-    }
-
-    /** @test */
-    public function it_cannot_submit_an_empty_form()
-    {
-        $this->withExceptionHandling()->signIn();
-
-        $entry = make('App\Logbook\Entry', ['visits' => null]);
-
-        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-        ->assertSessionHasErrors('empty-form');
-    }
-
-    /** @test */
-    public function the_count_value_must_be_a_valid_positive_integer()
-    {
-        $this->withExceptionHandling()->signIn();
-
-        $entry = make('App\Logbook\Entry', ['visits' => -999]);
-
-        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-        ->assertSessionHasErrors('entry.*.visits');
-    }
-
-    /** @test */
     public function the_count_value_must_be_less_or_equal_to_65535()
     {
         $this->withExceptionHandling()->signIn();
@@ -89,38 +57,6 @@ class UpdateLogbookTest extends TestCase
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
         ->assertSessionHasErrors('entry.*.visits');
-    }
-
-    /** @test */
-    public function start_time_and_end_time_must_be_different()
-    {
-        $this->withExceptionHandling()->signIn();
-
-        $now = Carbon::now();
-
-        $entry = make('App\Logbook\Entry', [
-            'start_time' => $now,
-            'end_time' => $now
-            ]);
-
-        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-        ->assertSessionHasErrors('entry.*.end_time');
-    }
-
-    /** @test */
-    public function the_start_date_cannot_be_in_the_future()
-    {
-        $this->withExceptionHandling()->signIn();
-
-        $timeslot = Timeslot::create(Carbon::tomorrow());
-
-        $entry = make('App\Logbook\Entry', [
-            'start_time' => $timeslot->start(),
-            'end_time' => $timeslot->end()
-            ]);
-
-        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-        ->assertSessionHasErrors('entry.*.start_time');
     }
 
     /** @test */

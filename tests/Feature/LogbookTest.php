@@ -36,11 +36,13 @@ class LogbookTest extends TestCase
     {
         $this->withExceptionHandling()->signIn();
 
-        $entry = make('App\LogbookEntry', [
-            'visited_at' => Carbon::now()->addMinute(),
-            ]);
+        $entry = [
+        'patron_category_id' => create('App\PatronCategory')->id,
+        'visited_at' => Carbon::now()->addMinute(),
+        'visits' => 1
+        ];
 
-        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry]])
         ->assertSessionHasErrors('entry.*.visited_at');
     }
 }
