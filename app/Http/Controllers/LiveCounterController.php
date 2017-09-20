@@ -66,6 +66,12 @@ class LiveCounterController extends Controller
         return redirect()->route('livecounter.index');
     }
 
+    /**
+     * Add an entry to the database for the patron category sent
+     * with the request
+     *
+     * @param Illuminate\Http\Request $request
+     */
     public function add(Request $request)
     {
         $this->validate($request, [
@@ -77,6 +83,26 @@ class LiveCounterController extends Controller
             'visited_at' => Carbon::now(),
             'recorded_at' => Carbon::now()
             ]);
+
+        return redirect()->route('livecounter.index');
+    }
+
+    /**
+     * Remove the most recent entry in the database for the patron category
+     * sent with the request
+     *
+     * @param Illuminate\Http\Request $request
+     */
+    public function subtract(Request $request)
+    {
+        $this->validate($request, [
+            'patron_category_id' => 'required|exists:patron_categories,id',
+            ]);
+
+        LogbookEntry::where('patron_category_id', request('patron_category_id'))
+        ->orderBy('recorded_at', 'desc')
+        ->first()
+        ->delete();
 
         return redirect()->route('livecounter.index');
     }
