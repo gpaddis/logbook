@@ -12,54 +12,6 @@ class UpdateLogbookTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
-    public function an_unauthenticated_user_cannot_create_logbook_entries()
-    {
-        $this->withExceptionHandling();
-
-        $entry = make('App\Logbook\Entry');
-
-        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-        ->assertRedirect('/login');
-    }
-
-    /** @test */
-    public function an_authenticated_user_can_create_logbook_entries()
-    {
-        $this->signIn();
-
-        $timeslot = Timeslot::after(Timeslot::now());
-
-        $entry1 = make('App\Logbook\Entry');
-        $entry2 = make('App\Logbook\Entry', [
-            'start_time' => $timeslot->start(),
-            'end_time' => $timeslot->end(),
-            ]);
-
-        $response = $this->post('/logbook', ['entry' => [
-            'any_entry_id' => $entry1->toArray(),
-            'another_entry_id' => $entry2->toArray()
-            ]]);
-
-        // TODO: This should assert that the date and count are visible on the /logbook/show?day=yyyy-mm-dd page
-        $this->get('/logbook')
-        ->assertSee($entry1->start_time->toDateString())
-        ->assertSee($entry1->patron_category->name)
-        ->assertSee($entry2->start_time->toDateString())
-        ->assertSee($entry2->patron_category->name);
-    }
-
-    /** @test */
-    public function the_count_value_must_be_less_or_equal_to_65535()
-    {
-        $this->withExceptionHandling()->signIn();
-
-        $entry = make('App\Logbook\Entry', ['visits' => 99999999999999]);
-
-        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
-        ->assertSessionHasErrors('entry.*.visits');
-    }
-
-    /** @test */
     public function it_displays_the_form_for_the_date_requested()
     {
         $this->signIn()->get('/logbook/update?date=2017-08-18')

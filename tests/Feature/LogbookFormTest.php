@@ -11,6 +11,15 @@ class LogbookFormTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function an_unauthenticated_user_cannot_create_logbook_entries()
+    {
+        $this->withExceptionHandling();
+
+        $this->post('/logbook', ['anything'])
+        ->assertRedirect('/login');
+    }
+
+    /** @test */
     public function it_persists_several_logbook_entries_simultaneously()
     {
         $this->signIn();
