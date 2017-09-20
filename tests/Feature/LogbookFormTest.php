@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\LogbookEntry;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LogbookFormTest extends TestCase
@@ -39,5 +40,6 @@ class LogbookFormTest extends TestCase
         $this->assertDatabaseHas('logbook_entries', [
             'patron_category_id' => $entry2['patron_category_id']
             ]);
+        $this->assertCount(10, LogbookEntry::all());
     }
 }
