@@ -13,7 +13,7 @@ class UpdateLogbookTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
-    function an_unauthenticated_user_cannot_create_logbook_entries()
+    public function an_unauthenticated_user_cannot_create_logbook_entries()
     {
         $this->withExceptionHandling();
 

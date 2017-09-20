@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
+use Carbon\Carbon;
 use Tests\TestCase;
-use Timeslot\Timeslot;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LogbookTest extends TestCase
@@ -11,7 +11,7 @@ class LogbookTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    function an_unauthenticated_user_cannot_create_logbook_entries()
+    public function an_unauthenticated_user_cannot_create_logbook_entries()
     {
         $this->withExceptionHandling();
 
@@ -29,5 +29,18 @@ class LogbookTest extends TestCase
         $entry = create('App\LogbookEntry');
 
         $this->assertDatabaseHas('logbook_entries', $entry->toArray());
+    }
+
+    /** @test */
+    public function it_does_not_pass_validation_if_visited_at_is_in_the_future()
+    {
+        $this->withExceptionHandling()->signIn();
+
+        $entry = make('App\LogbookEntry', [
+            'visited_at' => Carbon::now()->addMinute(),
+            ]);
+
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry->toArray()]])
+        ->assertSessionHasErrors('entry.*.visited_at');
     }
 }

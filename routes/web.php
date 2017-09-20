@@ -13,7 +13,7 @@ Route::get('/home', 'HomeController@index')->name('home');
  */
 Route::get('/logbook', 'EntryController@index')->name('logbook.index');
 Route::get('/logbook/update', 'EntryController@update')->name('logbook.update');
-Route::post('/logbook', 'EntryController@store');
+Route::post('/logbook', 'LogbookEntryController@store');
 
 /**
  * Live Counter

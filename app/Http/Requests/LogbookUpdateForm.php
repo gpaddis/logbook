@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Logbook\Entry;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LogbookUpdateForm extends FormRequest
@@ -25,10 +25,8 @@ class LogbookUpdateForm extends FormRequest
     public function rules()
     {
         return [
-        'entry.*.start_time' => 'required|date|before:' . \Carbon\Carbon::tomorrow()->toDateString(),
-        'entry.*.end_time' => 'required|date|after:entry.*.start_time',
+        'entry.*.visited_at' => 'required|date|before_or_equal:' . Carbon::now()->toDateTimeString(),
         'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
-        'entry.*.visits' => 'nullable|integer|min:0|max:65535'
         ];
     }
 
@@ -40,9 +38,7 @@ class LogbookUpdateForm extends FormRequest
     public function messages()
     {
         return [
-        'min' => 'The count must be a positive number. Correct the fields in red and try again.',
-        'max' => 'Either your library is a stadium or you entered a wrong visits count. Correct the fields in red and try again.',
-        'before' => 'You cannot save a logbook entry for the future.'
+        'before_or_equal' => 'You cannot save a logbook entry in the future.'
         ];
     }
 
@@ -52,40 +48,40 @@ class LogbookUpdateForm extends FormRequest
      * @param  \Illuminate\Validation\Validator  $validator
      * @return void
      */
-    public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            if ($this->wasFilled() === false) {
-                $validator->errors()->add('empty-form', 'You cannot submit an empty form.');
-            }
-        });
-    }
+    // public function withValidator($validator)
+    // {
+    //     $validator->after(function ($validator) {
+    //         if ($this->wasFilled() === false) {
+    //             $validator->errors()->add('empty-form', 'You cannot submit an empty form.');
+    //         }
+    //     });
+    // }
 
     /**
      * Check if at least one value was typed in.
      *
      * @return bool
      */
-    public function wasFilled()
-    {
-        $fieldsFilled = 0;
+    // public function wasFilled()
+    // {
+    //     $fieldsFilled = 0;
 
-        foreach ($this->input('entry.*') as $entry) {
-            $entry['visits'] === null ?: $fieldsFilled++;
-        }
+    //     foreach ($this->input('entry.*') as $entry) {
+    //         $entry['visits'] === null ?: $fieldsFilled++;
+    //     }
 
-        return (bool) $fieldsFilled;
-    }
+    //     return (bool) $fieldsFilled;
+    // }
 
-    /**
-     * Persist non-empty fields in the database.
-     *
-     * @return void
-     */
-    public function persist()
-    {
-        foreach ($this->input('entry.*') as $entry) {
-            Entry::updateOrCreateIfNotNull($entry);
-        }
-    }
+    // /**
+    //  * Persist non-empty fields in the database.
+    //  *
+    //  * @return void
+    //  */
+    // public function persist()
+    // {
+    //     foreach ($this->input('entry.*') as $entry) {
+    //         Entry::updateOrCreateIfNotNull($entry);
+    //     }
+    // }
 }
