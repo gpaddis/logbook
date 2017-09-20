@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\LogbookEntry;
 use App\Logbook\Entry;
 use Timeslot\Timeslot;
 use App\PatronCategory;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Http\Requests\LiveCounterRequest;
 
 class LiveCounterController extends Controller
@@ -28,7 +29,7 @@ class LiveCounterController extends Controller
     {
         $patron_categories = PatronCategory::active()
             ->with(['logbookEntries' => function ($query) {
-            $query->where('start_time', Timeslot::now()->start());
+                $query->where('start_time', Timeslot::now()->start());
             }])->orderBy('is_primary', 'desc')->get();
         // return $patron_categories;
 
@@ -65,49 +66,18 @@ class LiveCounterController extends Controller
         return redirect()->route('livecounter.index');
     }
 
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function add(Request $request)
     {
-        //
-    }
+        $this->validate($request, [
+            'patron_category_id' => 'required|exists:patron_categories,id',
+            ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+        LogbookEntry::create([
+            'patron_category_id' => request('patron_category_id'),
+            'visited_at' => Carbon::now(),
+            'recorded_at' => Carbon::now()
+            ]);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return redirect()->route('livecounter.index');
     }
 }
