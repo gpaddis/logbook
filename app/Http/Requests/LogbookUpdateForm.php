@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Carbon\Carbon;
+use App\LogbookEntry;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LogbookUpdateForm extends FormRequest
@@ -27,6 +28,7 @@ class LogbookUpdateForm extends FormRequest
         return [
         'entry.*.visited_at' => 'required|date|before_or_equal:' . Carbon::now()->toDateTimeString(),
         'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
+        'entry.*.visits' => 'min:0',
         ];
     }
 
@@ -73,15 +75,21 @@ class LogbookUpdateForm extends FormRequest
     //     return (bool) $fieldsFilled;
     // }
 
-    // /**
-    //  * Persist non-empty fields in the database.
-    //  *
-    //  * @return void
-    //  */
-    // public function persist()
-    // {
-    //     foreach ($this->input('entry.*') as $entry) {
-    //         Entry::updateOrCreateIfNotNull($entry);
-    //     }
-    // }
+    /**
+     * Persist non-empty fields in the database.
+     *
+     * @return void
+     */
+    public function persist()
+    {
+        foreach ($this->input('entry.*') as $entry) {
+            for ($i = 0; $i < $entry['visits']; $i++) {
+                LogbookEntry::create([
+                    'patron_category_id' => $entry['patron_category_id'],
+                    'visited_at' => $entry['visited_at'],
+                    'recorded_at' => Carbon::now()
+                ]);
+            }
+        }
+    }
 }

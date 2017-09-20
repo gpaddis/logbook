@@ -35,11 +35,7 @@ class LogbookEntryController extends Controller
      */
     public function store(LogbookUpdateForm $form)
     {
-        LogbookEntry::create([
-            'patron_category_id' => $form->patron_category_id,
-            'visited_at' => $form->visited_at,
-            'recorded_at' => Carbon::now()
-            ]);
+        $form->persist();
 
         return redirect()->route('logbook.index');
     }

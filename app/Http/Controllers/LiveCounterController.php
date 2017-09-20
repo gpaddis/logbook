@@ -37,34 +37,24 @@ class LiveCounterController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(LiveCounterRequest $request)
-    {
-        $timeslot = Timeslot::now();
-        $patron_category_id = $request->input('id');
+    // public function store(LiveCounterRequest $request)
+    // {
+    //     $timeslot = Timeslot::now();
+    //     $patron_category_id = $request->input('id');
 
-        if ($request->input('operation') == 'add') {
-            Entry::add($patron_category_id, $timeslot);
-        } else {
-            Entry::subtract($patron_category_id, $timeslot);
-        }
+    //     if ($request->input('operation') == 'add') {
+    //         Entry::add($patron_category_id, $timeslot);
+    //     } else {
+    //         Entry::subtract($patron_category_id, $timeslot);
+    //     }
 
-        return redirect()->route('livecounter.index');
-    }
+    //     return redirect()->route('livecounter.index');
+    // }
 
     /**
      * Add an entry to the database for the patron category sent

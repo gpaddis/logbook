@@ -33,8 +33,6 @@ class LiveCounterTest extends TestCase
     {
         $this->signIn();
 
-        // Given I have three entries for three differen patron categories stored in the database
-        //
         $patronCategories = create('App\PatronCategory', [], 3);
 
         $entry1 = create('App\LogbookEntry', [
@@ -51,12 +49,10 @@ class LiveCounterTest extends TestCase
                 'recorded_at' => Carbon::now()->addMinute()
             ]);
 
-        // If I send a post request to logbook/livecounter/subtract
         $this->post('/logbook/livecounter/subtract', [
             'patron_category_id' => $patronCategories[1]->id
             ]);
 
-        // The most recent entry chronologically for the given patron category was deleted from the database
         $this->assertDatabaseMissing('logbook_entries', $entry3->toArray());
     }
 }
