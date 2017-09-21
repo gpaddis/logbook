@@ -96,9 +96,7 @@ class LogbookUpdateForm extends FormRequest
             }
 
             if ($entry['visits'] === 0) {
-                // This should be extracted to withinTimeslot()
-                LogbookEntry::where('visited_at', '>=', $entry['start_time'])
-                ->where('visited_at', '<=', $entry['end_time'])
+                LogbookEntry::within($entry['start_time'], $entry['end_time'])
                 ->delete();
             }
         }
