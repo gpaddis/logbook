@@ -44,23 +44,6 @@ class UpdateLogbookTest extends TestCase
     }
 
     /** @test */
-    public function it_deletes_an_entry_if_a_0_is_submitted()
-    {
-        $this->signIn();
-        $storedEntry = create('App\Logbook\Entry');
-
-        $zeroEntry = make('App\Logbook\Entry', [
-            'start_time' => $storedEntry->start_time,
-            'end_time' => $storedEntry->end_time,
-            'patron_category_id' => $storedEntry->patron_category_id,
-            'visits' => 0
-            ]);
-
-        $this->post('/logbook', ['entry' => ['any_entry_id' => $zeroEntry->toArray()]]);
-        $this->assertEquals(null, Entry::where('start_time', $storedEntry->start_time)->first());
-    }
-
-    /** @test */
     public function it_does_nothing_if_we_sumbit_a_0_for_a_nonexisting_entry()
     {
         $this->signIn()->withExceptionHandling();

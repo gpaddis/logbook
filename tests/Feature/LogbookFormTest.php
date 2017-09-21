@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\LogbookEntry;
+use Timeslot\Timeslot;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LogbookFormTest extends TestCase
@@ -110,5 +111,46 @@ class LogbookFormTest extends TestCase
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry]])
         ->assertSessionHasErrors('entry.*.start_time');
+    }
+
+    /** @test */
+    public function it_deletes_all_records_in_a_timeslot_if_0_is_submitted()
+    {
+        $this->signIn();
+
+        // Given I have three existing visits within a given timeslot in the DB
+        $category = create('App\PatronCategory');
+        $timeslot = Timeslot::create('2017-01-12 12:00:00');
+
+        $visitsToDelete = create('App\LogbookEntry', [
+            'patron_category_id' => $category->id,
+            'visited_at' => '2017-01-12 12:08:12',
+            'recorded_at' => '2017-01-12 12:08:12'
+            ], 3);
+
+        // And another visit outside the timeslot
+        $visitToKeep = create('App\LogbookEntry', [
+            'patron_category_id' => $category->id,
+            'visited_at' => '2017-01-12 13:00:00',
+            'recorded_at' => '2017-01-12 13:00:00'
+            ]);
+
+        // When I submit a 0 with the logbook form for the timeslot
+
+        $this->post('/logbook', ['entry' => ['any_entry_id' => [
+            'start_time' => $timeslot->start(),
+            'end_time' => $timeslot->end(),
+            'patron_category_id' => $category->id,
+            'visits' => 0
+            ]]]);
+
+        // The database records within the timeslot are deleted
+        $this->assertDatabaseMissing('logbook_entries', $visitsToDelete->first()->toArray());
+
+        // But the one outside the timeslot still exists
+        $this->assertDatabaseHas('logbook_entries', $visitToKeep->toArray());
+
+        // And there's only one record in the DB
+        $this->assertCount(1, LogbookEntry::all());
     }
 }
