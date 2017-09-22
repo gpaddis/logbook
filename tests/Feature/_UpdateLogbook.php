@@ -11,21 +11,6 @@ class UpdateLogbookTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
-    public function it_displays_the_form_for_the_date_requested()
-    {
-        $this->signIn()->get('/logbook/update?date=2017-08-18')
-            ->assertSee('Update the logbook for Aug 18, 2017');
-    }
-
-    /** @test */
-    public function an_invalid_date_does_not_pass_validation()
-    {
-        $this->signIn()->withExceptionHandling()
-            ->get('/logbook/update?date=invalid-string')
-            ->assertSessionHasErrors('date');
-    }
-
-    /** @test */
     public function the_form_shows_data_already_stored_in_the_database()
     {
         $this->signIn();
