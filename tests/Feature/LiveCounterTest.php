@@ -24,7 +24,7 @@ class LiveCounterTest extends TestCase
         $this->assertDatabaseHas('logbook_entries', [
             'patron_category_id' => $patronCategory->id,
             'visited_at' => Carbon::now(),
-            'recorded_at' => Carbon::now()
+            'recorded_live' => true
             ]);
     }
 
@@ -45,8 +45,7 @@ class LiveCounterTest extends TestCase
 
         $entry3 = create('App\LogbookEntry', [
                 'patron_category_id' => $patronCategories[1]->id,
-                'visited_at' => Carbon::now()->addMinute(),
-                'recorded_at' => Carbon::now()->addMinute()
+                'visited_at' => Carbon::now()->addMinute()
             ]);
 
         $this->post('/logbook/livecounter/subtract', [

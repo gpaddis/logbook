@@ -14,10 +14,10 @@ class CreateLogbookEntriesTable extends Migration
     public function up()
     {
         Schema::create('logbook_entries', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->unsignedInteger('patron_category_id');
             $table->dateTime('visited_at');
-            $table->dateTime('recorded_at');
+            $table->boolean('recorded_live')->default(false);
 
             $table->foreign('patron_category_id')
                 ->references('id')->on('patron_categories')

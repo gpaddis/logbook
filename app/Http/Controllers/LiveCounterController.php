@@ -71,7 +71,7 @@ class LiveCounterController extends Controller
         LogbookEntry::create([
             'patron_category_id' => request('patron_category_id'),
             'visited_at' => Carbon::now(),
-            'recorded_at' => Carbon::now()
+            'recorded_live' => true
             ]);
 
         return redirect()->route('livecounter.index');
@@ -90,7 +90,7 @@ class LiveCounterController extends Controller
             ]);
 
         LogbookEntry::where('patron_category_id', request('patron_category_id'))
-        ->orderBy('recorded_at', 'desc')
+        ->orderBy('visited_at', 'desc')
         ->first()
         ->delete();
 

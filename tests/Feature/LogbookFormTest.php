@@ -125,14 +125,12 @@ class LogbookFormTest extends TestCase
         $visitsToDelete = create('App\LogbookEntry', [
             'patron_category_id' => $category->id,
             'visited_at' => '2017-01-12 12:08:12',
-            'recorded_at' => '2017-01-12 12:08:12'
             ], 3);
 
         // And another visit outside the timeslot
         $visitToKeep = create('App\LogbookEntry', [
             'patron_category_id' => $category->id,
-            'visited_at' => '2017-01-12 13:00:00',
-            'recorded_at' => '2017-01-12 13:00:00'
+            'visited_at' => '2017-01-12 13:00:00'
             ]);
 
         // When I submit a 0 with the logbook form for the timeslot

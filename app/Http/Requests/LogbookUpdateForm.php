@@ -90,7 +90,6 @@ class LogbookUpdateForm extends FormRequest
                     LogbookEntry::create([
                         'patron_category_id' => $entry['patron_category_id'],
                         'visited_at' => $entry['start_time'],
-                        'recorded_at' => Carbon::now()
                         ]);
                 }
             }
