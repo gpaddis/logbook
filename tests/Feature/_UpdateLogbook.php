@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use Timeslot\Timeslot;
 use Tests\TestCase;
-use App\Logbook\Entry;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class UpdateLogbookTest extends TestCase
@@ -41,17 +40,5 @@ class UpdateLogbookTest extends TestCase
 
         $this->get('/logbook/update?date=1985-02-13')
             ->assertSee('value="' . $entry->visits . '"');
-    }
-
-    /** @test */
-    public function it_does_nothing_if_we_sumbit_a_0_for_a_nonexisting_entry()
-    {
-        $this->signIn()->withExceptionHandling();
-
-        $zeroEntry = make('App\Logbook\Entry', ['visits' => 0]);
-        $response = $this->post('/logbook', ['entry' => ['any_entry_id' => $zeroEntry->toArray()]]);
-
-        $this->assertEquals(null, Entry::where('start_time', $zeroEntry->start_time)->first());
-        $response->assertRedirect('/logbook');
     }
 }

@@ -151,4 +151,22 @@ class LogbookFormTest extends TestCase
         // And there's only one record in the DB
         $this->assertCount(1, LogbookEntry::all());
     }
+
+    /** @test */
+    public function it_does_nothing_if_one_submits_a_0_for_a_timeslot_with_no_entries()
+    {
+        $this->signIn()->withExceptionHandling();
+
+        $entry = [
+        'start_time' => '1994-12-03 10:00:00',
+        'end_time' => '1994-12-03 10:59:59',
+        'patron_category_id' => create('App\PatronCategory')->id,
+        'visits' => 0
+        ];
+
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry]])
+        ->assertRedirect('/logbook');
+
+        $this->assertCount(0, LogbookEntry::within($entry['start_time'], $entry['end_time'])->get());
+    }
 }
