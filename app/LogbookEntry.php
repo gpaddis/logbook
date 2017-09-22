@@ -24,4 +24,14 @@ class LogbookEntry extends Model
         return $query->where('visited_at', '>=', $start)
         ->where('visited_at', '<=', $end);
     }
+
+    /**
+     * A logbook entry belongs to a patron category.
+     *
+     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function patronCategory()
+    {
+        return $this->belongsTo('App\PatronCategory');
+    }
 }
