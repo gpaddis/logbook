@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Timeslot\Timeslot;
 use Illuminate\Database\Eloquent\Model;
 
 class LogbookEntry extends Model
@@ -33,5 +34,23 @@ class LogbookEntry extends Model
     public function patronCategory()
     {
         return $this->belongsTo('App\PatronCategory');
+    }
+
+    /**
+     * Delete the most recent logbook entry for the given patron_category_id
+     * within the timeslot provided.
+     *
+     * @param  Timeslot $timeslot
+     * @param  int      $category
+     * @return void
+     */
+    public static function deleteLatestRecord(Timeslot $timeslot, int $category)
+    {
+        if ($entry = static::within($timeslot->start(), $timeslot->end())
+            ->where('patron_category_id', $category)
+            ->orderBy('visited_at', 'desc')
+            ->first()) {
+            $entry->delete();
+        }
     }
 }

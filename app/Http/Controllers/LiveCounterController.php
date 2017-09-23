@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\LogbookEntry;
-use App\Logbook\Entry;
 use Timeslot\Timeslot;
 use App\PatronCategory;
 use Illuminate\Http\Request;
@@ -27,9 +26,11 @@ class LiveCounterController extends Controller
      */
     public function index()
     {
+        $today = Timeslot::create(Carbon::now()->startOfDay(), 24);
+
         $patronCategories = PatronCategory::active()
-        ->with(['logbookEntries' => function ($query) {
-            $query->within(Carbon::now()->startOfDay(), Carbon::now()->endOfDay());
+        ->with(['logbookEntries' => function ($query) use ($today) {
+            $query->within($today->start(), $today->end());
         }])->orderBy('is_primary', 'desc')->get();
         // dd($patronCategories);
 
@@ -37,28 +38,7 @@ class LiveCounterController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    // public function store(LiveCounterRequest $request)
-    // {
-    //     $timeslot = Timeslot::now();
-    //     $patron_category_id = $request->input('id');
-
-    //     if ($request->input('operation') == 'add') {
-    //         Entry::add($patron_category_id, $timeslot);
-    //     } else {
-    //         Entry::subtract($patron_category_id, $timeslot);
-    //     }
-
-    //     return redirect()->route('livecounter.index');
-    // }
-
-    /**
-     * Add an entry to the database for the patron category sent
-     * with the request
+     * Add a record in the database for the patron_category_id sent with the request.
      *
      * @param App\Http\Requests\LiveCounterRequest $request
      */
@@ -74,17 +54,16 @@ class LiveCounterController extends Controller
     }
 
     /**
-     * Remove the most recent entry in the database for the patron category
-     * sent with the request
+     * Remove today's most recent record in the database for the patron_category_id sent with the request.
      *
      * @param App\Http\Requests\LiveCounterRequest $request
      */
     public function subtract(LiveCounterRequest $request)
     {
-        LogbookEntry::where('patron_category_id', request('patron_category_id'))
-        ->orderBy('visited_at', 'desc')
-        ->first()
-        ->delete();
+        LogbookEntry::deleteLatestRecord(
+            Timeslot::create(Carbon::now()->startOfDay(), 24),
+            request('patron_category_id')
+        );
 
         return redirect()->route('livecounter.index');
     }

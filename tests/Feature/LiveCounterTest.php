@@ -39,7 +39,7 @@ class LiveCounterTest extends TestCase
     }
 
     /** @test */
-    public function it_deletes_the_last_entry_from_the_database()
+    public function it_deletes_the_last_record_from_the_database()
     {
         $this->signIn();
 
@@ -63,6 +63,22 @@ class LiveCounterTest extends TestCase
         ]);
 
         $this->assertDatabaseMissing('logbook_entries', $entry3->toArray());
+    }
+
+    /** @test */
+    public function it_cannot_subtract_yesterdays_records()
+    {
+        $this->signIn();
+
+        $entry = create('App\LogbookEntry', [
+            'visited_at' => Carbon::now()->subDay()
+        ]);
+
+        $this->post('/logbook/livecounter/subtract', [
+            'patron_category_id' => $entry->patron_category_id
+        ]);
+
+        $this->assertDatabaseHas('logbook_entries', $entry->toArray());
     }
 
     /** @test */
@@ -90,5 +106,19 @@ class LiveCounterTest extends TestCase
 
         $this->get('logbook/livecounter')
         ->assertSee('value="23"');
+    }
+
+    /** @test */
+    public function it_displays_the_toggle_secondary_categories_link_if_there_are_some()
+    {
+        $this->signIn();
+
+        create('App\PatronCategory', ['is_primary' => true], 3);
+        $this->get('/logbook/livecounter')
+        ->assertDontSee('Toggle secondary categories...');
+
+        create('App\PatronCategory', ['is_primary' => false], 3);
+        $this->get('/logbook/livecounter')
+        ->assertSee('Toggle secondary categories...');
     }
 }
