@@ -60,12 +60,10 @@ class LiveCounterController extends Controller
      * Add an entry to the database for the patron category sent
      * with the request
      *
-     * @param Illuminate\Http\Request $request
+     * @param App\Http\Requests\LiveCounterRequest $request
      */
-    public function add(Request $request)
+    public function add(LiveCounterRequest $request)
     {
-        $request->validate(['patron_category_id' => 'required|exists:patron_categories,id']);
-
         LogbookEntry::create([
             'patron_category_id' => request('patron_category_id'),
             'visited_at' => Carbon::now(),
@@ -79,12 +77,10 @@ class LiveCounterController extends Controller
      * Remove the most recent entry in the database for the patron category
      * sent with the request
      *
-     * @param Illuminate\Http\Request $request
+     * @param App\Http\Requests\LiveCounterRequest $request
      */
-    public function subtract(Request $request)
+    public function subtract(LiveCounterRequest $request)
     {
-        $request->validate(['patron_category_id' => 'required|exists:patron_categories,id']);
-
         LogbookEntry::where('patron_category_id', request('patron_category_id'))
         ->orderBy('visited_at', 'desc')
         ->first()
