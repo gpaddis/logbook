@@ -9,7 +9,7 @@
       <div class="card-body">
         {{-- Start categories cards. --}}
         <div class="row justify-content-center">
-          @forelse($patron_categories as $category)
+          @forelse($patronCategories as $category)
           @include('logbook.livecounter.category')
           @empty
           <div class="col">
@@ -20,7 +20,7 @@
         {{-- End categories cards. --}}
 
         {{-- Toggle secondary categories. --}}
-        @if($patron_categories->where('is_primary', false)->count())
+        @if($patronCategories->where('is_primary', false)->count())
         <div class="col text-center">
           <p>
             <a href="#" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false">

@@ -19,8 +19,8 @@ Route::post('/logbook', 'LogbookEntryController@store');
  * Live Counter
  */
 Route::get('/logbook/livecounter', 'LiveCounterController@index')->name('livecounter.index');
-Route::post('/logbook/livecounter/add', 'LiveCounterController@add');
-Route::post('/logbook/livecounter/subtract', 'LiveCounterController@subtract');
+Route::post('/logbook/livecounter/add', 'LiveCounterController@add')->name('livecounter.add');
+Route::post('/logbook/livecounter/subtract', 'LiveCounterController@subtract')->name('livecounter.subtract');
 
 /**
  * Patron Categories

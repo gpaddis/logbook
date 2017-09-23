@@ -80,4 +80,15 @@ class LiveCounterTest extends TestCase
             'patron_category_id' => 6
         ])->assertSessionHasErrors('patron_category_id');
     }
+
+    /** @test */
+    public function it_displays_todays_visits_on_the_livecounter_page()
+    {
+        $this->signIn();
+
+        $entry = factory('App\LogbookEntry', 23)->create();
+
+        $this->get('logbook/livecounter')
+        ->assertSee('value="23"');
+    }
 }
