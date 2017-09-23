@@ -8,7 +8,7 @@
       <div class="card-header">Update the logbook for {{ $timeslots->start()->toFormattedDateString() }}</div>
 
       {{-- Start main if clause --}}
-      @if($patron_categories->isEmpty())
+      @if($patronCategories->isEmpty())
       <div class="card-body">
         @include('layouts.partials.no-patron-categories')
       </div>
@@ -21,7 +21,7 @@
 
       <div class="ml-2 mr-2">
         {{-- Add a dismissible warning if there is already data stored for this day. --}}
-        @if ($patron_categories->pluck('logbookEntries.*')->flatten()->all())
+        @if ($patronCategories->pluck('logbookEntries.*')->flatten()->all())
         <div class="row">
           <div class="col">
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -41,7 +41,7 @@
             <thead>
               <tr>
                 <th>Time Range</th>
-                @foreach($patron_categories as $category)
+                @foreach($patronCategories as $category)
                 <th>
                   <abbr title="{{ $category->name }}">{{ $category->abbreviation }}</abbr>
                 </th>
@@ -51,14 +51,14 @@
 
             {{-- Table body: iterates through timeslots and active categories. --}}
             <tbody>
-              @foreach($timeslots as $timeslot)
+              @foreach($timeslots as $timeslotNo => $timeslot)
               <tr>
                 <th scope="row">
                   From {{ $timeslot->start()->format('G:i') }} to {{ $timeslot->end()->format('G:i') }}
                 </th>
 
                 {{-- Data inputs. --}}
-                @foreach($patron_categories as $category)
+                @foreach($patronCategories as $category)
                 <td>
                   <input type="hidden" name="entry[{{ entry_id($timeslot, $category) }}][start_time]" value="{{ $timeslot->start()->toDateTimeString() }}">
 
@@ -72,7 +72,7 @@
                     id="entry[{{ entry_id($timeslot, $category) }}][visits]"
                     name="entry[{{ entry_id($timeslot, $category) }}][visits]"
                     {{-- Retrieve existing values for the single fields or get the old request value --}}
-                    value="{{ $category->logbookEntries->where('start_time', $timeslot->start())->first()->visits or old('entry.' . entry_id($timeslot, $category) . '.visits') }}">
+                    value="{{ $formContent[$timeslotNo][$category->id] or old('entry.' . entry_id($timeslot, $category) . '.visits') }}">
                   </div>
                 </td>
                 @endforeach

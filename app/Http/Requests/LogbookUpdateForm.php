@@ -94,8 +94,10 @@ class LogbookUpdateForm extends FormRequest
                 }
             }
 
-            if ($entry['visits'] === 0) {
+            // Keep it == 0, cause with === 0 it does not delete the entries
+            if ($entry['visits'] == 0) {
                 LogbookEntry::within($entry['start_time'], $entry['end_time'])
+                ->where('patron_category_id', $entry['patron_category_id'])
                 ->delete();
             }
         }

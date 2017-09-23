@@ -190,16 +190,8 @@ class LogbookFormTest extends TestCase
     {
         $this->signIn();
 
-        $timeslot = Timeslot::create('1985-02-13 12:00:00');
+        create('App\LogbookEntry', ['visited_at' => '1985-02-13 12:10:04'], 32);
 
-        $entry = [
-            'start_time' => $timeslot->start(),
-            'end_time' => $timeslot->end(),
-            'patron_category_id' => create('App\PatronCategory')->id,
-            'visits' => 15
-            ];
-
-        $this->get('/logbook/update?date=1985-02-13')
-        ->assertSee('value="' . $entry['visits'] . '"');
+        $this->get('/logbook/update?date=1985-02-13')->assertSee('value="32"');
     }
 }

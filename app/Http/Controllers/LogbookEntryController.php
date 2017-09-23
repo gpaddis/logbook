@@ -40,6 +40,7 @@ class LogbookEntryController extends Controller
      */
     public function store(LogbookUpdateForm $form)
     {
+        // dd($form);
         $form->persist();
 
         return redirect()->route('logbook.index');
@@ -56,21 +57,47 @@ class LogbookEntryController extends Controller
 
         $this->validate($request, [
             'date' => 'date|before_or_equal:' . $today
-            ]);
+        ]);
 
         // Fetch date from the request or default to today if no date is passed.
         $date = $request->input('date') ?: $today;
 
         // TODO: fetch opening time from application settings
-        $opening_time = Carbon::parse($date)->hour(10)->minute(0)->second(0);
-        $timeslots = TimeslotCollection::create(Timeslot::create($opening_time), 8);
+        $opening_time = Carbon::parse($date)->hour(9)->minute(0)->second(0);
+        $timeslots = TimeslotCollection::create(Timeslot::create($opening_time, 3), 5);
 
-        $patron_categories = PatronCategory::active()->with(['logbookEntries' => function ($query) use ($timeslots) {
+        $patronCategories = PatronCategory::active()->with(['logbookEntries' => function ($query) use ($timeslots) {
             $query->within($timeslots->start(), $timeslots->end());
         }])->get();
 
-        // dd($patron_categories);
+        $formContent = $this->buildFormContent($timeslots, $patronCategories);
+        // dd($patronCategories);
 
-        return view('logbook.update', compact('timeslots', 'patron_categories'));
+        return view('logbook.update', compact('timeslots', 'patronCategories', 'formContent'));
+    }
+
+    /**
+     * Build the content of the logbook form with the timeslots and patron categories passed.
+     * Only existing visits count values are added to the array, which is structured as follows:
+     * ['timeslot_no' => ['patron_category_id' => 'visits']];
+     *
+     * @param  TimeslotCollection $timeslots
+     * @param  PatronCategory     $categories
+     *
+     * @return array
+     */
+    public function buildFormContent($timeslots, $categories)
+    {
+        $content = [];
+
+        foreach ($timeslots as $timeslotNo => $timeslot) {
+            foreach ($categories as $category) {
+                $content[$timeslotNo][$category->id] = $category->logbookEntries
+                ->where('visited_at', '>=', $timeslot->start())
+                ->where('visited_at', '<=', $timeslot->end())
+                ->count();
+            }
+        }
+        return $content;
     }
 }
