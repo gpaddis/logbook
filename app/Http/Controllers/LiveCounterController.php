@@ -28,9 +28,9 @@ class LiveCounterController extends Controller
     public function index()
     {
         $patron_categories = PatronCategory::active()
-            ->with(['logbookEntries' => function ($query) {
-                $query->where('start_time', Timeslot::now()->start());
-            }])->orderBy('is_primary', 'desc')->get();
+        ->with(['logbookEntries' => function ($query) {
+            $query->where('start_time', Timeslot::now()->start());
+        }])->orderBy('is_primary', 'desc')->get();
         // return $patron_categories;
 
         return view('logbook.livecounter.index', compact('patron_categories'));
@@ -64,15 +64,13 @@ class LiveCounterController extends Controller
      */
     public function add(Request $request)
     {
-        $this->validate($request, [
-            'patron_category_id' => 'required|exists:patron_categories,id',
-            ]);
+        $request->validate(['patron_category_id' => 'required|exists:patron_categories,id']);
 
         LogbookEntry::create([
             'patron_category_id' => request('patron_category_id'),
             'visited_at' => Carbon::now(),
             'recorded_live' => true
-            ]);
+        ]);
 
         return redirect()->route('livecounter.index');
     }
@@ -85,9 +83,7 @@ class LiveCounterController extends Controller
      */
     public function subtract(Request $request)
     {
-        $this->validate($request, [
-            'patron_category_id' => 'required|exists:patron_categories,id',
-            ]);
+        $request->validate(['patron_category_id' => 'required|exists:patron_categories,id']);
 
         LogbookEntry::where('patron_category_id', request('patron_category_id'))
         ->orderBy('visited_at', 'desc')

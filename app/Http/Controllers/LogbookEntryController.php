@@ -40,7 +40,6 @@ class LogbookEntryController extends Controller
      */
     public function store(LogbookUpdateForm $form)
     {
-        // dd($form);
         $form->persist();
 
         return redirect()->route('logbook.index');
@@ -55,9 +54,7 @@ class LogbookEntryController extends Controller
     {
         $today = Carbon::now()->toDateString();
 
-        $this->validate($request, [
-            'date' => 'date|before_or_equal:' . $today
-        ]);
+        $request->validate(['date' => 'date|before_or_equal:' . $today]);
 
         // Fetch date from the request or default to today if no date is passed.
         $date = $request->input('date') ?: $today;
