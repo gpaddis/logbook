@@ -44,30 +44,30 @@ class LogbookFormTest extends TestCase
         create('App\PatronCategory', [], 2);
 
         $entry1 = [
-        'start_time' => '2017-08-21 12:00:00',
-        'end_time' => '2017-08-21 13:00:00',
-        'patron_category_id' => 1,
-        'visits' => 8
+            'start_time' => '2017-08-21 12:00:00',
+            'end_time' => '2017-08-21 13:00:00',
+            'patron_category_id' => 1,
+            'visits' => 8
         ];
 
         $entry2 = [
-        'start_time' => '2017-08-21 12:00:00',
-        'end_time' => '2017-08-21 13:00:00',
-        'patron_category_id' => 2,
-        'visits' => 2
+            'start_time' => '2017-08-21 12:00:00',
+            'end_time' => '2017-08-21 13:00:00',
+            'patron_category_id' => 2,
+            'visits' => 2
         ];
 
         $this->post('/logbook', ['entry' => [
             'any_entry_id' => $entry1,
             'another_entry_id' => $entry2
-            ]]);
+        ]]);
 
         $this->assertDatabaseHas('logbook_entries', [
             'patron_category_id' => $entry1['patron_category_id']
-            ]);
+        ]);
         $this->assertDatabaseHas('logbook_entries', [
             'patron_category_id' => $entry2['patron_category_id']
-            ]);
+        ]);
         $this->assertCount(10, LogbookEntry::all());
     }
 
@@ -86,10 +86,10 @@ class LogbookFormTest extends TestCase
         $this->withExceptionHandling()->signIn();
 
         $entry = [
-        'start_time' => '2017-08-21 12:00:00',
-        'end_time' => '2017-08-21 13:00:00',
-        'patron_category_id' => 1,
-        'visits' => null
+            'start_time' => '2017-08-21 12:00:00',
+            'end_time' => '2017-08-21 13:00:00',
+            'patron_category_id' => 1,
+            'visits' => null
         ];
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry]])
@@ -102,10 +102,10 @@ class LogbookFormTest extends TestCase
         $this->withExceptionHandling()->signIn();
 
         $entry = [
-        'start_time' => '2017-08-21 12:00:00',
-        'end_time' => '2017-08-21 13:00:00',
-        'patron_category_id' => create('App\PatronCategory')->id,
-        'visits' => -999
+            'start_time' => '2017-08-21 12:00:00',
+            'end_time' => '2017-08-21 13:00:00',
+            'patron_category_id' => create('App\PatronCategory')->id,
+            'visits' => -999
         ];
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry]])
@@ -118,10 +118,10 @@ class LogbookFormTest extends TestCase
         $this->withExceptionHandling()->signIn();
 
         $entry = [
-        'start_time' => Carbon::now()->addHour(),
-        'end_time' => Carbon::now()->addHours(2),
-        'patron_category_id' => create('App\PatronCategory')->id,
-        'visits' => null
+            'start_time' => Carbon::now()->addHour(),
+            'end_time' => Carbon::now()->addHours(2),
+            'patron_category_id' => create('App\PatronCategory')->id,
+            'visits' => null
         ];
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry]])
@@ -140,13 +140,13 @@ class LogbookFormTest extends TestCase
         $visitsToDelete = create('App\LogbookEntry', [
             'patron_category_id' => $category->id,
             'visited_at' => '2017-01-12 12:08:12',
-            ], 3);
+        ], 3);
 
         // And another visit outside the timeslot
         $visitToKeep = create('App\LogbookEntry', [
             'patron_category_id' => $category->id,
             'visited_at' => '2017-01-12 13:00:00'
-            ]);
+        ]);
 
         // When I submit a 0 with the logbook form for the timeslot
 
@@ -155,7 +155,7 @@ class LogbookFormTest extends TestCase
             'end_time' => $timeslot->end(),
             'patron_category_id' => $category->id,
             'visits' => 0
-            ]]]);
+        ]]]);
 
         // The database records within the timeslot are deleted
         $this->assertDatabaseMissing('logbook_entries', $visitsToDelete->first()->toArray());
@@ -173,10 +173,10 @@ class LogbookFormTest extends TestCase
         $this->signIn()->withExceptionHandling();
 
         $entry = [
-        'start_time' => '1994-12-03 10:00:00',
-        'end_time' => '1994-12-03 10:59:59',
-        'patron_category_id' => create('App\PatronCategory')->id,
-        'visits' => 0
+            'start_time' => '1994-12-03 10:00:00',
+            'end_time' => '1994-12-03 10:59:59',
+            'patron_category_id' => create('App\PatronCategory')->id,
+            'visits' => 0
         ];
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry]])
@@ -193,5 +193,29 @@ class LogbookFormTest extends TestCase
         create('App\LogbookEntry', ['visited_at' => '1985-02-13 12:10:04'], 32);
 
         $this->get('/logbook/update?date=1985-02-13')->assertSee('value="32"');
+    }
+
+    /** @test */
+    public function it_replaces_existing_visits_records_with_new_ones_if_one_edits_the_number_showed_in_the_form()
+    {
+        $this->signIn();
+
+        $newEntry = [
+            'start_time' => '1985-02-13 12:00:00',
+            'end_time' => '1985-02-13 12:59:59',
+            'patron_category_id' => create('App\PatronCategory')->id,
+            'visits' => 5
+        ];
+
+        create('App\LogbookEntry', [
+            'visited_at' => '1985-02-13 12:13:14',
+            'patron_category_id' => $newEntry['patron_category_id']
+        ], 10);
+
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $newEntry]]);
+
+        $this->assertCount(5, LogbookEntry::within($newEntry['start_time'], $newEntry['end_time'])->get());
+        $this->assertDatabaseHas('logbook_entries', ['visited_at' => '1985-02-13 12:00:00']);
+        $this->assertDatabaseMissing('logbook_entries', ['visited_at' => '1985-02-13 12:13:14']);
     }
 }

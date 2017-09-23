@@ -83,7 +83,6 @@ class LogbookUpdateForm extends FormRequest
      */
     public function persist()
     {
-        // TODO: refactor this mess
         foreach ($this->input('entry.*') as $entry) {
             if ($entry['visits'] > 0) {
                 $this->createOrReplaceEntries($entry);
@@ -101,10 +100,11 @@ class LogbookUpdateForm extends FormRequest
      * given patron category, or replace the existing entries for the timeslot
      * with the new entries.
      *
-     * @param  array  $entry
+     * @param array $entry
+     *
      * @return void
      */
-    public function createOrReplaceEntries(array $entry)
+    protected function createOrReplaceEntries(array $entry)
     {
         $this->deleteEntries($entry);
 
