@@ -29,7 +29,7 @@ class LogbookUpdateForm extends FormRequest
         'entry.*.start_time' => 'required|date|before_or_equal:' . Carbon::now()->toDateTimeString(),
         'entry.*.end_time' => 'required|date|after:start_time',
         'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
-        'entry.*.visits' => 'integer|min:0',
+        'entry.*.visits' => 'nullable|integer|min:0',
         ];
     }
 

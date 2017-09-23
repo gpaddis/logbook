@@ -71,7 +71,6 @@ class LogbookEntryController extends Controller
         }])->get();
 
         $formContent = $this->buildFormContent($timeslots, $patronCategories);
-        // dd($patronCategories);
 
         return view('logbook.update', compact('timeslots', 'patronCategories', 'formContent'));
     }
@@ -92,10 +91,14 @@ class LogbookEntryController extends Controller
 
         foreach ($timeslots as $timeslotNo => $timeslot) {
             foreach ($categories as $category) {
-                $content[$timeslotNo][$category->id] = $category->logbookEntries
-                ->where('visited_at', '>=', $timeslot->start())
-                ->where('visited_at', '<=', $timeslot->end())
-                ->count();
+                if ($visits = $category->logbookEntries
+                    ->where('visited_at', '>=', $timeslot->start())
+                    ->where('visited_at', '<=', $timeslot->end())
+                    ->count()) {
+                    $content[$timeslotNo][$category->id] = $visits;
+                } else {
+                    continue;
+                }
             }
         }
         return $content;
