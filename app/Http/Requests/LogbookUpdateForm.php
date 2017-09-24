@@ -77,56 +77,69 @@ class LogbookUpdateForm extends FormRequest
     }
 
     /**
-     * Persist non-empty fields in the database.
+     * Persist non-empty fields in the database, preserving existing live records where possible.
      *
      * @return void
      */
     public function persist()
     {
         foreach ($this->input('entry.*') as $entry) {
-            if ($entry['visits'] > 0) {
-                $this->createOrReplaceEntries($entry);
+            $storedEntries = LogbookEntry::within($entry['start_time'], $entry['end_time'])
+            ->where('patron_category_id', $entry['patron_category_id']);
+
+            $count = $storedEntries->count();
+
+            // If there are no changes, do nothing.
+            if ($entry['visits'] == $count) {
+                return;
             }
 
-            // Keep it == 0, cause with === 0 it does not delete the entries
-            if ($entry['visits'] == 0) {
-                $this->deleteEntries($entry);
+            if ($entry['visits'] > $count) {
+                $difference = $entry['visits'] - $count;
+                $this->addEntries($entry, $difference);
+            }
+
+            if ($entry['visits'] < $count) {
+                $difference = $count - $entry['visits'];
+                $this->deleteEntries($entry, $difference);
             }
         }
     }
 
     /**
-     * Create a number of entries equal to the value of $entry['visits'] for a
-     * given patron category, or replace the existing entries for the timeslot
-     * with the new entries.
+     * Create a $number of records for a given patron category within a time range.
      *
-     * @param array $entry
+     * @param array  $entry
+     * @param int    $number
      *
      * @return void
      */
-    protected function createOrReplaceEntries(array $entry)
+    protected function addEntries(array $entry, int $number)
     {
-        $this->deleteEntries($entry);
-
-        for ($i = 0; $i < $entry['visits']; $i++) {
+        for ($i = 0; $i < $number; $i++) {
             LogbookEntry::create([
                 'patron_category_id' => $entry['patron_category_id'],
-                'visited_at' => $entry['start_time'],
+                'visited_at' => $entry['start_time']
             ]);
         }
     }
 
     /**
-     * Delete records for a given patron categories within a time range.
+     * Delete a $number of records for a given patron categories within a time range.
      *
-     * @param  array $entry
+     * @param  array  $entry
+     * @param  int    $number
      *
      * @return void
      */
-    protected function deleteEntries(array $entry)
+    protected function deleteEntries(array $entry, int $number = 1)
     {
-        LogbookEntry::within($entry['start_time'], $entry['end_time'])
+        $entries = LogbookEntry::within($entry['start_time'], $entry['end_time'])
         ->where('patron_category_id', $entry['patron_category_id'])
-        ->delete();
+        ->orderBy('visited_at', 'desc');
+
+        for ($i=0; $i < $number; $i++) {
+            $entries->first()->delete();
+        }
     }
 }

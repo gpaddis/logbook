@@ -196,26 +196,31 @@ class LogbookFormTest extends TestCase
     }
 
     /** @test */
-    public function it_replaces_existing_visits_records_with_new_ones_if_one_edits_the_number_showed_in_the_form()
+    public function it_preserves_part_of_the_existing_live_records_when_updating_with_a_lesser_value()
     {
         $this->signIn();
 
-        $newEntry = [
-            'start_time' => '1985-02-13 12:00:00',
-            'end_time' => '1985-02-13 12:59:59',
-            'patron_category_id' => create('App\PatronCategory')->id,
-            'visits' => 5
-        ];
+        $category = create('App\PatronCategory');
 
         create('App\LogbookEntry', [
             'visited_at' => '1985-02-13 12:13:14',
-            'patron_category_id' => $newEntry['patron_category_id']
+            'patron_category_id' => $category->id,
+            'recorded_live' => true
         ], 10);
 
-        $this->post('/logbook', ['entry' => ['any_entry_id' => $newEntry]]);
+        $formContent = [
+            'start_time' => '1985-02-13 12:00:00',
+            'end_time' => '1985-02-13 12:59:59',
+            'patron_category_id' => $category->id,
+            'visits' => 5
+        ];
 
-        $this->assertCount(5, LogbookEntry::within($newEntry['start_time'], $newEntry['end_time'])->get());
-        $this->assertDatabaseHas('logbook_entries', ['visited_at' => '1985-02-13 12:00:00']);
-        $this->assertDatabaseMissing('logbook_entries', ['visited_at' => '1985-02-13 12:13:14']);
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $formContent]]);
+
+        $this->assertCount(5, LogbookEntry::all());
+        $this->assertDatabaseHas('logbook_entries', [
+            'visited_at' => '1985-02-13 12:13:14',
+            'recorded_live' => true
+        ]);
     }
 }
