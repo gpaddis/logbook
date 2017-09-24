@@ -43,7 +43,7 @@
                 <th>Time Range</th>
                 @foreach($patronCategories as $category)
                 <th>
-                  <abbr title="{{ $category->name }}">{{ $category->abbreviation }}</abbr>
+                  <abbr title="{{ $category->name }}">{{ $category->abbreviation or $category->name}}</abbr>
                 </th>
                 @endforeach
               </tr>
@@ -61,11 +61,8 @@
                 @foreach($patronCategories as $category)
                 <td>
                   <input type="hidden" name="entry[{{ entry_id($timeslot, $category) }}][start_time]" value="{{ $timeslot->start()->toDateTimeString() }}">
-
                   <input type="hidden" name="entry[{{ entry_id($timeslot, $category) }}][end_time]" value="{{ $timeslot->end()->toDateTimeString() }}">
-
                   <input type="hidden" name="entry[{{ entry_id($timeslot, $category) }}][patron_category_id]" value="{{ $category->id }}">
-
                   <div class="form-group">
                     <input type="number" class="form-control form-control-sm
                     {{ $errors->has('entry.' . entry_id($timeslot, $category) . '.visits') ? ' is-invalid' : '' }}"
@@ -76,6 +73,7 @@
                   </div>
                 </td>
                 @endforeach
+
               </tr>
               @endforeach
             </tbody>

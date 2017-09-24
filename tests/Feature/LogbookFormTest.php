@@ -63,10 +63,15 @@ class LogbookFormTest extends TestCase
         ]]);
 
         $this->assertDatabaseHas('logbook_entries', [
-            'patron_category_id' => $entry1['patron_category_id']
+            'patron_category_id' => $entry1['patron_category_id'],
+            'visited_at' => $entry1['start_time'],
+            'recorded_live' => false
         ]);
+
         $this->assertDatabaseHas('logbook_entries', [
-            'patron_category_id' => $entry2['patron_category_id']
+            'patron_category_id' => $entry2['patron_category_id'],
+            'visited_at' => $entry2['start_time'],
+            'recorded_live' => false
         ]);
         $this->assertCount(10, LogbookEntry::all());
     }
@@ -133,7 +138,6 @@ class LogbookFormTest extends TestCase
     {
         $this->signIn();
 
-        // Given I have three existing visits within a given timeslot in the DB
         $category = create('App\PatronCategory');
         $timeslot = Timeslot::create('2017-01-12 12:00:00');
 
@@ -142,13 +146,10 @@ class LogbookFormTest extends TestCase
             'visited_at' => '2017-01-12 12:08:12',
         ], 3);
 
-        // And another visit outside the timeslot
         $visitToKeep = create('App\LogbookEntry', [
             'patron_category_id' => $category->id,
             'visited_at' => '2017-01-12 13:00:00'
         ]);
-
-        // When I submit a 0 with the logbook form for the timeslot
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => [
             'start_time' => $timeslot->start(),
@@ -157,18 +158,13 @@ class LogbookFormTest extends TestCase
             'visits' => 0
         ]]]);
 
-        // The database records within the timeslot are deleted
         $this->assertDatabaseMissing('logbook_entries', $visitsToDelete->first()->toArray());
-
-        // But the one outside the timeslot still exists
         $this->assertDatabaseHas('logbook_entries', $visitToKeep->toArray());
-
-        // And there's only one record in the DB
         $this->assertCount(1, LogbookEntry::all());
     }
 
     /** @test */
-    public function it_does_nothing_if_one_submits_a_0_for_a_timeslot_with_no_entries()
+    public function it_does_nothing_if_one_submits_a_0_for_a_timeslot_with_no_records()
     {
         $this->signIn()->withExceptionHandling();
 
