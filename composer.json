@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "gpaddis/logbook",
+    "description": "A web application for library patron statistics storage and analysis.",
+    "keywords": ["statistics", "library", "counter"],
     "license": "MIT",
     "type": "project",
     "require": {
