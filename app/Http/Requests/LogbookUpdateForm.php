@@ -91,12 +91,19 @@ class LogbookUpdateForm extends FormRequest
 
             // If there are no changes, do nothing.
             if ($entry['visits'] == $count) {
-                return;
+                continue;
+            }
+
+            // If 0 is submitted, delete all record and stop processing other conditions.
+            if ($entry['visits'] == 0) {
+                $storedEntries->delete();
+                continue;
             }
 
             if ($entry['visits'] > $count) {
                 $difference = $entry['visits'] - $count;
                 $this->addEntries($entry, $difference);
+                continue;
             }
 
             if ($entry['visits'] < $count) {
