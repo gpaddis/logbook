@@ -9,9 +9,9 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 /**
- * Logbook & Logbook Entries
+ * Logbook & Logbook Form
  */
-Route::get('/logbook', 'EntryController@index')->name('logbook.index');
+Route::get('/logbook', 'LogbookEntryController@index')->name('logbook.index');
 Route::get('/logbook/update', 'LogbookEntryController@update')->name('logbook.update');
 Route::post('/logbook', 'LogbookEntryController@store');
 

@@ -23,20 +23,24 @@ class LogbookEntryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
-        $entries = LogbookEntry::with('patron_category')->latest()->get();
+        $entries = LogbookEntry::with('patronCategory')
+        ->latest('visited_at')
+        ->get();
 
         return view('logbook.index', compact('entries'));
     }
 
+
     /**
-     * Store a newly created resource in storage.
+     * Validate and store the visits submitted with the logbook update form.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  LogbookUpdateForm $form
+     *
+     * @return Response
      */
     public function store(LogbookUpdateForm $form)
     {
@@ -48,7 +52,7 @@ class LogbookEntryController extends Controller
     /**
      * Show the form for creating a new resource or updating the existing resources.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request)
     {
@@ -82,7 +86,7 @@ class LogbookEntryController extends Controller
      *
      * @return array
      */
-    public function buildFormContent($timeslots, $categories)
+    protected function buildFormContent($timeslots, $categories)
     {
         $content = [];
 

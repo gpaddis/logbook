@@ -19,7 +19,7 @@
         <ul>
           @foreach($entries as $entry)
           <li>
-            <p>From {{ $entry->start_time }} to {{ $entry->end_time }} we had {{ $entry->visits }} {{ $entry->patron_category->name }}.</p>
+            <p>On {{ $entry->visited_at }} we had one {{ $entry->patronCategory->name }}.</p>
           </li>
           @endforeach
         </ul>
