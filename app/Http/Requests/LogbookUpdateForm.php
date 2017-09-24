@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Carbon\Carbon;
 use App\LogbookEntry;
+use Illuminate\Validation\Validator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LogbookUpdateForm extends FormRequest
@@ -48,10 +50,10 @@ class LogbookUpdateForm extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
+     * @param  Validator  $validator
      * @return void
      */
-    public function withValidator($validator)
+    public function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
             if ($this->wasFilled() === false) {
@@ -133,12 +135,12 @@ class LogbookUpdateForm extends FormRequest
     /**
      * Delete a $number of records for a given patron categories within a time range.
      *
-     * @param  App\LogbookEntry  $storedEntries
-     * @param  int               $number
+     * @param  Builder  $storedEntries
+     * @param  int      $number
      *
      * @return void
      */
-    protected function deleteEntries($storedEntries, int $number = 1)
+    protected function deleteEntries(Builder $storedEntries, int $number = 1)
     {
         for ($i=0; $i < $number; $i++) {
             $storedEntries->first()->delete();
