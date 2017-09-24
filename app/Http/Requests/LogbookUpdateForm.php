@@ -83,32 +83,31 @@ class LogbookUpdateForm extends FormRequest
      */
     public function persist()
     {
-        foreach ($this->input('entry.*') as $entry) {
-            $storedEntries = LogbookEntry::within($entry['start_time'], $entry['end_time'])
-            ->where('patron_category_id', $entry['patron_category_id']);
+        foreach ($this->input('entry.*') as $formData) {
+            $storedEntries = LogbookEntry::within($formData['start_time'], $formData['end_time'])
+            ->wherePatronCategoryId($formData['patron_category_id'])
+            ->latest('visited_at');
 
             $count = $storedEntries->count();
 
-            // If there are no changes, do nothing.
-            if ($entry['visits'] == $count) {
+            if ($formData['visits'] === $count) {
                 continue;
             }
 
-            // If 0 is submitted, delete all record and stop processing other conditions.
-            if ($entry['visits'] == 0) {
+            if ($formData['visits'] === 0) {
                 $storedEntries->delete();
                 continue;
             }
 
-            if ($entry['visits'] > $count) {
-                $difference = $entry['visits'] - $count;
-                $this->addEntries($entry, $difference);
+            if ($formData['visits'] > $count) {
+                $difference = $formData['visits'] - $count;
+                $this->addEntries($formData, $difference);
                 continue;
             }
 
-            if ($entry['visits'] < $count) {
-                $difference = $count - $entry['visits'];
-                $this->deleteEntries($entry, $difference);
+            if ($formData['visits'] < $count) {
+                $difference = $count - $formData['visits'];
+                $this->deleteEntries($storedEntries, $difference);
             }
         }
     }
@@ -134,19 +133,15 @@ class LogbookUpdateForm extends FormRequest
     /**
      * Delete a $number of records for a given patron categories within a time range.
      *
-     * @param  array  $entry
-     * @param  int    $number
+     * @param  App\LogbookEntry  $storedEntries
+     * @param  int               $number
      *
      * @return void
      */
-    protected function deleteEntries(array $entry, int $number = 1)
+    protected function deleteEntries($storedEntries, int $number = 1)
     {
-        $entries = LogbookEntry::within($entry['start_time'], $entry['end_time'])
-        ->where('patron_category_id', $entry['patron_category_id'])
-        ->orderBy('visited_at', 'desc');
-
         for ($i=0; $i < $number; $i++) {
-            $entries->first()->delete();
+            $storedEntries->first()->delete();
         }
     }
 }

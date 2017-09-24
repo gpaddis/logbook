@@ -47,8 +47,8 @@ class LogbookEntry extends Model
     public static function deleteLatestRecord(Timeslot $timeslot, int $category)
     {
         if ($entry = static::within($timeslot->start(), $timeslot->end())
-            ->where('patron_category_id', $category)
-            ->orderBy('visited_at', 'desc')
+            ->wherePatronCategoryId($category)
+            ->latest('visited_at')
             ->first()) {
             $entry->delete();
         }
