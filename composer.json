@@ -1,13 +1,13 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "name": "gpaddis/logbook",
+    "description": "A web application for library patron statistics storage and analysis.",
+    "keywords": ["statistics", "library", "counter"],
     "license": "MIT",
     "type": "project",
     "require": {
         "php": ">=5.6.4",
         "barryvdh/laravel-debugbar": "^2.4",
-        "gpaddis/timeslot": "^0.1.0",
+        "gpaddis/timeslot": "^0.2.0",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0"
     },

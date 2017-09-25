@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Logbook\Entry;
+use Carbon\Carbon;
+use App\LogbookEntry;
 use Timeslot\Timeslot;
 use App\PatronCategory;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Http\Requests\LiveCounterRequest;
 
 class LiveCounterController extends Controller
@@ -26,88 +26,45 @@ class LiveCounterController extends Controller
      */
     public function index()
     {
-        $patron_categories = PatronCategory::active()
-            ->with(['logbookEntries' => function ($query) {
-            $query->where('start_time', Timeslot::now()->start());
-            }])->orderBy('is_primary', 'desc')->get();
-        // return $patron_categories;
+        $today = Timeslot::create(Carbon::now()->startOfDay(), 24);
 
-        return view('logbook.livecounter.index', compact('patron_categories'));
+        $patronCategories = PatronCategory::active()
+        ->with(['logbookEntries' => function ($query) use ($today) {
+            $query->within($today->start(), $today->end());
+        }])->orderBy('is_primary', 'desc')->get();
+        // dd($patronCategories);
+
+        return view('logbook.livecounter.index', compact('patronCategories'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Add a record in the database for the patron_category_id sent with the request.
      *
-     * @return \Illuminate\Http\Response
+     * @param App\Http\Requests\LiveCounterRequest $request
      */
-    public function create()
+    public function add(LiveCounterRequest $request)
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(LiveCounterRequest $request)
-    {
-        $timeslot = Timeslot::now();
-        $patron_category_id = $request->input('id');
-
-        if ($request->input('operation') == 'add') {
-            Entry::add($patron_category_id, $timeslot);
-        } else {
-            Entry::subtract($patron_category_id, $timeslot);
-        }
+        LogbookEntry::create([
+            'patron_category_id' => request('patron_category_id'),
+            'visited_at' => Carbon::now(),
+            'recorded_live' => true
+        ]);
 
         return redirect()->route('livecounter.index');
     }
 
-
     /**
-     * Display the specified resource.
+     * Remove today's most recent record in the database for the patron_category_id sent with the request.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param App\Http\Requests\LiveCounterRequest $request
      */
-    public function show($id)
+    public function subtract(LiveCounterRequest $request)
     {
-        //
-    }
+        LogbookEntry::deleteLatestRecord(
+            Timeslot::create(Carbon::now()->startOfDay(), 24),
+            request('patron_category_id')
+        );
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return redirect()->route('livecounter.index');
     }
 }

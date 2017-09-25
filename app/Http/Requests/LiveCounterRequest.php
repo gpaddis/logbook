@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LiveCounterRequest extends FormRequest
@@ -25,11 +24,7 @@ class LiveCounterRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required|exists:patron_categories,id',
-            'operation' => [
-                'required',
-                Rule::in(['add', 'subtract'])
-            ]
+            'patron_category_id' => 'required|exists:patron_categories,id',
         ];
     }
 }

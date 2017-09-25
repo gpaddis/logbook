@@ -79,7 +79,7 @@ class PatronCategory extends Model
      */
     public function logbookEntries()
     {
-        return $this->hasMany('App\Logbook\Entry');
+        return $this->hasMany('App\LogbookEntry');
     }
 
     /**
@@ -101,8 +101,7 @@ class PatronCategory extends Model
      */
     public function currentVisits($timeslot = null)
     {
-        if ($this->hasVisited($timeslot))
-        {
+        if ($this->hasVisited($timeslot)) {
             return $this->logbookEntries()->withinTimeslot($timeslot)->first()->visits;
         }
 

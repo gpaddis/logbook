@@ -9,17 +9,18 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 /**
- * Logbook & Logbook Entries
+ * Logbook & Logbook Form
  */
-Route::get('/logbook', 'EntryController@index')->name('logbook.index');
-Route::get('/logbook/update', 'EntryController@update')->name('logbook.update');
-Route::post('/logbook', 'EntryController@store');
+Route::get('/logbook', 'LogbookEntryController@index')->name('logbook.index');
+Route::get('/logbook/update', 'LogbookEntryController@update')->name('logbook.update');
+Route::post('/logbook', 'LogbookEntryController@store');
 
 /**
  * Live Counter
  */
 Route::get('/logbook/livecounter', 'LiveCounterController@index')->name('livecounter.index');
-Route::post('/logbook/livecounter', 'LiveCounterController@store');
+Route::post('/logbook/livecounter/add', 'LiveCounterController@add')->name('livecounter.add');
+Route::post('/logbook/livecounter/subtract', 'LiveCounterController@subtract')->name('livecounter.subtract');
 
 /**
  * Patron Categories

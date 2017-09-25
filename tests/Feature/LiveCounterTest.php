@@ -2,59 +2,83 @@
 
 namespace Tests\Feature;
 
-use Timeslot\Timeslot;
+use Carbon\Carbon;
 use Tests\TestCase;
-use App\Logbook\Entry;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LiveCounterTest extends TestCase
 {
-    use DatabaseMigrations;
-
-    /** @test */
-    public function an_authenticated_user_can_add_a_visit_count()
-    {
-        $this->signIn();
-
-        $patronCategory = create('App\PatronCategory');
-
-        $this->post('/logbook/livecounter', [
-            'id' => $patronCategory->id,
-            'operation' => 'add'
-        ]);
-
-        $entry = Entry::first();
-        $timeslot = Timeslot::now();
-
-        // Check whether the data was stored correctly
-        $this->assertEquals($patronCategory->id, $entry->patron_category_id);
-        $this->assertEquals(1, $entry->visits);
-        $this->assertEquals($timeslot->start(), $entry->start_time);
-        $this->assertEquals($timeslot->end(), $entry->end_time);
-    }
+    use RefreshDatabase;
 
     /** @test */
     public function an_unauthenticated_user_may_not_submit_a_visit_count()
     {
         $this->withExceptionHandling();
 
-        $this->post('/logbook/livecounter', [
+        $this->post('/logbook/livecounter/add', [
             'id' => 1,
-            'operation' => 'add'
         ])->assertRedirect('login');
     }
 
     /** @test */
-    public function it_rejects_an_invalid_operation()
+    public function it_adds_a_visit_to_the_database()
     {
-        $this->signIn()->withExceptionHandling();
+        $this->signIn();
 
-        create('App\PatronCategory', ['id' => 1]);
+        $entry = [
+            'patron_category_id' => create('App\PatronCategory')->id,
+            'visited_at' => Carbon::now(),
+            'recorded_live' => true
+        ];
 
-        $this->post('/logbook/livecounter', [
-            'id' => 1,
-            'operation' => 'deleteallrecords'
-        ])->assertSessionHasErrors('operation');
+        $this->post('/logbook/livecounter/add', [
+            'patron_category_id' => $entry['patron_category_id']
+        ]);
+
+        $this->assertDatabaseHas('logbook_entries', $entry);
+    }
+
+    /** @test */
+    public function it_deletes_the_last_record_from_the_database()
+    {
+        $this->signIn();
+
+        $patronCategories = create('App\PatronCategory', [], 3);
+
+        $entry1 = create('App\LogbookEntry', [
+            'patron_category_id' => $patronCategories[0]->id
+        ]);
+
+        $entry2 = create('App\LogbookEntry', [
+            'patron_category_id' => $patronCategories[1]->id
+        ]);
+
+        $entry3 = create('App\LogbookEntry', [
+            'patron_category_id' => $patronCategories[1]->id,
+            'visited_at' => Carbon::now()->addMinute()
+        ]);
+
+        $this->post('/logbook/livecounter/subtract', [
+            'patron_category_id' => $patronCategories[1]->id
+        ]);
+
+        $this->assertDatabaseMissing('logbook_entries', $entry3->toArray());
+    }
+
+    /** @test */
+    public function it_cannot_subtract_yesterdays_records()
+    {
+        $this->signIn();
+
+        $entry = create('App\LogbookEntry', [
+            'visited_at' => Carbon::now()->subDay()
+        ]);
+
+        $this->post('/logbook/livecounter/subtract', [
+            'patron_category_id' => $entry->patron_category_id
+        ]);
+
+        $this->assertDatabaseHas('logbook_entries', $entry->toArray());
     }
 
     /** @test */
@@ -64,118 +88,24 @@ class LiveCounterTest extends TestCase
 
         create('App\PatronCategory', ['id' => 1]);
 
-        $this->post('/logbook/livecounter', [
-            'id' => 6,
-            'operation' => 'add'
-        ])->assertSessionHasErrors('id');
+        $this->post('/logbook/livecounter/add', [
+            'patron_category_id' => 6
+        ])->assertSessionHasErrors('patron_category_id');
+
+        $this->post('/logbook/livecounter/remove', [
+            'patron_category_id' => 6
+        ])->assertSessionHasErrors('patron_category_id');
     }
 
     /** @test */
-    public function it_requires_all_arguments()
-    {
-        $this->signIn()->withExceptionHandling();
-
-        create('App\PatronCategory', ['id' => 1]);
-
-        $this->post('/logbook/livecounter', ['id' => 1])
-            ->assertSessionHasErrors('operation');
-
-        $this->post('/logbook/livecounter', ['operation' => 'add'])
-            ->assertSessionHasErrors('id');
-
-        $this->post('/logbook/livecounter')
-            ->assertSessionHasErrors('id', 'operation');
-    }
-
-    /** @test */
-    public function the_current_count_is_visible_on_the_livecounter_index_page()
+    public function it_displays_todays_visits_on_the_livecounter_page()
     {
         $this->signIn();
 
-        $timeslot = Timeslot::now();
-        $entry = create('App\Logbook\Entry', [
-            'start_time' => $timeslot->start(),
-            'end_time' => $timeslot->end(),
-            ]);
+        $entry = factory('App\LogbookEntry', 23)->create();
 
         $this->get('logbook/livecounter')
-            ->assertSee((string) $entry->visits);
-    }
-
-    /** @test */
-    public function it_can_record_a_visit_if_it_does_not_yet_exist()
-    {
-        $timeslot = Timeslot::now();
-        $patron_category_id = create('App\PatronCategory')->id;
-
-        Entry::add($patron_category_id, $timeslot);
-
-        $this->assertEquals(1, Entry::first()->visits);
-    }
-
-    /** @test */
-    public function it_adds_a_visit_to_the_count_if_the_entry_already_exists()
-    {
-        $timeslot = Timeslot::now();
-        $existingEntry = create('App\Logbook\Entry', [
-            'start_time' => $timeslot->start(),
-            'end_time' => $timeslot->end()
-            ]);
-
-        Entry::add($existingEntry->patron_category_id, $timeslot);
-
-        $this->assertEquals($existingEntry->visits + 1, Entry::first()->visits);
-    }
-
-    /** @test */
-    public function it_subtracts_a_visit_from_the_count()
-    {
-        $timeslot = Timeslot::now();
-        $existingEntry = create('App\Logbook\Entry', [
-            'start_time' => $timeslot->start(),
-            'end_time' => $timeslot->end(),
-            'visits' => 6
-            ]);
-
-        Entry::subtract($existingEntry->patron_category_id, $timeslot);
-
-        $this->assertEquals($existingEntry->visits - 1, Entry::first()->visits);
-    }
-
-    /** @test */
-    public function it_deletes_the_entry_if_count_is_equal_to_1()
-    {
-        $timeslot = Timeslot::now();
-        $existingEntry = create('App\Logbook\Entry', [
-            'start_time' => $timeslot->start(),
-            'end_time' => $timeslot->end(),
-            'visits' => 1
-            ]);
-
-        Entry::subtract($existingEntry->patron_category_id, $timeslot);
-
-        $this->assertEquals(null, Entry::first());
-    }
-
-    /** @test */
-    public function it_deletes_the_entry_if_count_is_equal_to_0()
-    {
-        $timeslot = Timeslot::now();
-        $existingEntry = create('App\Logbook\Entry', [
-            'start_time' => $timeslot->start(),
-            'end_time' => $timeslot->end(),
-            'visits' => 0
-            ]);
-
-        Entry::subtract($existingEntry->patron_category_id, $timeslot);
-
-        $this->assertEquals(null, Entry::first());
-    }
-
-    /** @test */
-    public function it_does_nothing_if_theres_no_corresponding_entry()
-    {
-        $this->assertEquals(null, Entry::subtract(1, Timeslot::now()));
+        ->assertSee('value="23"');
     }
 
     /** @test */
@@ -184,20 +114,11 @@ class LiveCounterTest extends TestCase
         $this->signIn();
 
         create('App\PatronCategory', ['is_primary' => true], 3);
+        $this->get('/logbook/livecounter')
+        ->assertDontSee('Toggle secondary categories...');
+
         create('App\PatronCategory', ['is_primary' => false], 3);
-
         $this->get('/logbook/livecounter')
-            ->assertSee('Toggle secondary categories...');
-    }
-
-    /** @test */
-    public function it_hides_the_toggle_secondary_categories_link_if_there_are_none()
-    {
-        $this->signIn();
-
-        create('App\PatronCategory', ['is_primary' => true], 3);
-
-        $this->get('/logbook/livecounter')
-            ->assertDontSee('Toggle secondary categories...');
+        ->assertSee('Toggle secondary categories...');
     }
 }
