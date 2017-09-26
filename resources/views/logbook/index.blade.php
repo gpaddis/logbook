@@ -9,20 +9,8 @@
 
       <div class="card-body">
         <div class="row justify-content-left">
-          <!-- Total visits today -->
-          @component('logbook.info-card')
-          @slot('title')
-          Today
-          @endslot
-
-          @slot('value')
-          {{ $today->count() }}
-          @endslot
-
-          @slot('footer')
-          {{ abs($variation) }}% {{ $variation > 0 ? 'more' : 'less' }} than yesterday ({{ $yesterday->count() }} visits)
-          @endslot
-          @endcomponent
+          @include('logbook.info-cards.today')
+          @include('logbook.info-cards.this-week')
         </div>
       </div>
     </div>

@@ -6,9 +6,10 @@
       <h2 class="display-2 text-center">
         {{ $value }}
       </h2>
+      <h5 class="card-subtitle mb-2 text-muted text-center">Visits</h5>
     </div>
 
-    <div class="card-footer text-center text-muted">
+    <div class="card-footer text-center">
       {{ $footer }}
     </div>
   </div>

@@ -35,12 +35,25 @@ class LogbookEntryController extends Controller
         ->latest('visited_at')
         ->get();
 
+        $thisWeek = LogbookEntry::whereDate('visited_at', '>=', Carbon::now()->startOfWeek())
+        ->latest('visited_at')
+        ->get();
+
+        $lastWeek = LogbookEntry::within(Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek())
+        ->latest('visited_at')
+        ->get();
+
         // dd($yesterday);
 
         return view('logbook.index', [
             'today' => $today,
             'yesterday' => $yesterday,
-            'variation' => number_format((1 - $yesterday->count() / $today->count()) * 100, 0)
+            'thisWeek' => $thisWeek,
+            'lastWeek' => $lastWeek,
+            'dayDifference' => $today->count() - $yesterday->count(),
+            'weekDifference' => $thisWeek->count() - $lastWeek->count(),
+            'dayVariation' => number_format((1 - $yesterday->count() / $today->count()) * 100, 0),
+            'weekVariation' => number_format((1 - $lastWeek->count() / $thisWeek->count()) * 100, 0)
         ]);
     }
 
