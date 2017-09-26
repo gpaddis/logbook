@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use Carbon\Carbon;
 use App\LogbookEntry;
+use Illuminate\Database\Eloquent\Collection;
 
 class LogbookEntries
 {
@@ -69,5 +70,20 @@ class LogbookEntries
         ->within(Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek())
         ->latest('visited_at')
         ->get();
+    }
+
+    /** TEST THIS METHOD, IT RETURNS UNEXPECTED RESULTS. */
+    public function countByDay(Collection $collection) : array
+    {
+        $grouped = $collection->groupBy(function ($entry) {
+            return $entry->visited_at->toDateString();
+        });
+
+        $collection = [];
+        foreach ($grouped as $key => $value) {
+            $collection[$key] = $value->count();
+        }
+
+        return $collection;
     }
 }
