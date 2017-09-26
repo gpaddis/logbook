@@ -8,7 +8,7 @@ use Illuminate\Validation\Validator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LogbookUpdateForm extends FormRequest
+class LogbookUpdateFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +28,7 @@ class LogbookUpdateForm extends FormRequest
     public function rules()
     {
         return [
-            'entry.*.start_time' => 'required|date|before_or_equal:' . Carbon::now()->toDateTimeString(),
+            'entry.*.start_time' => 'required|date|before_or_equal:' . Carbon::now()->addDay()->toDateString(),
             'entry.*.end_time' => 'required|date|after:start_time',
             'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
             'entry.*.visits' => 'nullable|integer|min:0',

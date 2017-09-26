@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <!-- Branding Image -->
-  <a class="navbar-brand" href="{{ url('/') }}">
+  <a class="navbar-brand" href="{{ route('home') }}">
     {{ config('app.name') }}
   </a>
 
@@ -11,24 +11,20 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" href="{{ route('logbook.index') }}">Logbook</a>
-      </li>
-
-      <li class="nav-item">
         <a class="nav-link" href="{{ route('livecounter.index') }}">Live Counter</a>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" href="{{ route('patron-categories.index') }}">Patron Categories</a>
+        <a class="nav-link" href="{{ route('logbook.index') }}">Browse</a>
       </li>
 
       <li class="nav-item dropdown">
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarDropdownMenuLink" aria-haspopup="true" aria-expanded="false">
-          Settings<span class="caret"></span>
+          Admin<span class="caret"></span>
         </a>
         <div class="dropdown-menu">
-          <a href="" class="dropdown-item">Patron Categories</a>
-          <a href="" class="dropdown-item">All Settings</a>
+          <a href="{{ route('patron-categories.index') }}" class="dropdown-item">Patron Categories</a>
+          <a href="#" class="dropdown-item">App Settings</a>
         </div>
       </li>
     </ul>

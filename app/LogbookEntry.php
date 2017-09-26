@@ -7,9 +7,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class LogbookEntry extends Model
 {
+    /**
+     * This model's table does not include timestamps.
+     *
+     * @var boolean
+     */
     public $timestamps = false;
 
+    /**
+     * The properties that can be mass assigned.
+     *
+     * @var array
+     */
     public $fillable = ['patron_category_id', 'visited_at', 'recorded_live'];
+
+    /**
+     * Cast the field visited_at to a Carbon instance automativally.
+     *
+     * @var array
+     */
+    protected $dates = ['visited_at'];
 
     /**
      * Scope a query to only include logbook entries within the given start
