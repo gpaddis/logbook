@@ -27,11 +27,20 @@ class LogbookEntryController extends Controller
      */
     public function index()
     {
-        $entries = LogbookEntry::with('patronCategory')
+        $entries = LogbookEntry::whereDate('visited_at', '>=', Carbon::now()->subWeek()->startOfWeek())
         ->latest('visited_at')
-        ->get();
+        ->get()
+        ->groupBy(function ($entry) {
+            return $entry->visited_at->toDateString();
+        });
 
-        return view('logbook.index', compact('entries'));
+        $today = $entries->get(Carbon::now()->toDateString())->count();
+        $yesterday = $entries->get(Carbon::now()->subDay()->toDateString())->count();
+
+        return view('logbook.index', compact(
+            'today',
+            'yesterday'
+        ));
     }
 
 
