@@ -3,21 +3,24 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\LogbookEntry;
 use Timeslot\Timeslot;
 use App\PatronCategory;
 use Illuminate\Http\Request;
 use Timeslot\TimeslotCollection;
+use App\Repositories\LogbookEntries;
 use App\Http\Requests\LogbookUpdateFormRequest;
 
 class LogbookEntryController extends Controller
 {
+    protected $entries;
+
     /**
      * ThreadsController constructor
      */
-    public function __construct()
+    public function __construct(LogbookEntries $entries)
     {
         $this->middleware('auth');
+        $this->entries = $entries;
     }
 
     /**
@@ -27,23 +30,10 @@ class LogbookEntryController extends Controller
      */
     public function index()
     {
-        $today = LogbookEntry::whereDate('visited_at', '>=', Carbon::now()->startOfDay())
-        ->latest('visited_at')
-        ->get();
-
-        $yesterday = LogbookEntry::within(Carbon::now()->subDay()->startOfDay(), Carbon::now()->subDay()->endOfDay())
-        ->latest('visited_at')
-        ->get();
-
-        $thisWeek = LogbookEntry::whereDate('visited_at', '>=', Carbon::now()->startOfWeek())
-        ->latest('visited_at')
-        ->get();
-
-        $lastWeek = LogbookEntry::within(Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek())
-        ->latest('visited_at')
-        ->get();
-
-        // dd($yesterday);
+        $today = $this->entries->today();
+        $yesterday = $this->entries->yesterday();
+        $thisWeek = $this->entries->thisWeek();
+        $lastWeek = $this->entries->lastWeek();
 
         return view('logbook.index', [
             'today' => $today,
