@@ -8,7 +8,7 @@ use Timeslot\Timeslot;
 use App\PatronCategory;
 use Illuminate\Http\Request;
 use Timeslot\TimeslotCollection;
-use App\Http\Requests\LogbookUpdateForm;
+use App\Http\Requests\LogbookUpdateFormRequest;
 
 class LogbookEntryController extends Controller
 {
@@ -52,7 +52,7 @@ class LogbookEntryController extends Controller
      *
      * @return Response
      */
-    public function store(LogbookUpdateForm $form)
+    public function store(LogbookUpdateFormRequest $form)
     {
         $form->persist();
 

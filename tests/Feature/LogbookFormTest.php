@@ -123,8 +123,8 @@ class LogbookFormTest extends TestCase
         $this->withExceptionHandling()->signIn();
 
         $entry = [
-            'start_time' => Carbon::now()->addHour(),
-            'end_time' => Carbon::now()->addHours(2),
+            'start_time' => Carbon::now()->addDay(),
+            'end_time' => Carbon::now()->addDay()->addHour(),
             'patron_category_id' => create('App\PatronCategory')->id,
             'visits' => null
         ];

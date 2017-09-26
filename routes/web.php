@@ -13,7 +13,7 @@ Route::get('/home', 'HomeController@index')->name('home');
  */
 Route::get('/logbook', 'LogbookEntryController@index')->name('logbook.index');
 Route::get('/logbook/update', 'LogbookEntryController@update')->name('logbook.update');
-Route::post('/logbook', 'LogbookEntryController@store');
+Route::post('/logbook', 'LogbookEntryController@store')->name('logbook.store');
 
 /**
  * Live Counter
@@ -26,8 +26,8 @@ Route::post('/logbook/livecounter/subtract', 'LiveCounterController@subtract')->
  * Patron Categories
  */
 Route::get('/patron-categories', 'PatronCategoryController@index')->name('patron-categories.index');
-Route::get('/patron-categories/{patronCategory}', 'PatronCategoryController@show')->name('patron-category.index');
-Route::post('/patron-categories', 'PatronCategoryController@store');
+Route::get('/patron-categories/{patronCategory}', 'PatronCategoryController@show')->name('patron-category.show');
+Route::post('/patron-categories', 'PatronCategoryController@store')->name('patron-category.store');
 
 
 /**
