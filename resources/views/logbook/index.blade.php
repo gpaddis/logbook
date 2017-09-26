@@ -16,11 +16,11 @@
           @endslot
 
           @slot('value')
-          {{ $today }}
+          {{ $today->count() }}
           @endslot
 
           @slot('footer')
-          x% more than yesterday ({{ $yesterday }})
+          {{ abs($variation) }}% {{ $variation > 0 ? 'more' : 'less' }} than yesterday ({{ $yesterday->count() }} visits)
           @endslot
           @endcomponent
         </div>
@@ -45,7 +45,7 @@
         </div>
 
         <div class="card">
-          <div class="card-header">Detailed reports</div>
+          <div class="card-header">Browse the logbook</div>
           <div class="card-body">
             <ul>
               <li>Today</li>
