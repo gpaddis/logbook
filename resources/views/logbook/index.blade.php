@@ -33,7 +33,7 @@
         </div>
 
         <div class="card">
-          <div class="card-header">Browse the logbook</div>
+          <div class="card-header">Browse the statistics</div>
           <div class="card-body">
             <ul>
               <li>Today</li>

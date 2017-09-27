@@ -5,9 +5,7 @@
       {{ $category->name }}
     </h4>
     <div class="card-body text-center">
-      <h2 class="display-2 text-center">
-        {{ $category->logbookEntries->count()}}
-      </h2>
+      <h2 class="display-2 text-center">{{ $category->logbookEntries->count()}}</h2>
       <div class="card-footer">
         <div>
           <form method="POST" action="{{ route('livecounter.add') }}">
