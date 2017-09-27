@@ -85,4 +85,35 @@ class LogbookTest extends TestCase
         ], $result->toArray());
         $this->assertInstanceOf('Illuminate\Support\Collection', $result);
     }
+
+    /** @test */
+    public function it_gets_the_aggregate_values_within_a_time_range()
+    {
+        $this->signIn();
+        $timeslot = Timeslot::create('2017-08-10 10:00:00');
+
+        create('App\LogbookEntry', [
+            'visited_at' => $timeslot->start()
+        ], 5);
+
+        create('App\LogbookEntry', [
+            'visited_at' => $timeslot->start()->addDay()
+        ], 3);
+
+        create('App\LogbookEntry', [
+            'visited_at' => $timeslot->start()->addDays(2)
+        ], 6);
+
+        create('App\LogbookEntry', [
+            'visited_at' => $timeslot->start()->addDays(3)
+        ], 5);
+
+        $queryRange = Timeslot::create('2017-08-11 00:00:00', 5 * 24);
+
+        $result = LogbookEntry::getAggregatesWithin($queryRange->start(), $queryRange->end());
+
+        $this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $result);
+        $this->assertEquals(3, $result->where('day', $queryRange->start()->toDateString())->first()->visits);
+        $this->assertEquals(4.7, number_format($result->pluck('visits')->average(), 1));
+    }
 }

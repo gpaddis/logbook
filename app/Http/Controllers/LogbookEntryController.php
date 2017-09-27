@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\LogbookEntry;
 use Timeslot\Timeslot;
 use App\PatronCategory;
 use Illuminate\Http\Request;
@@ -30,20 +31,20 @@ class LogbookEntryController extends Controller
      */
     public function index()
     {
-        $today = $this->entries->today();
-        $yesterday = $this->entries->yesterday();
-        $thisWeek = $this->entries->thisWeek();
-        $lastWeek = $this->entries->lastWeek();
+        $aggregates = LogbookEntry::getAggregatesWithin(Carbon::now()->subWeek()->startOfWeek(), Carbon::now());
+// dd($aggregates);
+        $today = $aggregates->where('day', Carbon::now()->toDateString());
+        $yesterday = $aggregates->where('day', Carbon::now()->subDay()->toDateString());
+        $thisWeek = $aggregates->where('day', '>=', Carbon::now()->startOfWeek()->toDateString());
+        $lastWeek = $aggregates->where('day', '>=', Carbon::now()->subWeek()->startOfWeek()->toDateString())
+            ->where('day', '<=', Carbon::now()->subWeek()->endOfWeek()->toDateString());
+// dd($thisWeek);
 
         return view('logbook.index', [
             'today' => $today,
             'yesterday' => $yesterday,
             'thisWeek' => $thisWeek,
             'lastWeek' => $lastWeek,
-            'dayDifference' => $today->count() - $yesterday->count(),
-            'weekDifference' => $thisWeek->count() - $lastWeek->count(),
-            'dayVariation' => number_format((1 - $yesterday->count() / $today->count()) * 100, 0),
-            'weekVariation' => number_format((1 - $lastWeek->count() / $thisWeek->count()) * 100, 0)
         ]);
     }
 

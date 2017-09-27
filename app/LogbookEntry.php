@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Timeslot\Timeslot;
 use Timeslot\TimeslotInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -79,6 +80,23 @@ class LogbookEntry extends Model
         }
 
         return collect($collection);
+    }
+
+    /**
+     * Get aggregate values for a custom time range.
+     *
+     * @param  Carbon $start
+     * @param  Carbon $end
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public static function getAggregatesWithin(Carbon $start, Carbon $end)
+    {
+        return static::selectRaw('MONTH(visited_at) as month, WEEK(visited_at) as week, DATE(visited_at) AS day, COUNT(*) AS visits')
+        ->where('visited_at', '>=', $start->toDateString())
+        ->where('visited_at', '<=', $end->toDateString())
+        ->groupBy('month', 'week', 'day')
+        ->latest('day')
+        ->get();
     }
 
     /**
