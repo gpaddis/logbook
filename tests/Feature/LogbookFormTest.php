@@ -41,19 +41,17 @@ class LogbookFormTest extends TestCase
     {
         $this->signIn();
 
-        create('App\PatronCategory', [], 2);
-
         $entry1 = [
             'start_time' => '2017-08-21 12:00:00',
             'end_time' => '2017-08-21 13:00:00',
-            'patron_category_id' => 1,
+            'patron_category_id' => create('App\PatronCategory')->id,
             'visits' => 8
         ];
 
         $entry2 = [
             'start_time' => '2017-08-21 12:00:00',
             'end_time' => '2017-08-21 13:00:00',
-            'patron_category_id' => 2,
+            'patron_category_id' => create('App\PatronCategory')->id,
             'visits' => 2
         ];
 
@@ -186,9 +184,16 @@ class LogbookFormTest extends TestCase
     {
         $this->signIn();
 
-        create('App\LogbookEntry', ['visited_at' => '1985-02-13 12:10:04'], 32);
+        $category = create('App\PatronCategory');
 
-        $this->get('/logbook/update?date=1985-02-13')->assertSee('value="32"');
+        $entries = create('App\LogbookEntry', [
+            'visited_at' => '1985-02-13 12:10:04',
+            'patron_category_id' => $category->id
+            ], 15);
+
+        // dd(LogbookEntry::all());
+        $this->assertEquals(15, LogbookEntry::all()->count());
+        $this->get('/logbook/update?date=1985-02-13')->assertSee('value="15"');
     }
 
     /** @test */
