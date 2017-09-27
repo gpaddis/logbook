@@ -61,32 +61,11 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Group all entries by day and count the total number, then return a collection.
-     *
-     * @param  Illuminate\Database\Query\Builder $query
-     *
-     * @return Illuminate\Support\Collection
-     */
-    public function scopeGetCountByDay($query)
-    {
-        $groupedEntries = $query->get()
-        ->groupBy(function ($entry) {
-            return $entry->visited_at->toDateString();
-        });
-
-        $collection = [];
-        foreach ($groupedEntries as $key => $value) {
-            $collection[$key] = $value->count();
-        }
-
-        return collect($collection);
-    }
-
-    /**
      * Get aggregate values for a custom time range.
      *
-     * @param  string $start
-     * @param  string $end
+     * @param  Carbon $start
+     * @param  Carbon $end
+     *
      * @return Illuminate\Database\Eloquent\Collection
      */
     public static function getAggregatesWithin(Carbon $start, Carbon $end)

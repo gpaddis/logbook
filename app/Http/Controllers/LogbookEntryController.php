@@ -13,15 +13,12 @@ use App\Http\Requests\LogbookUpdateFormRequest;
 
 class LogbookEntryController extends Controller
 {
-    protected $entries;
-
     /**
-     * ThreadsController constructor
+     * LogbookEntry constructor
      */
-    public function __construct(LogbookEntries $entries)
+    public function __construct()
     {
         $this->middleware('auth');
-        $this->entries = $entries;
     }
 
     /**
