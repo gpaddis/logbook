@@ -8,12 +8,13 @@ use Timeslot\Timeslot;
 use App\PatronCategory;
 use Illuminate\Http\Request;
 use Timeslot\TimeslotCollection;
+use App\Repositories\LogbookEntries;
 use App\Http\Requests\LogbookUpdateFormRequest;
 
 class LogbookEntryController extends Controller
 {
     /**
-     * ThreadsController constructor
+     * LogbookEntry constructor
      */
     public function __construct()
     {
@@ -27,33 +28,18 @@ class LogbookEntryController extends Controller
      */
     public function index()
     {
-        $today = LogbookEntry::whereDate('visited_at', '>=', Carbon::now()->startOfDay())
-        ->latest('visited_at')
-        ->get();
+        $aggregates = LogbookEntry::getAggregatesWithin(Carbon::now()->subWeek()->startOfWeek(), Carbon::now());
 
-        $yesterday = LogbookEntry::within(Carbon::now()->subDay()->startOfDay(), Carbon::now()->subDay()->endOfDay())
-        ->latest('visited_at')
-        ->get();
-
-        $thisWeek = LogbookEntry::whereDate('visited_at', '>=', Carbon::now()->startOfWeek())
-        ->latest('visited_at')
-        ->get();
-
-        $lastWeek = LogbookEntry::within(Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek())
-        ->latest('visited_at')
-        ->get();
-
-        // dd($yesterday);
+        $today = $aggregates->where('day', Carbon::now()->toDateString())->first()->visits ?? 0;
+        $yesterday = $aggregates->where('day', Carbon::now()->subDay()->toDateString())->first()->visits ?? 0;
+        $thisWeeksAverage = $aggregates->where('week', '>=', Carbon::now()->weekOfYear)->pluck('visits')->average();
+        $lastWeeksAverage = $aggregates->where('week', '>=', Carbon::now()->subWeek()->weekOfYear)->pluck('visits')->average();
 
         return view('logbook.index', [
             'today' => $today,
             'yesterday' => $yesterday,
-            'thisWeek' => $thisWeek,
-            'lastWeek' => $lastWeek,
-            'dayDifference' => $today->count() - $yesterday->count(),
-            'weekDifference' => $thisWeek->count() - $lastWeek->count(),
-            'dayVariation' => number_format((1 - $yesterday->count() / $today->count()) * 100, 0),
-            'weekVariation' => number_format((1 - $lastWeek->count() / $thisWeek->count()) * 100, 0)
+            'thisWeeksAverage' => $thisWeeksAverage,
+            'lastWeeksAverage' => $lastWeeksAverage,
         ]);
     }
 

@@ -2,7 +2,9 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Timeslot\Timeslot;
+use Timeslot\TimeslotInterface;
 use Illuminate\Database\Eloquent\Model;
 
 class LogbookEntry extends Model
@@ -35,12 +37,45 @@ class LogbookEntry extends Model
      * @param  Illuminate\Database\Eloquent\Builder $query
      * @param  string $start
      * @param  string $end
+     *
      * @return Illuminate\Database\Eloquent\Builder
      */
     public function scopeWithin($query, string $start, string $end)
     {
         return $query->where('visited_at', '>=', $start)
         ->where('visited_at', '<=', $end);
+    }
+
+    /**
+     * Scope a query to only include logbook entries within the given timeslot.
+     *
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  Timeslot\TimeslotInterface           $timeslot
+     *
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithinTimeslot($query, TimeslotInterface $timeslot)
+    {
+        return $query->where('visited_at', '>=', $timeslot->start())
+        ->where('visited_at', '<=', $timeslot->end());
+    }
+
+    /**
+     * Get aggregate values for a custom time range.
+     *
+     * @param  Carbon $start
+     * @param  Carbon $end
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public static function getAggregatesWithin(Carbon $start, Carbon $end)
+    {
+        return static::selectRaw('MONTH(visited_at) as month, WEEK(visited_at) as week, DATE(visited_at) AS day, COUNT(*) AS visits')
+        ->where('visited_at', '>=', $start->startOfDay())
+        ->where('visited_at', '<=', $end->endOfDay())
+        ->groupBy('month', 'week', 'day')
+        ->latest('day')
+        ->get();
     }
 
     /**
