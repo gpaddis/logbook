@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\LogbookEntry;
 use Timeslot\Timeslot;
@@ -93,27 +94,26 @@ class LogbookTest extends TestCase
         $timeslot = Timeslot::create('2017-08-10 10:00:00');
 
         create('App\LogbookEntry', [
-            'visited_at' => $timeslot->start()
+            'visited_at' => '2017-08-10 10:00:00'
         ], 5);
 
         create('App\LogbookEntry', [
-            'visited_at' => $timeslot->start()->addDay()
+            'visited_at' => '2017-08-11 00:00:00'
         ], 3);
 
         create('App\LogbookEntry', [
-            'visited_at' => $timeslot->start()->addDays(2)
+            'visited_at' => '2017-08-12 10:00:00'
         ], 6);
 
         create('App\LogbookEntry', [
-            'visited_at' => $timeslot->start()->addDays(3)
+            'visited_at' => '2017-08-13 23:59:59'
         ], 5);
 
-        $queryRange = Timeslot::create('2017-08-11 00:00:00', 5 * 24);
-
-        $result = LogbookEntry::getAggregatesWithin($queryRange->start(), $queryRange->end());
+        $result = LogbookEntry::getAggregatesWithin(Carbon::parse('2017-08-11'), Carbon::parse('2017-08-13'));
 
         $this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $result);
-        $this->assertEquals(3, $result->where('day', $queryRange->start()->toDateString())->first()->visits);
+        $this->assertEquals(3, $result->where('day', '2017-08-11')->first()->visits);
+        $this->assertEquals(5, $result->where('day', '2017-08-13')->first()->visits);
         $this->assertEquals(4.7, number_format($result->pluck('visits')->average(), 1));
     }
 }

@@ -10,7 +10,7 @@
       <div class="card-body">
         <div class="row justify-content-left">
           @include('logbook.info-cards.today')
-          @include('logbook.info-cards.this-week')
+          {{-- @include('logbook.info-cards.this-week') --}}
         </div>
       </div>
     </div>

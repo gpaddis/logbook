@@ -5,11 +5,15 @@ Today
 @endslot
 
 @slot('value')
-{{ $today->count() }}
+{{ $today }}
+@endslot
+
+@slot('subtitle')
+Visits
 @endslot
 
 @slot('footer')
-{{ abs($dayDifference) }} {{ $dayDifference > 0 ? 'more' : 'less' }} than yesterday (
-<span class="text-{{ $dayVariation >= 0 ? 'success' : 'danger' }}">{{ $dayVariation }}%</span>)
+<span class="text-{{ $today - $yesterday >= 0 ? 'success' : 'danger' }}">
+    {{ abs($today - $yesterday) }} {{ $today - $yesterday > 0 ? 'more' : 'less' }}</span> than yesterday
 @endslot
 @endcomponent

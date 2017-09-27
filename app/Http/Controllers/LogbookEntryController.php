@@ -32,19 +32,17 @@ class LogbookEntryController extends Controller
     public function index()
     {
         $aggregates = LogbookEntry::getAggregatesWithin(Carbon::now()->subWeek()->startOfWeek(), Carbon::now());
-// dd($aggregates);
-        $today = $aggregates->where('day', Carbon::now()->toDateString());
-        $yesterday = $aggregates->where('day', Carbon::now()->subDay()->toDateString());
-        $thisWeek = $aggregates->where('day', '>=', Carbon::now()->startOfWeek()->toDateString());
-        $lastWeek = $aggregates->where('day', '>=', Carbon::now()->subWeek()->startOfWeek()->toDateString())
-            ->where('day', '<=', Carbon::now()->subWeek()->endOfWeek()->toDateString());
-// dd($thisWeek);
+
+        $today = $aggregates->where('day', Carbon::now()->toDateString())->first()->visits ?? 0;
+        $yesterday = $aggregates->where('day', Carbon::now()->subDay()->toDateString())->first()->visits ?? 0;
+        $thisWeeksAverage = $aggregates->where('week', '>=', Carbon::now()->weekOfYear)->pluck('visits')->average();
+        $lastWeeksAverage = $aggregates->where('week', '>=', Carbon::now()->subWeek()->weekOfYear)->pluck('visits')->average();
 
         return view('logbook.index', [
             'today' => $today,
             'yesterday' => $yesterday,
-            'thisWeek' => $thisWeek,
-            'lastWeek' => $lastWeek,
+            'thisWeeksAverage' => $thisWeeksAverage,
+            'lastWeeksAverage' => $lastWeeksAverage,
         ]);
     }
 
