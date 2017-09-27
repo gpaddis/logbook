@@ -11,8 +11,6 @@ before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS logbook_dev;'
 
 before_script:
-  - php artisan key:generate
-  - php artisan config:clear
   - cp .env.travis .env
   - travis_retry composer self-update
   - travis_retry composer install --prefer-source --no-interaction
