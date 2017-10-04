@@ -8,6 +8,7 @@
       <div class="card-header">Logbook Index</div>
 
       <div class="card-body">
+        @include('logbook.tabs')
         <div class="row justify-content-left">
           @include('logbook.info-cards.today')
           @include('logbook.info-cards.this-week')
