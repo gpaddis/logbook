@@ -5,11 +5,14 @@ This Week
 @endslot
 
 @slot('value')
-{{ $thisWeek->count() }}
+{{ number_format($thisWeeksAverage, 1) }}
+@endslot
+
+@slot('subtitle')
+Average visits / day
 @endslot
 
 @slot('footer')
-{{ abs($weekDifference) }} {{ $weekDifference > 0 ? 'more' : 'less' }} than last week (
-<span class="text-{{ $weekVariation >= 0 ? 'success' : 'danger' }}">{{ $weekVariation }}%</span>)
+Last week was {{ number_format($lastWeeksAverage, 1) }}
 @endslot
 @endcomponent

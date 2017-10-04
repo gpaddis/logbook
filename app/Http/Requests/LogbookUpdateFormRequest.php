@@ -43,7 +43,8 @@ class LogbookUpdateFormRequest extends FormRequest
     public function messages()
     {
         return [
-            'before_or_equal' => 'You cannot save a logbook entry in the future.'
+            'before_or_equal' => 'You cannot save a logbook entry in the future.',
+            'min' => 'The visits count must be a positive number.'
         ];
     }
 

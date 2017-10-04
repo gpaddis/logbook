@@ -1,13 +1,11 @@
 {{-- If the category is secondary it adds the classes collapse multi-collapse. --}}
 <div class="col-lg-3 col-md-6 col-sm-6 mb-4{{ $category->is_primary ? '' : ' collapse multi-collapse' }}">
-  <div class="card">
+  <div class="card border-secondary">
     <h4 class="card-header">
       {{ $category->name }}
     </h4>
     <div class="card-body text-center">
-      <h2 class="display-2 text-center">
-        {{ $category->logbookEntries->count()}}
-      </h2>
+      <h2 class="display-2 text-center">{{ $category->logbookEntries->count()}}</h2>
       <div class="card-footer">
         <div>
           <form method="POST" action="{{ route('livecounter.add') }}">

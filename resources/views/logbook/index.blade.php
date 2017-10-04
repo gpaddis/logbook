@@ -8,9 +8,10 @@
       <div class="card-header">Logbook Index</div>
 
       <div class="card-body">
+        @include('logbook.tabs')
         <div class="row justify-content-left">
           @include('logbook.info-cards.today')
-          {{-- @include('logbook.info-cards.this-week') --}}
+          @include('logbook.info-cards.this-week')
         </div>
       </div>
     </div>
@@ -33,7 +34,7 @@
         </div>
 
         <div class="card">
-          <div class="card-header">Browse the logbook</div>
+          <div class="card-header">Browse the statistics</div>
           <div class="card-body">
             <ul>
               <li>Today</li>

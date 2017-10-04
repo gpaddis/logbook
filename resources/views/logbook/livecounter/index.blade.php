@@ -7,19 +7,17 @@
     <div class="card">
       <div class="card-header">Live Counter Index</div>
       <div class="card-body">
-        {{-- Start categories cards. --}}
+        <!-- Start categories cards. -->
         <div class="row justify-content-center">
           @forelse($patronCategories as $category)
-          @include('logbook.livecounter.category')
+          @include('logbook.livecounter.category-card')
           @empty
           <div class="col">
             @include('layouts.partials.no-patron-categories')
           </div>
           @endforelse
         </div>
-        {{-- End categories cards. --}}
-
-        {{-- Toggle secondary categories. --}}
+        <!-- End categories cards. -->
         @if($patronCategories->where('is_primary', false)->count())
         <div class="col text-center">
           <p>
