@@ -20,19 +20,21 @@
 </head>
 
 <body class="bg-light">
-  <!-- Navbar start -->
-  @include('layouts.partials.navbar')
-  <!-- Navbar end -->
+  <div id="app">
+    <!-- Navbar start -->
+    @include('layouts.partials.navbar')
+    <!-- Navbar end -->
 
-  <!-- Content start -->
-  <div class="container">
-    @yield('content')
+    <!-- Content start -->
+    <div class="container">
+      @yield('content')
+    </div>
+    <!-- Content end -->
+
+    <flash message="{{ session('flash') }}"></flash>
   </div>
-  <!-- Content end -->
 
-  <!-- Scripts start -->
+  <!-- Scripts -->
   <script src="{{ asset('js/app.js') }}"></script>
-  {{-- <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script> --}}
-  <!-- Scripts end -->
 </body>
 </html>

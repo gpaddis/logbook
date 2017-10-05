@@ -65,15 +65,15 @@
             @endforeach
           </tbody>
         </table>
-        <div class="text-center">
-          <a href="#" class="btn btn-primary">Add a new patron category</a>
-        </div>
-        @endif
-
       </div>
-
+      <div class="text-center">
+        <a href="#" class="btn btn-primary">Add a new patron category</a>
+      </div>
+      @endif
     </div>
+
   </div>
+</div>
 </div>
 
 @endsection
