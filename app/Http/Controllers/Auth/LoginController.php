@@ -18,7 +18,9 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+    use AuthenticatesUsers {
+        redirectPath as laravelRedirectPath;
+    }
 
     /**
      * Where to redirect users after login.
@@ -35,5 +37,19 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * Get the post register / login redirect path.
+     *
+     * @see https://stackoverflow.com/questions/42119645/flash-message-after-login-laravel
+     *
+     * @return string
+     */
+    public function redirectPath()
+    {
+        session()->flash('flash', 'You are logged in!');
+
+        return $this->laravelRedirectPath();
     }
 }
