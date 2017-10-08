@@ -79,7 +79,7 @@ class PatronCategory extends Model
      */
     public function logbookEntries()
     {
-        return $this->hasMany('App\LogbookEntry');
+        return $this->hasMany(LogbookEntry::class);
     }
 
     /**

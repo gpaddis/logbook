@@ -12,7 +12,7 @@ use App\Http\Requests\LiveCounterRequest;
 class LiveCounterController extends Controller
 {
     /**
-     * ThreadsController constructor
+     * LiveCounterController constructor.
      */
     public function __construct()
     {
@@ -20,7 +20,7 @@ class LiveCounterController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display the visits count for all active patron categories.
      *
      * @return \Illuminate\Http\Response
      */
