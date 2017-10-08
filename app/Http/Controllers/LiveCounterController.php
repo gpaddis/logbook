@@ -26,11 +26,9 @@ class LiveCounterController extends Controller
      */
     public function index()
     {
-        $today = Timeslot::create(Carbon::now()->startOfDay(), 24);
-
         $patronCategories = PatronCategory::active()
-        ->with(['logbookEntries' => function ($query) use ($today) {
-            $query->within($today->start(), $today->end());
+        ->withCount(['logbookEntries as visits_count' => function ($query) {
+            $query->whereDate('visited_at', date('Y-m-d'));
         }])->orderBy('is_primary', 'desc')->get();
         // dd($patronCategories);
 

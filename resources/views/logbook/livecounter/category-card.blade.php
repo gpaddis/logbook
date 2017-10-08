@@ -5,7 +5,7 @@
       {{ $category->name }}
     </h4>
     <div class="card-body text-center">
-      <h2 class="display-2 text-center">{{ $category->logbookEntries->count()}}</h2>
+      <h2 class="display-2 text-center">{{ $category->visits_count}}</h2>
       <div class="card-footer">
         <div>
           <form method="POST" action="{{ route('livecounter.add') }}">
@@ -19,9 +19,8 @@
             <input type="hidden" name="patron_category_id" value="{{ $category->id }}">
             <button type="submit" class="btn btn-xs btn-outline-danger">Subtract</button> {{-- Subtract button --}}
           </form>
-        </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </div>

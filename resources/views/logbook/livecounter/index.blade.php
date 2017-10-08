@@ -10,7 +10,7 @@
         <!-- Start categories cards. -->
         <div class="row justify-content-center">
           @forelse($patronCategories as $category)
-          @include('logbook.livecounter.category-card')
+            @include('logbook.livecounter.category-card')
           @empty
           <div class="col">
             @include('layouts.partials.no-patron-categories')
