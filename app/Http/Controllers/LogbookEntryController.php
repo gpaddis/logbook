@@ -55,7 +55,8 @@ class LogbookEntryController extends Controller
     {
         $form->persist();
 
-        return redirect()->route('logbook.index');
+        return redirect()->route('logbook.index')
+        ->with('flash', 'The data was saved in the logbook.');
     }
 
     /**
