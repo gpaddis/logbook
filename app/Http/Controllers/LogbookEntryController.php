@@ -35,7 +35,7 @@ class LogbookEntryController extends Controller
         $thisWeeksAverage = $aggregates->where('week', Carbon::now()->weekOfYear)->pluck('visits')->average();
         $lastWeeksAverage = $aggregates->where('week', Carbon::now()->subWeek()->weekOfYear)->pluck('visits')->average();
 
-        return view('logbook.index', [
+        return view('logbook.tabs.overview', [
             'today' => $today,
             'yesterday' => $yesterday,
             'thisWeeksAverage' => $thisWeeksAverage,

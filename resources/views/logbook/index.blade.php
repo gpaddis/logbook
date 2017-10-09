@@ -8,10 +8,28 @@
       <div class="card-header">Logbook Index</div>
 
       <div class="card-body">
-        @include('logbook.tabs')
+        <!-- Tabs start -->
+        <ul class="nav nav-tabs mb-2">
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ route('logbook.index') }}">Overview</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('logbook.day') }}">Day</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Week</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Month</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Year</a>
+          </li>
+        </ul>
+        <!-- Tabs end -->
+
         <div class="row justify-content-left">
-          @include('logbook.info-cards.today')
-          @include('logbook.info-cards.this-week')
+          @yield('tab-content')
         </div>
       </div>
     </div>
