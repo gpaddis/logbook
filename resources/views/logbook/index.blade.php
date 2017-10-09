@@ -66,15 +66,18 @@
 
 @push('scripts')
 <script>
-  // jQuery logbook index tabs
-  $(document).ready(function(){
-    let full_path = location.href.split("?")[0];
-    $(".nav li a").each(function(){
-      let $this = $(this);
-      if($this.prop("href").split("?")[0] == full_path) {
-        $this.addClass("active");
-      }
-    });
+/**
+ * Activate the tab when URI == href attribute.
+ */
+ $(document).ready(function(){
+  let full_path = location.href.split("?")[0];
+  $(".nav li a").each(function(){
+    let $this = $(this);
+    if($this.prop("href").split("?")[0] == full_path) {
+      $this.addClass("active");
+      return false;
+    }
   });
+});
 </script>
 @endpush
