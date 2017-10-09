@@ -2,6 +2,6 @@
 
 @section('tab-content')
 <div class="col">
-    <h3>Daily statistics</h3>
+    <h3>Weekly statistics</h3>
 </div>
 @endsection
