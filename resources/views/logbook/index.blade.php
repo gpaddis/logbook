@@ -11,7 +11,7 @@
         <!-- Tabs start -->
         <ul class="nav nav-tabs mb-2">
           <li class="nav-item">
-            <a class="nav-link active" href="{{ route('logbook.index') }}">Overview</a>
+            <a class="nav-link" href="{{ route('logbook.index') }}">Overview</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('logbook.day') }}">Day</a>
@@ -62,5 +62,19 @@
     </div>
   </div>
 </div>
-
 @endsection
+
+@push('scripts')
+<script>
+  // jQuery logbook index tabs
+  $(document).ready(function(){
+    let full_path = location.href.split("?")[0];
+    $(".nav li a").each(function(){
+      let $this = $(this);
+      if($this.prop("href").split("?")[0] == full_path) {
+        $this.addClass("active");
+      }
+    });
+  });
+</script>
+@endpush
