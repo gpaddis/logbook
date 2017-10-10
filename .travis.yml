@@ -9,10 +9,10 @@ services:
 
 before_script:
   - cp .env.travis .env
-  - php artisan key:generate
   - mysql -e 'CREATE DATABASE IF NOT EXISTS logbook_dev;'
   - composer self-update
   - composer install --prefer-source --no-interaction
+  - php artisan key:generate
 
 script:
   - vendor/bin/phpunit
