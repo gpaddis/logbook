@@ -35,7 +35,7 @@
     </div>
   </div>
 
-  @stack('tab-sidebar')
+  @yield('tab-sidebar')
 </div>
 @endsection
 

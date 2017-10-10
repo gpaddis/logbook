@@ -5,7 +5,7 @@
 @include('logbook.info-cards.this-week')
 @endsection
 
-@push('tab-sidebar')
+@section('tab-sidebar')
 <div class="col-md-3">
     <div class="row">
         <div class="col">
@@ -32,4 +32,4 @@
         </div>
     </div>
 </div>
-@endpush
+@endsection
