@@ -7,13 +7,12 @@ php:
 services:
   - mysql
 
-before_install:
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS logbook_dev;'
-
 before_script:
   - cp .env.travis .env
-  - travis_retry composer self-update
-  - travis_retry composer install --prefer-source --no-interaction
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS logbook_dev;'
+  - composer self-update
+  - composer install --prefer-source --no-interaction
+  - php artisan key:generate
 
 script:
-  - phpunit
+  - vendor/bin/phpunit

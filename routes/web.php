@@ -12,6 +12,13 @@ Route::get('/', 'HomeController@index')->name('home');
  * Logbook & Logbook Form
  */
 Route::get('/logbook', 'LogbookEntryController@index')->name('logbook.index');
+Route::get('/logbook/day', function () {
+    return view('logbook.tabs.day');
+})->name('logbook.day');
+Route::get('/logbook/week', function () {
+    return view('logbook.tabs.week');
+})->name('logbook.week');
+
 Route::get('/logbook/update', 'LogbookEntryController@update')->name('logbook.update');
 Route::post('/logbook', 'LogbookEntryController@store')->name('logbook.store');
 

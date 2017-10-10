@@ -85,7 +85,7 @@ class LogbookEntry extends Model
      */
     public function patronCategory()
     {
-        return $this->belongsTo('App\PatronCategory');
+        return $this->belongsTo(PatronCategory::class);
     }
 
     /**
