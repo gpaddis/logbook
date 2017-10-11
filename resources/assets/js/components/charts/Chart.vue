@@ -1,6 +1,5 @@
 <template>
-    <canvas id="chart">
-
+    <canvas>
     </canvas>
 </template>
 
@@ -16,9 +15,7 @@ export default {
     },
 
     mounted() {
-        let context = $("#chart");
-
-        var myChart = new Chart(context, {
+        var myChart = new Chart(this.$el, {
             type: this.type,
             data: {
                 labels: this.labels,
