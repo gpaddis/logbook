@@ -16,6 +16,9 @@ require('./bootstrap');
 Vue.component('example', require('./components/Example.vue'));
 Vue.component('flash', require('./components/Flash.vue'));
 
+// Charts
+Vue.component('chart', require('./components/charts/Chart.vue'));
+
 const app = new Vue({
     el: '#app'
 });
