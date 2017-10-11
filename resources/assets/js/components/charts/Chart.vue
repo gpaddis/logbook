@@ -10,7 +10,7 @@ export default {
             default: 'bar'
         },
         label: {},
-        labels: {},
+        keys: {},
         values: {},
         backgroundColor: {},
         borderColor: {}
@@ -20,7 +20,7 @@ export default {
         var myChart = new Chart(this.$el, {
             type: this.type,
             data: {
-                labels: this.labels,
+                labels: this.keys,
                 datasets: [{
                     label: this.label,
                     data: this.values,
