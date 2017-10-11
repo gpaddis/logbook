@@ -27,7 +27,7 @@ class LiveCounterTest extends TestCase
 
         $entry = [
             'patron_category_id' => create('App\PatronCategory')->id,
-            'visited_at' => Carbon::now(),
+            'visited_at' => Carbon::now()->toDateTimeString(),
             'recorded_live' => true
         ];
 
