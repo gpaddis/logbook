@@ -10,6 +10,7 @@ export default {
         type: {
             default: 'bar'
         },
+        label: {},
         labels: {},
         values: {}
     },
@@ -22,7 +23,7 @@ export default {
             data: {
                 labels: this.labels,
                 datasets: [{
-                    label: '# of Users',
+                    label: this.label,
                     data: this.values,
                     backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',

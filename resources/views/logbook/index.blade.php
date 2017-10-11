@@ -17,13 +17,10 @@
             <a class="nav-link" href="{{ route('logbook.day') }}">Day</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('logbook.week') }}">Week</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="#">Month</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Year</a>
+            <a class="nav-link" href="{{ route('logbook.year') }}">Year</a>
           </li>
         </ul>
         <!-- Tabs end -->
