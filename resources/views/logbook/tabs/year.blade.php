@@ -8,8 +8,8 @@
         <div class="col-md-8">
             <chart type="bar"
             label="# of Users in 2017"
-            :keys="['January', 'February', 'March', 'April', 'May', 'June']"
-            :values="[10, 42, 4, 5, 34, 6]"
+            :keys="{{ $visits->keys() }}"
+            :values="{{ $visits->values() }}"
             background-color="rgba(255, 12, 2, 0.2)"
             border-color="rgba(254, 43, 132, 1)"></chart>
         </div>
@@ -23,8 +23,8 @@
         <div class="col-md-8">
             <chart type="line"
             label="Whatever you want to measure"
-            :keys="['January', 'February', 'March', 'April', 'May', 'June']"
-            :values="[12, 300, 24, 55, 34, 106]"
+            :keys="{{ $visits->keys() }}"
+            :values="{{ $visits->values() }}"
             background-color="rgba(255, 99, 132, 0.2)"
             border-color="rgba(255, 99, 132, 1)"></chart>
         </div>
