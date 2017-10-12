@@ -15,12 +15,7 @@ Route::get('/logbook', 'LogbookEntryController@index')->name('logbook.index');
 Route::get('/logbook/day', function () {
     return view('logbook.tabs.day');
 })->name('logbook.day');
-
-Route::get('/logbook/year', function () {
-    $visits = \App\LogbookEntry::selectRaw('MONTH(visited_at) as month, count(*) as visits')->groupBy('month')->pluck('visits', 'month')->sortBy('month');
-    $years = \App\LogbookEntry::selectRaw('YEAR(visited_at) as year')->distinct()->pluck('year');
-    return view('logbook.tabs.year', compact('visits', 'years'));
-})->name('logbook.year');
+Route::get('/logbook/year', 'LogbookEntryController@browseYear')->name('logbook.year');
 
 Route::get('/logbook/update', 'LogbookEntryController@update')->name('logbook.update');
 Route::post('/logbook', 'LogbookEntryController@store')->name('logbook.store');

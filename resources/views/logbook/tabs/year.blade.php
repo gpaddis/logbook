@@ -7,7 +7,7 @@
         <div class="col-sm col-lg-2 mb-2">
             <div class="card text-center border-info">
                 <div class="card-body">
-                    <h1 class="display-4">10</h1>
+                    <h1 class="display-4">{{ $days or 0 }}</h1>
                     <p>Opening days</p>
                 </div>
             </div>
@@ -16,7 +16,7 @@
         <div class="col-sm col-lg-2 mb-2">
             <div class="card text-center border-info">
                 <div class="card-body">
-                    <h1 class="display-4">1736</h1>
+                    <h1 class="display-4">{{ $visits->sum() ?: 0 }}</h1>
                     <p>Visits</p>
                 </div>
             </div>
@@ -25,7 +25,7 @@
         <div class="col-sm col-lg-2 mb-2">
             <div class="card text-center border-info">
                 <div class="card-body">
-                    <h1 class="display-4">18,7</h1>
+                    <h1 class="display-4">{{ number_format(($visits->sum() / $days), 1) }}</h1>
                     <p>Visits / day</p>
                 </div>
             </div>
@@ -34,7 +34,7 @@
         <div class="col-6 mb-2">
             <div class="card">
                 <div class="card-body">
-                    <h4>Statistics per year</h4>
+                    <h3>User statistics: 2017</h3>
 
                     <p class="card-text">
                         Choose a year from the dropdown to display the relative statistics:

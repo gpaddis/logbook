@@ -87,6 +87,36 @@ class LogbookEntryController extends Controller
     }
 
     /**
+     * Browse the Year tab containing data for the year selected.
+     *
+     * @param  Request $request
+     *
+     * @return Response
+     */
+    public function browseYear(Request $request)
+    {
+        $year = 2017;
+
+        $visits = LogbookEntry::whereYear('visited_at', $year)
+        ->selectRaw('MONTH(visited_at) as month, count(*) as visits')
+        ->groupBy('month')
+        ->pluck('visits', 'month')
+        ->sortBy('month');
+
+        $years = LogbookEntry::selectRaw('YEAR(visited_at) as year')
+        ->distinct()
+        ->pluck('year');
+
+        $days = LogbookEntry::whereYear('visited_at', $year)
+        ->selectRaw('DATE(visited_at) as day')
+        ->distinct('days')
+        ->get()
+        ->count();
+
+        return view('logbook.tabs.year', compact('visits', 'years', 'days'));
+    }
+
+    /**
      * Build the content of the logbook form with the timeslots and patron categories passed.
      * Only existing visits count values are added to the array, which is structured as follows:
      * ['timeslot_no' => ['patron_category_id' => 'visits']];
