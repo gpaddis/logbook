@@ -16,7 +16,7 @@ Route::get('/logbook/day', function () {
     return view('logbook.tabs.day');
 })->name('logbook.day');
 Route::get('/logbook/year', function () {
-    $visits = \App\LogbookEntry::selectRaw('MONTHNAME(visited_at) as month, count(*) as visits')->orderBy('visited_at')->groupBy('month')->pluck('visits', 'month');
+    $visits = \App\LogbookEntry::selectRaw('MONTH(visited_at) as month, count(*) as visits')->groupBy('month')->pluck('visits', 'month')->sortBy('month');
     return view('logbook.tabs.year', compact('visits'));
 })->name('logbook.year');
 
