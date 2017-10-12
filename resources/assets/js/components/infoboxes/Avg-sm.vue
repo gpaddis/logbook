@@ -17,9 +17,15 @@ export default {
 
     computed: {
         average: function () {
-            return Math.round( (this.value / this.number) * 10 ) / 10;
+            return this.round(this.value / this.number, 1);
         }
+    },
 
+    methods: {
+        round(value, precision) {
+            var multiplier = Math.pow(10, precision || 0);
+            return Math.round(value * multiplier) / multiplier;
+        }
     }
 }
 </script>
