@@ -100,7 +100,7 @@ class LogbookFormTest extends TestCase
     }
 
     /** @test */
-    public function the_count_value_must_be_a_valid_positive_integer()
+    public function the_visits_value_must_be_a_valid_positive_integer()
     {
         $this->withExceptionHandling()->signIn();
 
@@ -109,6 +109,22 @@ class LogbookFormTest extends TestCase
             'end_time' => '2017-08-21 13:00:00',
             'patron_category_id' => create('App\PatronCategory')->id,
             'visits' => -999
+        ];
+
+        $this->post('/logbook', ['entry' => ['any_entry_id' => $entry]])
+        ->assertSessionHasErrors('entry.*.visits');
+    }
+
+    /** @test */
+    public function the_visits_value_cannot_be_too_high()
+    {
+        $this->withExceptionHandling()->signIn();
+
+        $entry = [
+            'start_time' => '2017-08-21 12:00:00',
+            'end_time' => '2017-08-21 13:00:00',
+            'patron_category_id' => create('App\PatronCategory')->id,
+            'visits' => 25000
         ];
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry]])
