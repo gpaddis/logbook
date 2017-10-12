@@ -39,15 +39,15 @@ class LogbookTest extends TestCase
 
         create('App\LogbookEntry', [
             'visited_at' => $timeslot->start()->subHour()
-        ], 5);
+            ], 5);
 
         $target = create('App\LogbookEntry', [
             'visited_at' => $timeslot->start()
-        ], 3);
+            ], 3);
 
         create('App\LogbookEntry', [
             'visited_at' => $timeslot->start()->addHour()
-        ], 6);
+            ], 6);
 
         $result = LogbookEntry::withinTimeslot($timeslot)->get();
 
@@ -62,19 +62,19 @@ class LogbookTest extends TestCase
 
         create('App\LogbookEntry', [
             'visited_at' => '2017-08-10 10:00:00'
-        ], 5);
+            ], 5);
 
         create('App\LogbookEntry', [
             'visited_at' => '2017-08-11 00:00:00'
-        ], 3);
+            ], 3);
 
         create('App\LogbookEntry', [
             'visited_at' => '2017-08-12 10:00:00'
-        ], 6);
+            ], 6);
 
         create('App\LogbookEntry', [
             'visited_at' => '2017-08-13 23:59:59'
-        ], 5);
+            ], 5);
 
         $result = LogbookEntry::getAggregatesWithin(Carbon::parse('2017-08-11'), Carbon::parse('2017-08-13'));
 
@@ -82,5 +82,17 @@ class LogbookTest extends TestCase
         $this->assertEquals(3, $result->where('day', '2017-08-11')->first()->visits);
         $this->assertEquals(5, $result->where('day', '2017-08-13')->first()->visits);
         $this->assertEquals(4.7, number_format($result->pluck('visits')->average(), 1));
+    }
+
+    /** @test */
+    public function it_returns_only_entries_within_a_specific_year()
+    {
+        create('App\LogbookEntry', [
+            'visited_at' => Carbon::now()->subYear()
+            ], 10);
+
+        factory('App\LogbookEntry', 9)->create();
+
+        $this->assertCount(9, LogbookEntry::year(Carbon::now()->year)->get());
     }
 }
