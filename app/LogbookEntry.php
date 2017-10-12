@@ -34,9 +34,9 @@ class LogbookEntry extends Model
      * Scope a query to only include logbook entries within the given start
      * and end date & time.
      *
-     * @param  Illuminate\Database\Eloquent\Builder $query
-     * @param  string $start
-     * @param  string $end
+     * @param  Builder $query
+     * @param  string  $start
+     * @param  string  $end
      *
      * @return Illuminate\Database\Eloquent\Builder
      */
@@ -44,6 +44,19 @@ class LogbookEntry extends Model
     {
         return $query->where('visited_at', '>=', $start)
         ->where('visited_at', '<=', $end);
+    }
+
+    /**
+     * Scope a query to only include logbook entries within the given year.
+     *
+     * @param  Builder $query
+     * @param  int     $year
+     *
+     * @return Illuminate\Database\Query\Builder
+     */
+    public function scopeYear($query, int $year)
+    {
+        return $query->whereYear('visited_at', $year);
     }
 
     /**

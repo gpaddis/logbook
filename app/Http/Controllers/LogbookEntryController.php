@@ -97,17 +97,17 @@ class LogbookEntryController extends Controller
     {
         $year = 2017;
 
-        $visits = LogbookEntry::whereYear('visited_at', $year)
+        $years = LogbookEntry::selectRaw('YEAR(visited_at) as year')
+        ->distinct()
+        ->pluck('year');
+
+        $visits = LogbookEntry::year($year)
         ->selectRaw('MONTH(visited_at) as month, count(*) as visits')
         ->groupBy('month')
         ->pluck('visits', 'month')
         ->sortBy('month');
 
-        $years = LogbookEntry::selectRaw('YEAR(visited_at) as year')
-        ->distinct()
-        ->pluck('year');
-
-        $days = LogbookEntry::whereYear('visited_at', $year)
+        $days = LogbookEntry::year($year)
         ->selectRaw('DATE(visited_at) as day')
         ->distinct('days')
         ->get()
