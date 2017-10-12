@@ -65,7 +65,7 @@
         border-color="rgba(254, 43, 132, 1)"></chart>
     </div>
     <div class="col">
-        <h1>Total visits</h1>
+        <h1>Monthly visits</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad repudiandae optio enim commodi pariatur maxime dignissimos, voluptate! Expedita eum distinctio quo quae illo, necessitatibus sapiente, minima praesentium reprehenderit magnam accusamus.</p>
     </div>
 </div>
