@@ -4,32 +4,9 @@
 <div class="col">
 
     <div class="row">
-        <div class="col-sm col-lg-2 mb-2">
-            <div class="card text-center border-info">
-                <div class="card-body">
-                    <h1 class="display-4">{{ $days or 0 }}</h1>
-                    <p>Opening days</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm col-lg-2 mb-2">
-            <div class="card text-center border-info">
-                <div class="card-body">
-                    <h1 class="display-4">{{ $visits->sum() ?: 0 }}</h1>
-                    <p>Visits</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm col-lg-2 mb-2">
-            <div class="card text-center border-info">
-                <div class="card-body">
-                    <h1 class="display-4">{{ number_format(($visits->sum() / $days), 1) }}</h1>
-                    <p>Visits / day</p>
-                </div>
-            </div>
-        </div>
+        <sum-sm value="{{ $days or 0 }}">Opening days</sum-sm>
+        <sum-sm value="{{ $visits->sum() ?: 0 }}">Visits</sum-sm>
+        <avg-sm value="{{ $visits->sum() }}" number="{{ $days }}">Visits / day</avg-sm>
 
         <div class="col-6 mb-2">
             <div class="card">

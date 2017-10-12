@@ -19,6 +19,10 @@ Vue.component('flash', require('./components/Flash.vue'));
 // Charts
 Vue.component('chart', require('./components/charts/Chart.vue'));
 
+// Infoboxes
+Vue.component('sum-sm', require('./components/infoboxes/Sum-sm.vue'));
+Vue.component('avg-sm', require('./components/infoboxes/Avg-sm.vue'));
+
 const app = new Vue({
     el: '#app'
 });
