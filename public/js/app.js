@@ -18074,8 +18074,9 @@ __webpack_require__(137);
 Vue.component('example', __webpack_require__(211));
 Vue.component('flash', __webpack_require__(214));
 
-// Charts
+// Charts & reports
 Vue.component('chart', __webpack_require__(222));
+Vue.component('table-report', __webpack_require__(235));
 
 // Infoboxes
 Vue.component('sum-sm', __webpack_require__(225));
@@ -76989,6 +76990,179 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 232 */,
+/* 233 */,
+/* 234 */,
+/* 235 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(7)
+/* script */
+var __vue_script__ = __webpack_require__(236)
+/* template */
+var __vue_template__ = __webpack_require__(237)
+/* template functional */
+  var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/Table-report.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-43f274de", Component.options)
+  } else {
+    hotAPI.reload("data-v-43f274de", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 236 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        name: {
+            required: true
+        },
+        fields: {
+            required: true
+        },
+        dataset1: {
+            default: function _default() {
+                return ['-'];
+            }
+        },
+        dataset1Name: {},
+        dataset2: {
+            default: function _default() {
+                return ['-'];
+            }
+        },
+        dataset2Name: {}
+    },
+
+    computed: {
+        fieldKeys: function fieldKeys() {
+            return this.fields.length;
+        }
+    }
+});
+
+/***/ }),
+/* 237 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("table", { staticClass: "table" }, [
+    _c("thead", [
+      _c(
+        "tr",
+        [
+          _c("th", [_vm._v(_vm._s(_vm.name))]),
+          _vm._v(" "),
+          _vm._l(_vm.fields, function(field) {
+            return _c("th", [_vm._v(_vm._s(field))])
+          })
+        ],
+        2
+      )
+    ]),
+    _vm._v(" "),
+    _c("tbody", [
+      _c(
+        "tr",
+        [
+          _c("th", { attrs: { scope: "row" } }, [
+            _vm._v(_vm._s(_vm.dataset1Name))
+          ]),
+          _vm._v(" "),
+          _vm._l(_vm.fieldKeys, function(n) {
+            return _c("td", [_vm._v(_vm._s(_vm.dataset1[n]))])
+          })
+        ],
+        2
+      ),
+      _vm._v(" "),
+      _c(
+        "tr",
+        [
+          _c("th", { attrs: { scope: "row" } }, [
+            _vm._v(_vm._s(_vm.dataset2Name))
+          ]),
+          _vm._v(" "),
+          _vm._l(_vm.fieldKeys, function(n) {
+            return _c("td", [_vm._v(_vm._s(_vm.dataset2[n]))])
+          })
+        ],
+        2
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-43f274de", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

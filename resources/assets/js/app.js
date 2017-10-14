@@ -16,8 +16,9 @@ require('./bootstrap');
 Vue.component('example', require('./components/Example.vue'));
 Vue.component('flash', require('./components/Flash.vue'));
 
-// Charts
+// Charts & reports
 Vue.component('chart', require('./components/charts/Chart.vue'));
+Vue.component('table-report', require('./components/Table-report.vue'));
 
 // Infoboxes
 Vue.component('sum-sm', require('./components/infoboxes/Sum-sm.vue'));

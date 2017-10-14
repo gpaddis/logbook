@@ -47,6 +47,19 @@
     </div>
 </div>
 
+<div class="row">
+  <div class="col">
+    <table-report
+    name="Year"
+    :fields="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']"
+    :dataset1="{{ $visits }}"
+    dataset1-name="2016"
+    :dataset2="{{ $visits }}"
+    dataset2-name="2017">
+    </table-report>
+  </div>
+</div>
+
 <hr>
 
 <div class="row">
