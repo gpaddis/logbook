@@ -18,7 +18,9 @@
   </tr>
 
   <tr>
-    <th scope="row">Var</th>
+    <th scope="row">
+      <i class="fa fa-line-chart" aria-hidden="true" title="Increase / decrease percentage"></i>
+    </th>
     <td v-for="n in fieldKeys">
         <p v-bind:class="[dataset1[n] > dataset2[n] ? 'text-success' : '', dataset1[n] < dataset2[n] ? 'text-danger' : '']">
             {{ variation(dataset1[n], dataset2[n])}}

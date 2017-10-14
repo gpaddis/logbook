@@ -76853,6 +76853,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
@@ -76951,7 +76953,7 @@ var render = function() {
       _c(
         "tr",
         [
-          _c("th", { attrs: { scope: "row" } }, [_vm._v("Var")]),
+          _vm._m(0),
           _vm._v(" "),
           _vm._l(_vm.fieldKeys, function(n) {
             return _c("td", [
@@ -76979,7 +76981,22 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", { attrs: { scope: "row" } }, [
+      _c("i", {
+        staticClass: "fa fa-line-chart",
+        attrs: {
+          "aria-hidden": "true",
+          title: "Increase / decrease percentage"
+        }
+      })
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
