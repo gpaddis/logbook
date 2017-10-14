@@ -35,28 +35,37 @@
 export default {
     props: {
         name: {
-            required: true
+            required: true,
+            default: '#'
         },
         fields: {
-            required: true
+            required: true,
         },
         dataset1: {
             default: function () {
                 return ['-'];
             }
         },
-        dataset1Name: {},
+        dataset1Name: {
+          default: 'dataset 1'
+        },
         dataset2: {
             default: function () {
                 return ['-'];
             }
         },
-        dataset2Name: {}
+        dataset2Name: {
+          default: 'dataset 2'
+        }
     },
 
     computed: {
         fieldKeys: function () {
+          if (typeof this.fields != 'undefined') {
             return this.fields.length;
+          }
+
+          return 0;
         },
     },
 

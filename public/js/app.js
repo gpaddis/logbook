@@ -76859,7 +76859,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
         name: {
-            required: true
+            required: true,
+            default: '#'
         },
         fields: {
             required: true
@@ -76869,18 +76870,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 return ['-'];
             }
         },
-        dataset1Name: {},
+        dataset1Name: {
+            default: 'dataset 1'
+        },
         dataset2: {
             default: function _default() {
                 return ['-'];
             }
         },
-        dataset2Name: {}
+        dataset2Name: {
+            default: 'dataset 2'
+        }
     },
 
     computed: {
         fieldKeys: function fieldKeys() {
-            return this.fields.length;
+            if (typeof this.fields != 'undefined') {
+                return this.fields.length;
+            }
+
+            return 0;
         }
     },
 
