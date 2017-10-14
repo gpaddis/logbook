@@ -77184,10 +77184,10 @@ var render = function() {
               _c(
                 "p",
                 {
-                  class:
-                    _vm.dataset1[n] >= _vm.dataset2[n]
-                      ? "text-success"
-                      : "text-danger"
+                  class: [
+                    _vm.dataset1[n] > _vm.dataset2[n] ? "text-success" : "",
+                    _vm.dataset1[n] < _vm.dataset2[n] ? "text-danger" : ""
+                  ]
                 },
                 [
                   _vm._v(

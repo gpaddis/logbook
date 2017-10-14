@@ -95,11 +95,12 @@ class LogbookEntryController extends Controller
      */
     public function browseYear(Request $request)
     {
-        $year = 2017;
-
+        // Browse the years with available data in the dropdown menu.
         $years = LogbookEntry::selectRaw('YEAR(visited_at) as year')
         ->distinct()
         ->pluck('year');
+
+        $year = 2017;
 
         $visits = LogbookEntry::year($year)
         ->selectRaw('MONTH(visited_at) as month, count(*) as visits')

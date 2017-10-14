@@ -20,7 +20,7 @@
   <tr>
     <th scope="row">Var</th>
     <td v-for="n in fieldKeys">
-        <p v-bind:class="dataset1[n] >= dataset2[n] ? 'text-success' : 'text-danger'">
+        <p v-bind:class="[dataset1[n] > dataset2[n] ? 'text-success' : '', dataset1[n] < dataset2[n] ? 'text-danger' : '']">
             {{ variation(dataset1[n], dataset2[n])}}
         </p>
     </td>

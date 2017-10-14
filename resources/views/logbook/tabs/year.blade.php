@@ -47,11 +47,12 @@
     </div>
 </div>
 
+<!-- Table: visits per month / year -->
 <div class="row">
   <div class="col">
     <p>The data in detail:</p>
     <table-report
-    name="Year"
+    name="#"
     :fields="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']"
     :dataset1="{{ $visits }}"
     dataset1-name="2016"
