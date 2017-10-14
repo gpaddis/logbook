@@ -74,7 +74,6 @@ export default {
             if (first && second) {
                 let variation = second - first;
 
-                // This is where we can set a prop to color the result based on the variation being positive or negative
                 return ((variation / first) * 100) + '%';
             }
 

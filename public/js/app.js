@@ -76898,7 +76898,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (first && second) {
                 var variation = second - first;
 
-                // This is where we can set a prop to color the result based on the variation being positive or negative
                 return variation / first * 100 + '%';
             }
 
