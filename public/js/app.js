@@ -77070,6 +77070,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
@@ -77097,6 +77106,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         fieldKeys: function fieldKeys() {
             return this.fields.length;
         }
+    },
+
+    methods: {
+        variation: function variation(first, second) {
+            if (first && second) {
+                var variation = second - first;
+
+                // This is where we can set a prop to color the result based on the variation being positive or negative
+                return variation / first * 100 + '%';
+            }
+
+            return '-';
+        }
     }
 });
 
@@ -77108,7 +77130,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("table", { staticClass: "table" }, [
+  return _c("table", { staticClass: "table table-sm" }, [
     _c("thead", [
       _c(
         "tr",
@@ -77147,6 +77169,35 @@ var render = function() {
           _vm._v(" "),
           _vm._l(_vm.fieldKeys, function(n) {
             return _c("td", [_vm._v(_vm._s(_vm.dataset2[n]))])
+          })
+        ],
+        2
+      ),
+      _vm._v(" "),
+      _c(
+        "tr",
+        [
+          _c("th", { attrs: { scope: "row" } }, [_vm._v("Var")]),
+          _vm._v(" "),
+          _vm._l(_vm.fieldKeys, function(n) {
+            return _c("td", [
+              _c(
+                "p",
+                {
+                  class:
+                    _vm.dataset1[n] >= _vm.dataset2[n]
+                      ? "text-success"
+                      : "text-danger"
+                },
+                [
+                  _vm._v(
+                    "\n            " +
+                      _vm._s(_vm.variation(_vm.dataset1[n], _vm.dataset2[n])) +
+                      "\n        "
+                  )
+                ]
+              )
+            ])
           })
         ],
         2
