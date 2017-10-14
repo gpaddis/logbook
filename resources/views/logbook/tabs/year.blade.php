@@ -53,8 +53,8 @@
       border-color="rgba(254, 43, 132, 1)"></chart>
     </div>
     <div class="col">
-      <h1>Monthly visits</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad repudiandae optio enim commodi pariatur maxime dignissimos, voluptate! Expedita eum distinctio quo quae illo, necessitatibus sapiente, minima praesentium reprehenderit magnam accusamus.</p>
+      <h1>Visits by month</h1>
+      <p>There will be two datasets, for comparison: one for the current year, one for the previous.</p>
     </div>
   </div>
 
@@ -78,15 +78,15 @@
 <div class="row">
   <div class="col-md-8">
     <chart type="line"
-    label="Whatever you want to measure"
+    label="Students"
     :keys="{{ $visits->keys() }}"
     :values="{{ $visits->values() }}"
     background-color="rgba(255, 99, 132, 0.2)"
     border-color="rgba(255, 99, 132, 1)"></chart>
   </div>
   <div class="col">
-    <h1>Something else</h1>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad repudiandae optio enim commodi pariatur maxime dignissimos, voluptate! Expedita eum distinctio quo quae illo, necessitatibus sapiente, minima praesentium reprehenderit magnam accusamus.</p>
+    <h1>User groups</h1>
+    <p>This graph will display the visits in the year selected with stacked lines corresponding to the different user groups.</p>
   </div>
 </div>
 
