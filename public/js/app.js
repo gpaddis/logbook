@@ -77328,7 +77328,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['category']
+  props: ['categoryId', 'name', 'visits'],
+
+  methods: {
+    add: function add() {
+      axios.post('/logbook/livecounter/add', { patron_category_id: this.categoryId });
+      this.$emit('updated');
+    }
+  }
 });
 
 /***/ }),
@@ -77342,15 +77349,30 @@ var render = function() {
   return _c("div", { staticClass: "col-lg-3 col-md-6 col-sm-6 mb-4" }, [
     _c("div", { staticClass: "card border-secondary" }, [
       _c("h4", { staticClass: "card-header" }, [
-        _vm._v("\n      " + _vm._s(_vm.category.name) + "\n    ")
+        _vm._v("\n      " + _vm._s(_vm.name) + "\n    ")
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "card-body text-center" }, [
         _c("h2", { staticClass: "display-2 text-center" }, [
-          _vm._v("\n        " + _vm._s(_vm.category.visits_count) + "\n      ")
+          _vm._v("\n        " + _vm._s(_vm.visits) + "\n      ")
         ]),
         _vm._v(" "),
-        _vm._m(0)
+        _c("div", { staticClass: "card-footer" }, [
+          _c("div", [
+            _c("div", [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-success btn-xl",
+                  on: { click: _vm.add }
+                },
+                [_vm._v("Add User")]
+              )
+            ]),
+            _vm._v(" "),
+            _vm._m(0)
+          ])
+        ])
       ])
     ])
   ])
@@ -77360,30 +77382,15 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-footer" }, [
-      _c("div", [
-        _c("div", [
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-success btn-xl",
-              attrs: { type: "submit" }
-            },
-            [_vm._v("Add User")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", [
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-xs btn-outline-danger",
-              attrs: { type: "submit" }
-            },
-            [_vm._v("Subtract")]
-          )
-        ])
-      ])
+    return _c("div", [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-xs btn-outline-danger",
+          attrs: { type: "submit" }
+        },
+        [_vm._v("Subtract")]
+      )
     ])
   }
 ]
@@ -77462,6 +77469,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
@@ -77470,7 +77480,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         CategoryCard: __WEBPACK_IMPORTED_MODULE_0__CategoryCard_vue___default.a
     },
 
-    props: ['patronCategories']
+    props: ['patronCategories'],
+
+    data: function data() {
+        return {
+            visits: []
+        };
+    },
+
+
+    methods: {
+        refreshCount: function refreshCount() {
+            var _this = this;
+
+            axios.get('/logbook/livecounter/show').then(function (response) {
+                return _this.visits = response.data;
+            });
+        }
+    },
+
+    mounted: function mounted() {
+        this.refreshCount();
+    }
 });
 
 /***/ }),
@@ -77487,7 +77518,12 @@ var render = function() {
     _vm._l(_vm.patronCategories, function(category) {
       return _c("category-card", {
         key: category.id,
-        attrs: { category: category }
+        attrs: {
+          "category-id": category.id,
+          name: category.name,
+          visits: _vm.visits[category.id]
+        },
+        on: { updated: _vm.refreshCount }
       })
     })
   )

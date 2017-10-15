@@ -98,27 +98,28 @@ class LiveCounterTest extends TestCase
     }
 
     /** @test */
-    public function it_displays_todays_visits_on_the_livecounter_page()
+    public function it_returns_a_collection_of_visits_keyed_with_patron_category_ids()
     {
         $this->signIn();
 
-        $entry = factory('App\LogbookEntry', 23)->create();
+        $patronCategories = create('App\PatronCategory', [], 3);
 
-        $this->get('logbook/livecounter')
-        ->assertSee('value="23"');
-    }
+        $entry1 = create('App\LogbookEntry', [
+            'patron_category_id' => $patronCategories[0]->id
+        ]);
 
-    /** @test */
-    public function it_displays_the_toggle_secondary_categories_link_if_there_are_some()
-    {
-        $this->signIn();
+        $entry2 = create('App\LogbookEntry', [
+            'patron_category_id' => $patronCategories[1]->id
+        ]);
 
-        create('App\PatronCategory', ['is_primary' => true], 3);
-        $this->get('/logbook/livecounter')
-        ->assertDontSee('Toggle secondary categories...');
+        $response = $this->json('GET', '/logbook/livecounter/show');
 
-        create('App\PatronCategory', ['is_primary' => false], 3);
-        $this->get('/logbook/livecounter')
-        ->assertSee('Toggle secondary categories...');
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                1 => 1,
+                2 => 1,
+                3 => 0
+            ]);
     }
 }

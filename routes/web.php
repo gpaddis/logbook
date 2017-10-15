@@ -24,6 +24,7 @@ Route::post('/logbook', 'LogbookEntryController@store')->name('logbook.store');
  * Live Counter
  */
 Route::get('/logbook/livecounter', 'LiveCounterController@index')->name('livecounter.index');
+Route::get('/logbook/livecounter/show', 'LiveCounterController@show')->name('livecounter.show');
 Route::post('/logbook/livecounter/add', 'LiveCounterController@add')->name('livecounter.add');
 Route::post('/logbook/livecounter/subtract', 'LiveCounterController@subtract')->name('livecounter.subtract');
 

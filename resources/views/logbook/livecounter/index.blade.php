@@ -8,8 +8,9 @@
       <div class="card-header">Live Counter Index</div>
       <div class="card-body">
 
-        <category-cards :patron-categories="{{ $patronCategories }}">
-        </category-cards>
+        <category-cards
+          :patron-categories="{{ $patronCategories }}"
+        ></category-cards>
 
         @if($patronCategories->where('is_primary', false)->count())
         <div class="col text-center">
