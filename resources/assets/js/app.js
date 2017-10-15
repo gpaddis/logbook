@@ -16,6 +16,9 @@ require('./bootstrap');
 Vue.component('example', require('./components/Example.vue'));
 Vue.component('flash', require('./components/Flash.vue'));
 
+// Livecounter
+Vue.component('category-cards', require('./components/livecounter/CategoryCards.vue'));
+
 // Charts & reports
 Vue.component('chart', require('./components/charts/Chart.vue'));
 Vue.component('table-report', require('./components/Table-report.vue'));

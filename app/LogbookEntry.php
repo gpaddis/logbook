@@ -73,6 +73,11 @@ class LogbookEntry extends Model
         ->where('visited_at', '<=', $timeslot->end());
     }
 
+    public function scopeToday($query)
+    {
+        return $query->whereDate('visited_at', date('Y-m-d'));
+    }
+
     /**
      * Get aggregate values for a custom time range.
      *
