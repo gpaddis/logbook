@@ -31,7 +31,7 @@ class LogbookUpdateFormRequest extends FormRequest
             'entry.*.start_time' => 'required|date|before_or_equal:' . Carbon::now()->addDay()->toDateString(),
             'entry.*.end_time' => 'required|date|after:start_time',
             'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
-            'entry.*.visits' => 'nullable|integer|min:0',
+            'entry.*.visits' => 'nullable|integer|min:0|max:255',
         ];
     }
 
@@ -44,7 +44,8 @@ class LogbookUpdateFormRequest extends FormRequest
     {
         return [
             'before_or_equal' => 'You cannot save a logbook entry in the future.',
-            'min' => 'The visits count must be a positive number.'
+            'min' => 'The visits count must be a positive number.',
+            'max' => 'The value you inserted is too high.'
         ];
     }
 
