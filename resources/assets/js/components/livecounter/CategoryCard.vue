@@ -11,7 +11,7 @@
         <div class="card-footer">
           <div>
               <div><button @click="add" class="btn btn-success btn-xl">Add User</button></div>
-              <div><button type="submit" class="btn btn-xs btn-outline-danger">Subtract</button></div>
+              <div><button @click="subtract" class="btn btn-xs btn-outline-danger">Subtract</button></div>
           </div>
         </div>
       </div>
@@ -25,9 +25,11 @@ export default {
 
   methods: {
     add() {
-      axios.post('/logbook/livecounter/add', { patron_category_id: this.categoryId});
+      this.$emit('add', this.categoryId);
+    },
 
-      this.$emit('updated');
+    subtract() {
+      this.$emit('subtract', this.categoryId);
     }
   }
 }

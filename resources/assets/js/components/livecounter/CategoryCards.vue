@@ -1,7 +1,8 @@
 <template>
     <div class="row justify-content-center">
         <category-card
-        @updated="refreshCount"
+        @add="add"
+        @subtract="subtract"
         v-for="category in patronCategories"
         :key="category.id"
         :category-id="category.id"
@@ -31,6 +32,16 @@ export default {
         refreshCount() {
             axios.get('/logbook/livecounter/show').then(response => this.visits = response.data);
         },
+
+        add(id) {
+            axios.post('/logbook/livecounter/add', { patron_category_id: id})
+            .then(response => this.visits = response.data);
+        },
+
+        subtract(id) {
+            axios.post('/logbook/livecounter/subtract', { patron_category_id: id})
+            .then(response => this.visits = response.data);
+        }
     },
 
     mounted() {

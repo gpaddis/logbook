@@ -63,7 +63,7 @@ class LiveCounterController extends Controller
             'recorded_live' => true
         ]);
 
-        return redirect()->route('livecounter.index');
+        return $this->show();
     }
 
     /**
@@ -78,6 +78,6 @@ class LiveCounterController extends Controller
             request('patron_category_id')
         );
 
-        return redirect()->route('livecounter.index');
+        return $this->show();
     }
 }

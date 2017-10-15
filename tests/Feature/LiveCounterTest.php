@@ -102,7 +102,7 @@ class LiveCounterTest extends TestCase
     {
         $this->signIn();
 
-        $patronCategories = create('App\PatronCategory', [], 3);
+        $patronCategories = factory('App\PatronCategory', 3)->create();
 
         $entry1 = create('App\LogbookEntry', [
             'patron_category_id' => $patronCategories[0]->id
