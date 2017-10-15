@@ -77333,6 +77333,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   methods: {
     add: function add() {
       axios.post('/logbook/livecounter/add', { patron_category_id: this.categoryId });
+
       this.$emit('updated');
     }
   }

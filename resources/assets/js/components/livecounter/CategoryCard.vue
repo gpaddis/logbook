@@ -26,6 +26,7 @@ export default {
   methods: {
     add() {
       axios.post('/logbook/livecounter/add', { patron_category_id: this.categoryId});
+
       this.$emit('updated');
     }
   }
