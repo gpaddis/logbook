@@ -9,6 +9,7 @@
       <div class="card-body">
         <category-cards
           :patron-categories="{{ $patronCategories }}"
+          :initial-count="{{ $initialCount }}"
         ></category-cards>
       </div>
     </div>

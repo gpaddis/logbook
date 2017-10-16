@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\LogbookEntry;
-use Timeslot\Timeslot;
 use App\PatronCategory;
 use Illuminate\Http\Request;
 use App\Http\Requests\LiveCounterRequest;
@@ -28,15 +27,12 @@ class LiveCounterController extends Controller
     {
         $patronCategories = PatronCategory::active()
         ->select('id', 'name', 'is_primary')
-        ->withCount(['logbookEntries as visits_count' => function ($query) {
-            $query->whereDate('visited_at', date('Y-m-d'));
-        }
-        ])->orderBy('is_primary', 'desc')
+        ->orderBy('is_primary', 'desc')
         ->get();
 
-        // dd($patronCategories);
+        $initialCount = $this->show();
 
-        return view('logbook.livecounter.index', compact('patronCategories'));
+        return view('logbook.livecounter.index', compact('patronCategories', 'initialCount'));
     }
 
     public function show()
@@ -73,10 +69,7 @@ class LiveCounterController extends Controller
      */
     public function subtract(LiveCounterRequest $request)
     {
-        LogbookEntry::deleteLatestRecord(
-            Timeslot::create(Carbon::now()->startOfDay(), 24),
-            request('patron_category_id')
-        );
+        LogbookEntry::deleteLatestRecord(request('patron_category_id'));
 
         return $this->show();
     }

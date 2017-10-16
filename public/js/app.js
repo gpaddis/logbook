@@ -77368,11 +77368,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         CategoryCard: __WEBPACK_IMPORTED_MODULE_0__CategoryCard_vue___default.a
     },
 
-    props: ['patronCategories'],
+    props: ['patronCategories', 'initialCount'],
 
     data: function data() {
         return {
-            visits: [],
+            visits: this.initialCount,
             showSecondary: false
         };
     },
@@ -77403,10 +77403,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         toggleSecondary: function toggleSecondary() {
             this.showSecondary = !this.showSecondary;
         }
-    },
-
-    mounted: function mounted() {
-        this.refreshCount();
     }
 });
 

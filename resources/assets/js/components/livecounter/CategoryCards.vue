@@ -33,11 +33,11 @@ export default {
         CategoryCard
     },
 
-    props: ['patronCategories'],
+    props: ['patronCategories', 'initialCount'],
 
     data() {
         return {
-            visits: [],
+            visits: this.initialCount,
             showSecondary: false
         }
     },
@@ -61,9 +61,5 @@ export default {
             this.showSecondary = ! this.showSecondary;
         }
     },
-
-    mounted() {
-        this.refreshCount();
-    }
 }
 </script>

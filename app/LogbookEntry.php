@@ -73,6 +73,13 @@ class LogbookEntry extends Model
         ->where('visited_at', '<=', $timeslot->end());
     }
 
+    /**
+     * Scope the query to include only today's logbook entries.
+     *
+     * @param  Builder $query
+     *
+     * @return Illuminate\Database\Query\Builder
+     */
     public function scopeToday($query)
     {
         return $query->whereDate('visited_at', date('Y-m-d'));
@@ -107,16 +114,15 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Delete the most recent logbook entry for the given patron_category_id
-     * within the timeslot provided.
+     * Delete today's most recent logbook entry for the given patron_category_id.
      *
-     * @param  Timeslot $timeslot
      * @param  int      $category
+     *
      * @return void
      */
-    public static function deleteLatestRecord(Timeslot $timeslot, int $category)
+    public static function deleteLatestRecord(int $category)
     {
-        if ($entry = static::within($timeslot->start(), $timeslot->end())
+        if ($entry = static::today()
             ->wherePatronCategoryId($category)
             ->latest('visited_at')
             ->first()) {
