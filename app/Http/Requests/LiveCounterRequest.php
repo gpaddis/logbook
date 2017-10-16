@@ -24,7 +24,7 @@ class LiveCounterRequest extends FormRequest
     public function rules()
     {
         return [
-            'patron_category_id' => 'required|exists:patron_categories,id',
+        'patron_category_id' => 'required|exists:patron_categories,id',
         ];
     }
 }

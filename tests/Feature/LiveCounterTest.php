@@ -95,12 +95,29 @@ class LiveCounterTest extends TestCase
         create('App\PatronCategory', ['id' => 1]);
 
         $this->post('/logbook/livecounter/add', [
-            'patron_category_id' => 6
+            'patron_category_id' => 100
             ])->assertSessionHasErrors('patron_category_id');
 
         $this->post('/logbook/livecounter/remove', [
-            'patron_category_id' => 6
+            'patron_category_id' => 100
             ])->assertSessionHasErrors('patron_category_id');
+    }
+
+    /** @test */
+    public function it_rejects_an_inactive_patron_category_id()
+    {
+        $this->signIn()->withExceptionHandling();
+
+        $active = create('App\PatronCategory');
+        $inactive = create('App\PatronCategory', ['is_active' => false]);
+
+        $this->post('/logbook/livecounter/add', [
+            'patron_category_id' => $active->id
+            ])->assertStatus(200);
+
+        // $this->post('/logbook/livecounter/add', [
+        //     'patron_category_id' => $inactive->id
+        //     ])->assertSessionHasErrors('patron_category_id');
     }
 
     /** @test */
