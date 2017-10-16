@@ -57,7 +57,7 @@ $factory->define(App\LogbookEntry::class, function (Faker\Generator $faker) {
         'patron_category_id' => function () {
             return factory('App\PatronCategory')->create()->id;
         },
-        'visited_at' => \Timeslot\Timeslot::now()->start(),
+        'visited_at' => \Carbon\Carbon::now(),
         'recorded_live' => false
     ];
 });

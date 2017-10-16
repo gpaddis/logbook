@@ -15,27 +15,26 @@ class LiveCounterTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $this->post('/logbook/livecounter/add', [
+        $response = $this->post('/logbook/livecounter/add', [
             'id' => 1,
-        ])->assertRedirect('login');
+            ])->assertRedirect('login');
     }
 
     /** @test */
     public function it_adds_a_visit_to_the_database()
     {
         $this->signIn();
-
-        $entry = [
-            'patron_category_id' => create('App\PatronCategory')->id,
-            'visited_at' => Carbon::now()->toDateTimeString(),
-            'recorded_live' => true
-        ];
+        $patronCategory = create('App\PatronCategory');
 
         $this->post('/logbook/livecounter/add', [
-            'patron_category_id' => $entry['patron_category_id']
-        ]);
-
-        $this->assertDatabaseHas('logbook_entries', $entry);
+            'patron_category_id' => $patronCategory->id,
+            'visited_at' => '2017-01-01 12:09:03',
+            'recorded_live' => true
+            ])
+        ->assertStatus(200)
+        ->assertJson([
+            $patronCategory->id => 1
+            ]);
     }
 
     /** @test */
@@ -43,26 +42,33 @@ class LiveCounterTest extends TestCase
     {
         $this->signIn();
 
-        $patronCategories = create('App\PatronCategory', [], 3);
+        $patronCategories = factory('App\PatronCategory', 3)->create();
 
         $entry1 = create('App\LogbookEntry', [
             'patron_category_id' => $patronCategories[0]->id
-        ]);
+            ]);
 
         $entry2 = create('App\LogbookEntry', [
             'patron_category_id' => $patronCategories[1]->id
-        ]);
+            ]);
 
         $entry3 = create('App\LogbookEntry', [
             'patron_category_id' => $patronCategories[1]->id,
             'visited_at' => Carbon::now()->addMinute()
-        ]);
+            ]);
 
         $this->post('/logbook/livecounter/subtract', [
             'patron_category_id' => $patronCategories[1]->id
-        ]);
+            ])
+        ->assertStatus(200)
+        ->assertJson([
+            $patronCategories->get(0)->id => 1,
+            $patronCategories->get(1)->id => 1
+            ]);
 
         $this->assertDatabaseMissing('logbook_entries', $entry3->toArray());
+        $this->assertDatabaseHas('logbook_entries', $entry1->toArray());
+        $this->assertDatabaseHas('logbook_entries', $entry2->toArray());
     }
 
     /** @test */
@@ -72,11 +78,11 @@ class LiveCounterTest extends TestCase
 
         $entry = create('App\LogbookEntry', [
             'visited_at' => Carbon::now()->subDay()
-        ]);
+            ]);
 
         $this->post('/logbook/livecounter/subtract', [
             'patron_category_id' => $entry->patron_category_id
-        ]);
+            ]);
 
         $this->assertDatabaseHas('logbook_entries', $entry->toArray());
     }
@@ -90,11 +96,11 @@ class LiveCounterTest extends TestCase
 
         $this->post('/logbook/livecounter/add', [
             'patron_category_id' => 6
-        ])->assertSessionHasErrors('patron_category_id');
+            ])->assertSessionHasErrors('patron_category_id');
 
         $this->post('/logbook/livecounter/remove', [
             'patron_category_id' => 6
-        ])->assertSessionHasErrors('patron_category_id');
+            ])->assertSessionHasErrors('patron_category_id');
     }
 
     /** @test */
@@ -106,20 +112,20 @@ class LiveCounterTest extends TestCase
 
         $entry1 = create('App\LogbookEntry', [
             'patron_category_id' => $patronCategories[0]->id
-        ]);
+            ]);
 
         $entry2 = create('App\LogbookEntry', [
             'patron_category_id' => $patronCategories[1]->id
-        ]);
+            ]);
 
         $response = $this->json('GET', '/logbook/livecounter/show');
 
         $response
-            ->assertStatus(200)
-            ->assertJson([
-                $patronCategories[0]->id => 1,
-                $patronCategories[1]->id => 1,
-                $patronCategories[2]->id => 0
+        ->assertStatus(200)
+        ->assertJson([
+            $patronCategories->get(0)->id => 1,
+            $patronCategories->get(1)->id => 1,
+            $patronCategories->get(2)->id => 0
             ]);
     }
 }
