@@ -77347,6 +77347,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -77359,7 +77372,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     data: function data() {
         return {
-            visits: []
+            visits: [],
+            showSecondary: false
         };
     },
 
@@ -77385,6 +77399,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.post('/logbook/livecounter/subtract', { patron_category_id: id }).then(function (response) {
                 return _this3.visits = response.data;
             });
+        },
+        toggleSecondary: function toggleSecondary() {
+            this.showSecondary = !this.showSecondary;
         }
     },
 
@@ -77548,21 +77565,47 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "row justify-content-center" },
-    _vm._l(_vm.patronCategories, function(category) {
-      return _c("category-card", {
-        key: category.id,
-        attrs: {
-          "category-id": category.id,
-          name: category.name,
-          visits: _vm.visits[category.id]
-        },
-        on: { add: _vm.add, subtract: _vm.subtract }
+  return _c("div", [
+    _c(
+      "div",
+      { staticClass: "row justify-content-center" },
+      _vm._l(_vm.patronCategories, function(category) {
+        return _c("category-card", {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: category.is_primary == true || _vm.showSecondary == true,
+              expression: "category.is_primary == true || showSecondary == true"
+            }
+          ],
+          key: category.id,
+          attrs: {
+            "category-id": category.id,
+            name: category.name,
+            visits: _vm.visits[category.id]
+          },
+          on: { add: _vm.add, subtract: _vm.subtract }
+        })
       })
-    })
-  )
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _c(
+        "a",
+        {
+          attrs: {
+            href: "#",
+            "data-toggle": "collapse",
+            "data-target": ".multi-collapse",
+            "aria-expanded": "false"
+          },
+          on: { click: _vm.toggleSecondary }
+        },
+        [_vm._v("Toggle secondary categories")]
+      )
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

@@ -1,14 +1,27 @@
 <template>
-    <div class="row justify-content-center">
-        <category-card
-        @add="add"
-        @subtract="subtract"
-        v-for="category in patronCategories"
-        :key="category.id"
-        :category-id="category.id"
-        :name="category.name"
-        :visits="visits[category.id]"
-        ></category-card>
+    <div>
+        <div class="row justify-content-center">
+            <category-card
+            @add="add"
+            @subtract="subtract"
+            v-for="category in patronCategories"
+            :key="category.id"
+            :category-id="category.id"
+            :name="category.name"
+            :visits="visits[category.id]"
+            v-show="category.is_primary == true || showSecondary == true"
+            ></category-card>
+        </div>
+
+        <div class="row justify-content-center">
+            <a
+            href="#"
+            @click="toggleSecondary"
+            data-toggle="collapse"
+            data-target=".multi-collapse"
+            aria-expanded="false"
+            >Toggle secondary categories</a>
+        </div>
     </div>
 </template>
 
@@ -24,7 +37,8 @@ export default {
 
     data() {
         return {
-            visits: []
+            visits: [],
+            showSecondary: false
         }
     },
 
@@ -41,6 +55,10 @@ export default {
         subtract(id) {
             axios.post('/logbook/livecounter/subtract', { patron_category_id: id})
             .then(response => this.visits = response.data);
+        },
+
+        toggleSecondary() {
+            this.showSecondary = ! this.showSecondary;
         }
     },
 
