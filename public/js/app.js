@@ -76783,17 +76783,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     computed: {
         containsSecondary: function containsSecondary() {
+            var result = false;
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
 
             try {
-                seekSecondary: for (var _iterator = this.patronCategories[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var s = _step.value;
+                for (var _iterator = this.patronCategories[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var cat = _step.value;
 
-                    if (s.is_primary === false) {
-                        return true;
-                        break seekSecondary;
+                    if (cat.is_primary === false) {
+                        result = true;
                     }
                 }
             } catch (err) {
@@ -76811,7 +76811,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
             }
 
-            return false;
+            return result;
         }
     }
 });

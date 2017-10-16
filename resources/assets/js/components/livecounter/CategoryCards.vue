@@ -64,14 +64,13 @@ export default {
 
     computed: {
         containsSecondary() {
-            seekSecondary:
-            for (var s of this.patronCategories) {
-                if (s.is_primary === false) {
-                    return true;
-                    break seekSecondary;
+            let result = false;
+            for (let cat of this.patronCategories) {
+                if (cat.is_primary === false) {
+                    result = true;
                 }
             }
-            return false;
+            return result;
         }
     }
 }
