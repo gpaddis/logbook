@@ -115,9 +115,13 @@ class LiveCounterTest extends TestCase
             'patron_category_id' => $active->id
             ])->assertStatus(200);
 
-        // $this->post('/logbook/livecounter/add', [
-        //     'patron_category_id' => $inactive->id
-        //     ])->assertSessionHasErrors('patron_category_id');
+        $this->post('/logbook/livecounter/add', [
+            'patron_category_id' => $inactive->id
+            ])->assertSessionHasErrors('patron_category_id');
+
+        $this->post('/logbook/livecounter/subtract', [
+            'patron_category_id' => $inactive->id
+            ])->assertSessionHasErrors('patron_category_id');
     }
 
     /** @test */
