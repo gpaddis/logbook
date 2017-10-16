@@ -31,24 +31,8 @@ $factory->define(App\PatronCategory::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->unique()->colorName,
         'abbreviation' => $faker->unique()->word,
-    ];
-});
-
-$factory->define(App\RequestCategory::class, function (Faker\Generator $faker) {
-    return [
-        'name' => $faker->unique()->colorName,
-        'abbreviation' => $faker->unique()->word,
-    ];
-});
-
-$factory->define(App\Logbook\Entry::class, function (Faker\Generator $faker) {
-    return [
-        'start_time' => \Timeslot\Timeslot::now()->start(),
-        'end_time' => \Timeslot\Timeslot::now()->end(),
-        'patron_category_id' => function () {
-            return factory('App\PatronCategory')->create()->id;
-        },
-        'visits' => $faker->randomDigitNotNull,
+        'is_active' => true,
+        'is_primary' => true
     ];
 });
 
@@ -57,7 +41,7 @@ $factory->define(App\LogbookEntry::class, function (Faker\Generator $faker) {
         'patron_category_id' => function () {
             return factory('App\PatronCategory')->create()->id;
         },
-        'visited_at' => \Timeslot\Timeslot::now()->start(),
+        'visited_at' => \Carbon\Carbon::now(),
         'recorded_live' => false
     ];
 });
