@@ -34,24 +34,6 @@ $factory->define(App\PatronCategory::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\RequestCategory::class, function (Faker\Generator $faker) {
-    return [
-        'name' => $faker->unique()->colorName,
-        'abbreviation' => $faker->unique()->word,
-    ];
-});
-
-$factory->define(App\Logbook\Entry::class, function (Faker\Generator $faker) {
-    return [
-        'start_time' => \Timeslot\Timeslot::now()->start(),
-        'end_time' => \Timeslot\Timeslot::now()->end(),
-        'patron_category_id' => function () {
-            return factory('App\PatronCategory')->create()->id;
-        },
-        'visits' => $faker->randomDigitNotNull,
-    ];
-});
-
 $factory->define(App\LogbookEntry::class, function (Faker\Generator $faker) {
     return [
         'patron_category_id' => function () {
