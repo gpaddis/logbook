@@ -43,10 +43,6 @@ export default {
     },
 
     methods: {
-        refreshCount() {
-            axios.get('/logbook/livecounter/show').then(response => this.visits = response.data);
-        },
-
         add(id) {
             axios.post('/logbook/livecounter/add', { patron_category_id: id})
             .then(response => this.visits = response.data);

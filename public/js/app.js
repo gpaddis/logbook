@@ -76755,25 +76755,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
     methods: {
-        refreshCount: function refreshCount() {
+        add: function add(id) {
             var _this = this;
 
-            axios.get('/logbook/livecounter/show').then(function (response) {
+            axios.post('/logbook/livecounter/add', { patron_category_id: id }).then(function (response) {
                 return _this.visits = response.data;
             });
         },
-        add: function add(id) {
+        subtract: function subtract(id) {
             var _this2 = this;
 
-            axios.post('/logbook/livecounter/add', { patron_category_id: id }).then(function (response) {
-                return _this2.visits = response.data;
-            });
-        },
-        subtract: function subtract(id) {
-            var _this3 = this;
-
             axios.post('/logbook/livecounter/subtract', { patron_category_id: id }).then(function (response) {
-                return _this3.visits = response.data;
+                return _this2.visits = response.data;
             });
         },
         toggleSecondary: function toggleSecondary() {
