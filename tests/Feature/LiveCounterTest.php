@@ -117,9 +117,9 @@ class LiveCounterTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                1 => 1,
-                2 => 1,
-                3 => 0
+                $patronCategories[0]->id => 1,
+                $patronCategories[1]->id => 1,
+                $patronCategories[2]->id => 0
             ]);
     }
 }
