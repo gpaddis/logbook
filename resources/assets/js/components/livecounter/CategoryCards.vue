@@ -13,7 +13,7 @@
             ></category-card>
         </div>
 
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" v-show="containsSecondary">
             <a
             href="#"
             @click="toggleSecondary"
@@ -61,5 +61,18 @@ export default {
             this.showSecondary = ! this.showSecondary;
         }
     },
+
+    computed: {
+        containsSecondary() {
+            seekSecondary:
+            for (var s of this.patronCategories) {
+                if (s.is_primary === false) {
+                    return true;
+                    break seekSecondary;
+                }
+            }
+            return false;
+        }
+    }
 }
 </script>
