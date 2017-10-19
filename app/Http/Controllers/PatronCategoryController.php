@@ -40,7 +40,7 @@ class PatronCategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('patron-categories.create');
     }
 
     /**
