@@ -64,7 +64,8 @@ class CreatePatronCategoryTest extends TestCase
         $this->post('/patron-categories', [
             'name' => 'Category name',
             'abbreviation' => 'Abbr.',
-            ]);
+            ])
+        ->assertStatus(302);
 
         $this->assertTrue(PatronCategory::first()->is_active);
         $this->assertTrue(PatronCategory::first()->is_primary);
