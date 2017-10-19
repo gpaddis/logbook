@@ -61,7 +61,7 @@ class CreatePatronCategoryTest extends TestCase
     }
 
     /** @test */
-    public function it_is_active_by_default()
+    public function it_is_active_and_primary_by_default()
     {
         $this->signIn();
 
@@ -71,5 +71,6 @@ class CreatePatronCategoryTest extends TestCase
             ]);
 
         $this->assertTrue(PatronCategory::first()->is_active);
+        $this->assertTrue(PatronCategory::first()->is_primary);
     }
 }
