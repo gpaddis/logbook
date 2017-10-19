@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\PatronCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 // use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -57,5 +58,18 @@ class CreatePatronCategoryTest extends TestCase
             'abbreviation' => 'Some random long string that will never pass validation'
             ])->toArray())
         ->assertSessionHasErrors('abbreviation');
+    }
+
+    /** @test */
+    public function it_is_active_by_default()
+    {
+        $this->signIn();
+
+        $this->post('/patron-categories', [
+            'name' => 'Category name',
+            'abbreviation' => 'Abbr.',
+            ]);
+
+        $this->assertTrue(PatronCategory::first()->is_active);
     }
 }
