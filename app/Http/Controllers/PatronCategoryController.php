@@ -52,7 +52,8 @@ class PatronCategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-                'name' => 'required|string|max:25'
+                'name' => 'required|string|max:25',
+                'abbreviation' => 'string|max:10|nullable'
             ]);
 
         $patronCategory = PatronCategory::create([

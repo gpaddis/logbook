@@ -47,4 +47,15 @@ class CreatePatronCategoryTest extends TestCase
             ])->toArray())
         ->assertSessionHasErrors('name');
     }
+
+    /** @test */
+    public function the_abbreviation_cannot_be_longer_than_10_chars()
+    {
+        $this->signIn()->withExceptionHandling();
+
+        $this->post('/patron-categories', create('App\PatronCategory', [
+            'abbreviation' => 'Some random long string that will never pass validation'
+            ])->toArray())
+        ->assertSessionHasErrors('abbreviation');
+    }
 }
