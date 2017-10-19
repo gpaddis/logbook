@@ -53,8 +53,10 @@ class PatronCategoryController extends Controller
     {
         // dd($request->all());
         $request->validate([
-                'name' => 'required|string|max:25|unique:patron_categories',
-                'abbreviation' => 'string|max:10|nullable|unique:patron_categories'
+                'name' => 'required|string|max:25|unique:patron_categories,name',
+                'abbreviation' => 'string|max:10|nullable|unique:patron_categories,abbreviation',
+                'is_active' => 'boolean',
+                'is_primary' => 'boolean'
             ]);
 
         PatronCategory::create($request->all());
