@@ -36,4 +36,15 @@ class CreatePatronCategoryTest extends TestCase
             ->assertSee($patronCategory->name)
             ->assertSee($patronCategory->abbreviation);
     }
+
+    /** @test */
+    public function the_name_cannot_be_longer_than_25_chars()
+    {
+        $this->signIn()->withExceptionHandling();
+
+        $this->post('/patron-categories', create('App\PatronCategory', [
+            'name' => 'Some random long string that will never pass validation'
+            ])->toArray())
+        ->assertSessionHasErrors('name');
+    }
 }
