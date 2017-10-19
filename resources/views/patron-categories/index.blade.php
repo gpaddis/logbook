@@ -66,8 +66,9 @@
           </tbody>
         </table>
       </div>
+
       <div class="text-center">
-        <a href="#" class="btn btn-primary">Add a new patron category</a>
+        <a href="{{ route('patron-categories.create') }}" class="btn btn-primary">Add a new patron category</a>
       </div>
       @endif
     </div>
