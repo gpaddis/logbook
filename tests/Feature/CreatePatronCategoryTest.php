@@ -6,10 +6,6 @@ use Tests\TestCase;
 use App\PatronCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-// use Illuminate\Foundation\Testing\WithoutMiddleware;
-// use Illuminate\Foundation\Testing\DatabaseMigrations;
-// use Illuminate\Foundation\Testing\DatabaseTransactions;
-
 class CreatePatronCategoryTest extends TestCase
 {
     use RefreshDatabase;
@@ -61,7 +57,7 @@ class CreatePatronCategoryTest extends TestCase
     }
 
     /** @test */
-    public function it_is_active_and_primary_by_default()
+    public function a_new_category_is_active_and_primary_by_default()
     {
         $this->signIn();
 

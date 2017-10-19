@@ -22,15 +22,20 @@
                         <input type="text" class="form-control" name="abbrevation" id="abbrevation" placeholder="Enter the patron category name">
                     </div>
 
+                    <div>
+                    <small class="form-text text-muted">Only tick the checkboxes if you want to override the default values.<br>
+                    A patron category is active and primary by default.</small>
+                    </div>
+
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" name="is_active" value="1">Active
+                            <input class="form-check-input" type="checkbox" name="is_active" value="0">Inactive
                         </label>
                     </div>
 
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" name="is_primary" value="1">Primary
+                            <input class="form-check-input" type="checkbox" name="is_primary" value="0">Secondary
                         </label>
                     </div>
                     <button type="submit" class="btn btn-primary">Save</button>
