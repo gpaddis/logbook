@@ -51,15 +51,13 @@ class PatronCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
-                'name' => 'required|string|max:25',
-                'abbreviation' => 'string|max:10|nullable'
+                'name' => 'required|string|max:25|unique:patron_categories',
+                'abbreviation' => 'string|max:10|nullable|unique:patron_categories'
             ]);
 
-        $patronCategory = PatronCategory::create([
-            'name' => request('name'),
-            'abbreviation' => request('abbreviation')
-        ]);
+        PatronCategory::create($request->all());
 
         return redirect()->route('patron-categories.index');
     }

@@ -19,7 +19,7 @@
 
                     <div class="form-group">
                         <label for="name">Abbreviation</label>
-                        <input type="text" class="form-control" name="abbrevation" id="abbrevation" placeholder="Enter the patron category name">
+                        <input type="text" class="form-control" name="abbreviation" id="abbreviation" placeholder="Enter the patron category name">
                     </div>
 
                     <div>
@@ -29,15 +29,16 @@
 
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" name="is_active" value="0">Inactive
+                            <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="0">Inactive
                         </label>
                     </div>
 
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" name="is_primary" value="0">Secondary
+                            <input class="form-check-input" type="checkbox" name="is_primary" id="is_primary" value="0">Secondary
                         </label>
                     </div>
+
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
             </div>
