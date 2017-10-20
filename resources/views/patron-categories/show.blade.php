@@ -19,6 +19,10 @@
       <div class="card-body">
         <p>Created: {{ $category->created_at->diffForHumans() }}</p>
         <p>Last updated {{ $category->updated_at->diffForHumans() }}</p>
+
+        <div>
+          <a href="{{ $category->path() . '/edit' }}" class="btn btn-outline-secondary btn-sm">Edit this category</a>
+        </div>
       </div>
     </div>
   </div>
