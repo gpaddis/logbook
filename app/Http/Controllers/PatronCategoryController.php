@@ -83,7 +83,10 @@ class PatronCategoryController extends Controller
      */
     public function edit(PatronCategory $patronCategory)
     {
-        //
+        $category = PatronCategory::find($patronCategory);
+
+        return $category;
+        return view('patron-categories.edit', compact($category));
     }
 
     /**

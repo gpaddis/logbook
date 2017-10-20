@@ -35,6 +35,7 @@ Route::get('/patron-categories', 'PatronCategoryController@index')->name('patron
 Route::get('/patron-categories/create', 'PatronCategoryController@create')->name('patron-categories.create');
 Route::post('/patron-categories', 'PatronCategoryController@store')->name('patron-categories.store');
 Route::get('/patron-categories/{patronCategory}', 'PatronCategoryController@show')->name('patron-categories.show');
+Route::get('/patron-categories/{patronCategory}/edit', 'PatronCategoryController@edit')->name('patron-categories.edit');
 
 
 /**
