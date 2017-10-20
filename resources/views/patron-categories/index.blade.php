@@ -43,7 +43,7 @@
                 {{ $category->is_primary ? 'Primary' : 'Secondary' }}
               </td>
               <td>
-                {{ $category->is_active ? 'Active' : 'Inactive' }}
+                {{ $category->is_active ? 'Active' : 'Not active' }}
               </td>
               <td>
                 <a href="{{ $category->path() . '/edit' }}" class="btn btn-outline-secondary btn-sm">Edit</a>
