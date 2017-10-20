@@ -70,9 +70,9 @@ class PatronCategoryController extends Controller
      * @param  \App\PatronCategory  $patronCategory
      * @return \Illuminate\Http\Response
      */
-    public function show(PatronCategory $patronCategory)
+    public function show(PatronCategory $category)
     {
-        return view('patron-categories.show', compact('patronCategory'));
+        return view('patron-categories.show', compact('category'));
     }
 
     /**
@@ -81,12 +81,9 @@ class PatronCategoryController extends Controller
      * @param  \App\PatronCategory  $patronCategory
      * @return \Illuminate\Http\Response
      */
-    public function edit(PatronCategory $patronCategory)
+    public function edit(PatronCategory $category)
     {
-        $category = PatronCategory::find($patronCategory);
-
-        return $category;
-        return view('patron-categories.edit', compact($category));
+        return view('patron-categories.edit', compact('category'));
     }
 
     /**

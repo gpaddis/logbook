@@ -40,26 +40,13 @@
                 {{ $category->abbreviation }}
               </td>
               <td>
-                @if($category->is_primary === true)
-                Primary
-                @else
-                Secondary
-                @endif
+                {{ $category->is_primary ? 'Primary' : 'Secondary' }}
               </td>
               <td>
-                @if($category->is_active === true)
-                Active
-                @else
-                Not active
-                @endif
+                {{ $category->is_active ? 'Active' : 'Inactive' }}
               </td>
               <td>
-                <a href="#" class="btn btn-outline-secondary btn-sm">Edit</a>
-                {{-- @if($category->is_active === true)
-                <a href="#" class="btn btn-outline-danger">Deactivate</a>
-                @else
-                <a href="#" class="btn btn-outline-success">Activate</a>
-                @endif --}}
+                <a href="{{ $category->path() . '/edit' }}" class="btn btn-outline-secondary btn-sm">Edit</a>
               </td>
             </tr>
             @endforeach
