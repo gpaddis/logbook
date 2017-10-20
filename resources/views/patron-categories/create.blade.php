@@ -20,7 +20,7 @@
                     {{ csrf_field() }}
 
                     <div class="form-group">
-                        <label for="name">Category name</label>
+                        <h5 for="name">Category name</h5>
                         <input class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}"
                         type="text"
                         name="name"
@@ -36,7 +36,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="name">Abbreviation</label>
+                        <h5 for="name">Abbreviation</h5>
                         <input class="form-control {{ $errors->has('abbreviation') ? ' is-invalid' : '' }}"
                         type="text"
                         name="abbreviation"
@@ -51,28 +51,32 @@
                         @endif
                     </div>
 
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input"
-                            type="checkbox"
-                            name="is_active"
-                            id="is_active"
-                            value="0">
-                            Inactive
+                    <h5 for="is_active">Status</h5>
+                    <div class="form-group">
+                        <label class="custom-control custom-radio">
+                            <input id="is_active_1" name="is_active" type="radio" class="custom-control-input" value="1">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Active</span>
                         </label>
-                        <small class="form-text text-muted">Check if you want to deactivate the category (default: active).</small>
+                        <label class="custom-control custom-radio">
+                            <input id="is_active_0" name="is_active" type="radio" class="custom-control-input" value="0">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Not active</span>
+                        </label>
                     </div>
 
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input"
-                            type="checkbox"
-                            name="is_primary"
-                            id="is_primary"
-                            value="0">
-                            Secondary
+                    <h5 for="is_primary">Level</h5>
+                    <div class="form-group">
+                        <label class="custom-control custom-radio">
+                            <input id="is_primary_1" name="is_primary" type="radio" class="custom-control-input" value="1">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Primary</span>
                         </label>
-                        <small class="form-text text-muted">Check if you want the category to be secondary (default: primary).</small>
+                        <label class="custom-control custom-radio">
+                            <input id="is_primary_0" name="is_primary" type="radio" class="custom-control-input" value="0">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Secondary</span>
+                        </label>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Save</button>
