@@ -93,9 +93,11 @@ class PatronCategoryController extends Controller
      * @param  \App\PatronCategory  $patronCategory
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PatronCategory $patronCategory)
+    public function update(Request $request, PatronCategory $category)
     {
-        //
+        $category->update($request->all());
+
+        redirect()->route('patron-categories.index');
     }
 
     /**

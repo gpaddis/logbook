@@ -70,4 +70,16 @@ class CreatePatronCategoryTest extends TestCase
         $this->assertTrue(PatronCategory::first()->is_active);
         $this->assertTrue(PatronCategory::first()->is_primary);
     }
+
+    /** @test */
+    function it_can_update_a_patron_category()
+    {
+        $this->signIn();
+
+        $category = create('App\PatronCategory');
+        // dd($category);
+
+        $this->patch('/patron-categories/' . $category->id, ['name' => 'Students']);
+        $this->assertDatabaseHas('patron_categories', ['name' => 'Students']);
+    }
 }
