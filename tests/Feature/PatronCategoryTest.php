@@ -76,4 +76,18 @@ class PatronCategoryTest extends TestCase
         $this->get('/logbook/update')
             ->assertDontSee($patronCategory->name);
     }
+
+    /** @test */
+    public function it_shows_all_non_boolean_fields_on_the_category_page()
+    {
+        $this->signIn();
+        $category = create('App\PatronCategory');
+
+        $this->get($category->path())
+            ->assertSee($category->name)
+            ->assertSee($category->abbreviation)
+            ->assertSee($category->notes)
+            ->assertSee($category->created_at->diffForHumans())
+            ->assertSee($category->updated_at->diffForHumans());
+    }
 }
