@@ -5,20 +5,20 @@
 <div class="row">
   <div class="col">
     <div class="card">
+      <h3 class="card-header">{{ $category->name }}</h3>
       <div class="card-body">
-        <h3>{{ $category->name }}</h3>
-        <p>Abbreviation: {{ $category->abbreviation }}</p>
+        <h4>Abbreviation</h4>
+        <p>{{ $category->abbreviation }}</p>
 
+        @if($category->notes)
         <h4>Notes</h4>
         <p>
-          @if($category->notes)
-          {{ $category->notes }}
-          @else
-          This category has no notes yet.
-          @endif
+          {!! nl2br(e($category->notes)) !!}
         </p>
+        @endif
 
         <hr>
+
         <p>Back to the <a href="{{ route('patron-categories.index') }}">list of patron categories</a>.</p>
       </div>
 
