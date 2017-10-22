@@ -32,7 +32,8 @@ $factory->define(App\PatronCategory::class, function (Faker\Generator $faker) {
         'name' => $faker->unique()->colorName,
         'abbreviation' => $faker->unique()->word,
         'is_active' => true,
-        'is_primary' => true
+        'is_primary' => true,
+        'notes' => $faker->paragraph
     ];
 });
 

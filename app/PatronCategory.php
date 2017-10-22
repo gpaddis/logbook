@@ -19,7 +19,7 @@ class PatronCategory extends Model
      * @var array
      */
     public $fillable = [
-        'name', 'abbreviation', 'is_active', 'is_primary'
+        'name', 'abbreviation', 'is_active', 'is_primary', 'notes'
     ];
 
     /**

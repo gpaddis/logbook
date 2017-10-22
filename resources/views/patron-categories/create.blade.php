@@ -79,6 +79,17 @@
                         </label>
                     </div>
 
+                    <div class="form-group">
+                        <h5 for="notes">Notes</h5>
+                        <textarea
+                        class="form-control"
+                        id="notes"
+                        name="notes"
+                        rows="3"
+                        placeholder="Enter your comments..."
+                        ></textarea>
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Save</button>
                     <a href="{{ route('patron-categories.index') }}" class="btn btn-secondary">Discard Changes</a>
                 </form>

@@ -27,7 +27,8 @@ class PatronCategoryRequest extends FormRequest
         'name' => 'required|string|max:25|unique:patron_categories,name',
         'abbreviation' => 'string|max:10|nullable|unique:patron_categories,abbreviation',
         'is_active' => 'boolean',
-        'is_primary' => 'boolean'
+        'is_primary' => 'boolean',
+        'notes' => 'string'
         ];
     }
 }

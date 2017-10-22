@@ -7,7 +7,18 @@
     <div class="card">
       <div class="card-body">
         <h3>{{ $category->name }}</h3>
+        <p>Abbreviation: {{ $category->abbreviation }}</p>
 
+        <h4>Notes</h4>
+        <p>
+          @if($category->notes)
+          {{ $category->notes }}
+          @else
+          This category has no notes yet.
+          @endif
+        </p>
+
+        <hr>
         <p>Back to the <a href="{{ route('patron-categories.index') }}">list of patron categories</a>.</p>
       </div>
 
