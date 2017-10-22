@@ -30,8 +30,8 @@ class CreatePatronCategoryTest extends TestCase
         $this->post('/patron-categories', $patronCategory->toArray());
 
         $this->get('/patron-categories')
-            ->assertSee($patronCategory->name)
-            ->assertSee($patronCategory->abbreviation);
+        ->assertSee($patronCategory->name)
+        ->assertSee($patronCategory->abbreviation);
     }
 
     /** @test */
@@ -77,9 +77,21 @@ class CreatePatronCategoryTest extends TestCase
         $this->signIn();
 
         $category = create('App\PatronCategory');
-        // dd($category);
 
         $this->patch('/patron-categories/' . $category->id, ['name' => 'Students']);
         $this->assertDatabaseHas('patron_categories', ['name' => 'Students']);
+    }
+
+    /** @test */
+    function it_validates_an_update_request()
+    {
+        $this->signIn()->withExceptionHandling();
+
+        $category = create('App\PatronCategory');
+
+        $this->patch('/patron-categories/' . $category->id, [
+            'name' => 'A string too long to be updated does not pass validation.'
+            ])
+        ->assertSessionHasErrors('name');
     }
 }
