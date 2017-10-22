@@ -107,7 +107,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">Save</button>
-                    <a href="{{ route('patron-categories.index') }}" class="btn btn-secondary">Discard Changes</a>
+                    <a href="{{ url()->previous() }}" class="btn btn-secondary">Discard Changes</a>
                 </form>
             </div>
         </div>

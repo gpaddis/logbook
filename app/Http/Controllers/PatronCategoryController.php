@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\PatronCategory;
 use Illuminate\Http\Request;
-use App\Http\Requests\PatronCategoryRequest;
 
 class PatronCategoryController extends Controller
 {
@@ -50,8 +49,16 @@ class PatronCategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PatronCategoryRequest $request)
+    public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:25|unique:patron_categories,name',
+            'abbreviation' => 'string|max:10|nullable|unique:patron_categories,abbreviation',
+            'is_active' => 'boolean',
+            'is_primary' => 'boolean',
+            'notes' => 'string|nullable'
+        ]);
+
         PatronCategory::create($request->all());
 
         return redirect()->route('patron-categories.index');
@@ -92,10 +99,11 @@ class PatronCategoryController extends Controller
     public function update(Request $request, PatronCategory $category)
     {
         $request->validate([
-        'name' => 'required|string|max:25|unique:patron_categories,name,' . $category->id,
-        'abbreviation' => 'string|max:10|nullable|unique:patron_categories,abbreviation,' . $category->id,
-        'is_active' => 'boolean',
-        'is_primary' => 'boolean'
+            'name' => 'required|string|max:25|unique:patron_categories,name,' . $category->id,
+            'abbreviation' => 'string|max:10|nullable|unique:patron_categories,abbreviation,' . $category->id,
+            'is_active' => 'boolean',
+            'is_primary' => 'boolean',
+            'notes' => 'string|nullable'
         ]);
 
         $category->update($request->all());
