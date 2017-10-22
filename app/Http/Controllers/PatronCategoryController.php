@@ -84,13 +84,23 @@ class PatronCategoryController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\PatronCategory  $patronCategory
+     *
+     * @see : https://laracasts.com/discuss/channels/requests/problem-with-unique-field-validation-on-update?page=1
+     *
      * @return \Illuminate\Http\Response
      */
-    public function update(PatronCategoryRequest $request, PatronCategory $category)
+    public function update(Request $request, PatronCategory $category)
     {
+        $request->validate([
+        'name' => 'required|string|max:25|unique:patron_categories,name,' . $category->id,
+        'abbreviation' => 'string|max:10|nullable|unique:patron_categories,abbreviation,' . $category->id,
+        'is_active' => 'boolean',
+        'is_primary' => 'boolean'
+        ]);
+
         $category->update($request->all());
 
-        redirect()->route('patron-categories.index');
+        return redirect()->route('patron-categories.index');
     }
 
     /**

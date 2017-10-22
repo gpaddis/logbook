@@ -72,7 +72,7 @@ class CreatePatronCategoryTest extends TestCase
     }
 
     /** @test */
-    function it_can_update_a_patron_category()
+    public function it_can_update_a_patron_category()
     {
         $this->signIn();
 
@@ -83,14 +83,14 @@ class CreatePatronCategoryTest extends TestCase
     }
 
     /** @test */
-    function it_validates_an_update_request()
+    public function it_validates_an_update_request()
     {
         $this->signIn()->withExceptionHandling();
 
         $category = create('App\PatronCategory');
 
         $this->patch('/patron-categories/' . $category->id, [
-            'name' => 'A string too long to be updated does not pass validation.'
+            'name' => 'A string too long to be updated does never pass validation.'
             ])
         ->assertSessionHasErrors('name');
     }
