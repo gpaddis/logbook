@@ -103,8 +103,7 @@
                         id="notes"
                         name="notes"
                         rows="3"
-                        placeholder="Enter your comments..."
-                        value="{{ $category->notes }}"></textarea>
+                        placeholder="Enter your comments...">{{ $category->notes }}</textarea>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Save</button>
