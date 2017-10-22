@@ -9,8 +9,9 @@
                 Edit patron category #{{ $category->id}} ({{ $category->name }})
             </div>
             <div class="card-body">
-                <form action="#">
+                <form action="{{ $category->path() }}" method="post">
                     {{ csrf_field() }}
+                    {{ method_field('PATCH') }}
 
                     <div class="form-group">
                         <h5 for="name">Category name</h5>
