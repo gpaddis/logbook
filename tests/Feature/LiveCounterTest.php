@@ -42,7 +42,7 @@ class LiveCounterTest extends TestCase
     {
         $this->signIn();
 
-        [$cat1, $cat2, $cat3] = factory('App\PatronCategory', 3)->create();
+        list($cat1, $cat2, $cat3) = factory('App\PatronCategory', 3)->create();
 
         $entry1 = create('App\LogbookEntry', [
             'patron_category_id' => $cat1->id
@@ -129,7 +129,7 @@ class LiveCounterTest extends TestCase
     {
         $this->signIn();
 
-        [$cat1, $cat2, $cat3] = factory('App\PatronCategory', 3)->create();
+        list($cat1, $cat2, $cat3) = factory('App\PatronCategory', 3)->create();
 
         $entry1 = create('App\LogbookEntry', [
             'patron_category_id' => $cat1->id
