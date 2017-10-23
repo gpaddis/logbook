@@ -78195,7 +78195,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     computed: {
         average: function average() {
-            return this.round(this.value / this.number, 1);
+            if (this.value != 0 && this.number != 0) {
+                return this.round(this.value / this.number, 1);
+            } else {
+                return 0;
+            }
         }
     },
 
