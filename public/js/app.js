@@ -18275,8 +18275,8 @@ Vue.component('chart', __webpack_require__(230));
 Vue.component('table-report', __webpack_require__(233));
 
 // Infoboxes
-Vue.component('sum-sm', __webpack_require__(236));
-Vue.component('avg-sm', __webpack_require__(239));
+Vue.component('box-sum-sm', __webpack_require__(251));
+Vue.component('box-avg-sm', __webpack_require__(254));
 
 var app = new Vue({
   el: '#app'
@@ -78019,15 +78019,35 @@ if (false) {
 }
 
 /***/ }),
-/* 236 */
+/* 236 */,
+/* 237 */,
+/* 238 */,
+/* 239 */,
+/* 240 */,
+/* 241 */,
+/* 242 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 243 */,
+/* 244 */,
+/* 245 */,
+/* 246 */,
+/* 247 */,
+/* 248 */,
+/* 249 */,
+/* 250 */,
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(6)
 /* script */
-var __vue_script__ = __webpack_require__(237)
+var __vue_script__ = __webpack_require__(252)
 /* template */
-var __vue_template__ = __webpack_require__(238)
+var __vue_template__ = __webpack_require__(253)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -78044,7 +78064,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\infoboxes\\Sum-sm.vue"
+Component.options.__file = "resources\\assets\\js\\components\\infoboxes\\Box-sum-sm.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
 
 /* hot reload */
@@ -78054,9 +78074,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-330da996", Component.options)
+    hotAPI.createRecord("data-v-3ab073f7", Component.options)
   } else {
-    hotAPI.reload("data-v-330da996", Component.options)
+    hotAPI.reload("data-v-3ab073f7", Component.options)
 ' + '  }
   module.hot.dispose(function (data) {
     disposed = true
@@ -78067,7 +78087,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 237 */
+/* 252 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -78095,7 +78115,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 238 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -78118,20 +78138,20 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-330da996", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-3ab073f7", module.exports)
   }
 }
 
 /***/ }),
-/* 239 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(6)
 /* script */
-var __vue_script__ = __webpack_require__(240)
+var __vue_script__ = __webpack_require__(255)
 /* template */
-var __vue_template__ = __webpack_require__(241)
+var __vue_template__ = __webpack_require__(256)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -78148,7 +78168,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\infoboxes\\Avg-sm.vue"
+Component.options.__file = "resources\\assets\\js\\components\\infoboxes\\Box-avg-sm.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
 
 /* hot reload */
@@ -78158,9 +78178,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-4366ce64", Component.options)
+    hotAPI.createRecord("data-v-3283e190", Component.options)
   } else {
-    hotAPI.reload("data-v-4366ce64", Component.options)
+    hotAPI.reload("data-v-3283e190", Component.options)
 ' + '  }
   module.hot.dispose(function (data) {
     disposed = true
@@ -78171,7 +78191,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 240 */
+/* 255 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -78212,7 +78232,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 241 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -78235,15 +78255,9 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-4366ce64", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-3283e190", module.exports)
   }
 }
-
-/***/ }),
-/* 242 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

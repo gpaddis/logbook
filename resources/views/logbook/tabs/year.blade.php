@@ -4,20 +4,20 @@
 <div class="col">
 
   <div class="row">
-    <sum-sm value="{{ $days or 0 }}">
+    <box-sum-sm value="{{ $days or 0 }}">
       <i class="fa fa-calendar" aria-hidden="true"></i>
       Days open
-    </sum-sm>
+    </box-sum-sm>
 
-    <sum-sm value="{{ $visits->sum() ?: 0 }}">
+    <box-sum-sm value="{{ $visits->sum() ?: 0 }}">
       <i class="fa fa-user" aria-hidden="true"></i>
       Visits
-    </sum-sm>
+    </box-sum-sm>
 
-    <avg-sm value="{{ $visits->sum() }}" number="{{ $days }}">
+    <box-avg-sm value="{{ $visits->sum() }}" number="{{ $days }}">
       <i class="fa fa-users" aria-hidden="true"></i>
       Visits / day
-    </avg-sm>
+    </box-avg-sm>
 
     <div class="col-6 mb-2">
       <div class="card">

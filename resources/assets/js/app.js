@@ -24,8 +24,8 @@ Vue.component('chart', require('./components/charts/Chart.vue'));
 Vue.component('table-report', require('./components/Table-report.vue'));
 
 // Infoboxes
-Vue.component('sum-sm', require('./components/infoboxes/Sum-sm.vue'));
-Vue.component('avg-sm', require('./components/infoboxes/Avg-sm.vue'));
+Vue.component('box-sum-sm', require('./components/infoboxes/Box-sum-sm.vue'));
+Vue.component('box-avg-sm', require('./components/infoboxes/Box-avg-sm.vue'));
 
 const app = new Vue({
     el: '#app'
