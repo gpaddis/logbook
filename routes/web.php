@@ -32,8 +32,11 @@ Route::post('/logbook/livecounter/subtract', 'LiveCounterController@subtract')->
  * Patron Categories
  */
 Route::get('/patron-categories', 'PatronCategoryController@index')->name('patron-categories.index');
-Route::get('/patron-categories/{patronCategory}', 'PatronCategoryController@show')->name('patron-category.show');
-Route::post('/patron-categories', 'PatronCategoryController@store')->name('patron-category.store');
+Route::get('/patron-categories/create', 'PatronCategoryController@create')->name('patron-categories.create');
+Route::post('/patron-categories', 'PatronCategoryController@store')->name('patron-categories.store');
+Route::get('/patron-categories/{category}', 'PatronCategoryController@show')->name('patron-categories.show');
+Route::get('/patron-categories/{category}/edit', 'PatronCategoryController@edit')->name('patron-categories.edit');
+Route::patch('/patron-categories/{category}', 'PatronCategoryController@update')->name('patron-categories.update');
 
 
 /**

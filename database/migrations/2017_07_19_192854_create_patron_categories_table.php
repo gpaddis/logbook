@@ -19,6 +19,7 @@ class CreatePatronCategoriesTable extends Migration
             $table->string('abbreviation')->unique()->nullable();
             $table->boolean('is_active')->default(true);
             $table->boolean('is_primary')->default(true);
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

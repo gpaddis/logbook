@@ -40,7 +40,7 @@ class PatronCategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('patron-categories.create');
     }
 
     /**
@@ -51,10 +51,15 @@ class PatronCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $patronCategory = PatronCategory::create([
-            'name' => request('name'),
-            'abbreviation' => request('abbreviation')
+        $request->validate([
+            'name' => 'required|string|max:25|unique:patron_categories,name',
+            'abbreviation' => 'string|max:10|nullable|unique:patron_categories,abbreviation',
+            'is_active' => 'boolean',
+            'is_primary' => 'boolean',
+            'notes' => 'string|nullable'
         ]);
+
+        PatronCategory::create($request->all());
 
         return redirect()->route('patron-categories.index');
     }
@@ -65,9 +70,9 @@ class PatronCategoryController extends Controller
      * @param  \App\PatronCategory  $patronCategory
      * @return \Illuminate\Http\Response
      */
-    public function show(PatronCategory $patronCategory)
+    public function show(PatronCategory $category)
     {
-        return view('patron-categories.show', compact('patronCategory'));
+        return view('patron-categories.show', compact('category'));
     }
 
     /**
@@ -76,9 +81,9 @@ class PatronCategoryController extends Controller
      * @param  \App\PatronCategory  $patronCategory
      * @return \Illuminate\Http\Response
      */
-    public function edit(PatronCategory $patronCategory)
+    public function edit(PatronCategory $category)
     {
-        //
+        return view('patron-categories.edit', compact('category'));
     }
 
     /**
@@ -86,11 +91,24 @@ class PatronCategoryController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\PatronCategory  $patronCategory
+     *
+     * @see : https://laracasts.com/discuss/channels/requests/problem-with-unique-field-validation-on-update?page=1
+     *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PatronCategory $patronCategory)
+    public function update(Request $request, PatronCategory $category)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:25|unique:patron_categories,name,' . $category->id,
+            'abbreviation' => 'string|max:10|nullable|unique:patron_categories,abbreviation,' . $category->id,
+            'is_active' => 'boolean',
+            'is_primary' => 'boolean',
+            'notes' => 'string|nullable'
+        ]);
+
+        $category->update($request->all());
+
+        return redirect()->route('patron-categories.index');
     }
 
     /**
