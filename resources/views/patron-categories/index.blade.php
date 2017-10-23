@@ -56,7 +56,6 @@
           <a href="{{ route('patron-categories.create') }}" class="btn btn-primary">Add a new patron category</a>
         </div>
       </div>
-
     </div>
   </div>
 </div>

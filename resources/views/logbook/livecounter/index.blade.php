@@ -7,10 +7,14 @@
     <div class="card">
       <div class="card-header">Live Counter Index</div>
       <div class="card-body">
+        @if($patronCategories->isNotEmpty())
         <category-cards
           :patron-categories="{{ $patronCategories }}"
           :initial-count="{{ $initialCount }}"
         ></category-cards>
+        @else
+        @include('layouts.partials.no-patron-categories')
+        @endif
       </div>
     </div>
   </div>
