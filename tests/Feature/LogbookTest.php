@@ -99,34 +99,43 @@ class LogbookTest extends TestCase
     /** @test */
     public function it_returns_the_entries_for_the_browse_year_tab()
     {
+        list($patron1, $patron2, $patron3) = create('App\PatronCategory', [], 3);
+
         create('App\LogbookEntry', [
-            'visited_at' => '2015-01-02 12:00:00'
+            'visited_at' => '2015-01-02 12:00:00',
+            'patron_category_id' => $patron1->id
             ], 5);
 
         create('App\LogbookEntry', [
-            'visited_at' => '2016-01-02 12:00:00'
+            'visited_at' => '2016-01-02 12:00:00',
+            'patron_category_id' => $patron2->id
             ], 5);
 
         create('App\LogbookEntry', [
-            'visited_at' => '2017-01-02 12:00:00'
+            'visited_at' => '2017-01-02 12:00:00',
+            'patron_category_id' => $patron3->id
             ], 5);
 
         $visits2017 = LogbookEntry::getYearData(2017, 1);
+        // dd($visits2017->first()->visits);
         $this->assertTrue($visits2017->contains('year', 2017));
+        $this->assertTrue($visits2017->contains('patronCategory.name', $patron3->name));
         $this->assertFalse($visits2017->contains('year', 2015));
         $this->assertFalse($visits2017->contains('year', 2016));
-        $this->assertCount(5, $visits2017);
+        $this->assertEquals(5, $visits2017->first()->visits);
 
         $visits2016 = LogbookEntry::getYearData(2016, 1);
         $this->assertTrue($visits2016->contains('year', 2016));
+        $this->assertTrue($visits2016->contains('patronCategory.name', $patron2->name));
         $this->assertFalse($visits2016->contains('year', 2015));
         $this->assertFalse($visits2016->contains('year', 2017));
-        $this->assertCount(5, $visits2016);
+        $this->assertEquals(5, $visits2016->first()->visits);
 
         $twoYears = LogbookEntry::getYearData(2017, 2);
         $this->assertTrue($twoYears->contains('year', 2016));
         $this->assertTrue($twoYears->contains('year', 2017));
+        $this->assertTrue($twoYears->contains('patronCategory.name', $patron3->name));
         $this->assertFalse($twoYears->contains('year', 2015));
-        $this->assertCount(10, $twoYears);
+        $this->assertEquals(10, $twoYears->sum('visits'));
     }
 }
