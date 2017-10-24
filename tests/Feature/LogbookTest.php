@@ -95,4 +95,38 @@ class LogbookTest extends TestCase
 
         $this->assertCount(9, LogbookEntry::year(Carbon::now()->year)->get());
     }
+
+    /** @test */
+    public function it_returns_the_entries_for_the_browse_year_tab()
+    {
+        create('App\LogbookEntry', [
+            'visited_at' => '2015-01-02 12:00:00'
+            ], 5);
+
+        create('App\LogbookEntry', [
+            'visited_at' => '2016-01-02 12:00:00'
+            ], 5);
+
+        create('App\LogbookEntry', [
+            'visited_at' => '2017-01-02 12:00:00'
+            ], 5);
+
+        $visits2017 = LogbookEntry::getYearData(2017, 1);
+        $this->assertTrue($visits2017->contains('year', 2017));
+        $this->assertFalse($visits2017->contains('year', 2015));
+        $this->assertFalse($visits2017->contains('year', 2016));
+        $this->assertCount(5, $visits2017);
+
+        $visits2016 = LogbookEntry::getYearData(2016, 1);
+        $this->assertTrue($visits2016->contains('year', 2016));
+        $this->assertFalse($visits2016->contains('year', 2015));
+        $this->assertFalse($visits2016->contains('year', 2017));
+        $this->assertCount(5, $visits2016);
+
+        $twoYears = LogbookEntry::getYearData(2017, 2);
+        $this->assertTrue($twoYears->contains('year', 2016));
+        $this->assertTrue($twoYears->contains('year', 2017));
+        $this->assertFalse($twoYears->contains('year', 2015));
+        $this->assertCount(10, $twoYears);
+    }
 }

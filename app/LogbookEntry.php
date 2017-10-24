@@ -129,4 +129,22 @@ class LogbookEntry extends Model
             $entry->delete();
         }
     }
+
+    /**
+     * Get logbook entry data for the browse.year tab.
+     *
+     * @param  int $year
+     * @param  int $depth
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public static function getYearData($year, $depth)
+    {
+        return static::selectRaw('YEAR(visited_at) as year, MONTH(visited_at) as month, patron_category_id, count(*) as visits')
+        ->with('patronCategory:id,name')
+        ->groupBy('year', 'month', 'patron_category_id')
+        ->having('year', '<=', $year)
+        ->having('year', '>=', $year - $depth + 1)
+        ->get();
+    }
 }

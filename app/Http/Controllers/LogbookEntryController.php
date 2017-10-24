@@ -101,6 +101,10 @@ class LogbookEntryController extends Controller
         ->pluck('year');
 
         $year = 2017;
+        $depth = 3; // How many years do you want to compare? count the variable $years
+
+        // Provide basic data used by all graphs
+        $data = LogbookEntry::getYearData($year, $depth);
 
         $visits = LogbookEntry::year($year)
         ->selectRaw('MONTH(visited_at) as month, count(*) as visits')
