@@ -1,6 +1,9 @@
 @extends('logbook.index')
 
 @section('tab-content')
+<browse-year-view inline-template
+:data="{{ $data }}"
+:categories="{{ $data->pluck('patronCategory.name', 'patronCategory.id')->unique() }}">
 <div class="col">
 
   <div class="row">
@@ -9,12 +12,12 @@
       Days open
     </box-sum-sm>
 
-    <box-sum-sm value="{{ $visits->sum() ?: 0 }}">
+    <box-sum-sm value="{{ $data->where('year', $year)->sum('visits') ?: 0 }}">
       <i class="fa fa-user" aria-hidden="true"></i>
       Visits
     </box-sum-sm>
 
-    <box-avg-sm value="{{ $visits->sum() }}" number="{{ $days }}">
+    <box-avg-sm value="{{ $data->where('year', $year)->sum('visits') }}" number="{{ $days }}">
       <i class="fa fa-users" aria-hidden="true"></i>
       Visits / day
     </box-avg-sm>
@@ -91,4 +94,5 @@
 </div>
 
 </div>
+</browse-year-view>
 @endsection

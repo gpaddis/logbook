@@ -13,6 +13,9 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+// Pages
+Vue.component('browse-year-view', require('./pages/Browse-year-view.vue'));
+
 Vue.component('example', require('./components/Example.vue'));
 Vue.component('flash', require('./components/Flash.vue'));
 

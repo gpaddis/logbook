@@ -100,7 +100,7 @@ class LogbookEntryController extends Controller
         ->distinct()
         ->pluck('year');
 
-        $year = 2017;
+        $year = 2017; // The year selected, the one for which the data is calculated
         $depth = 3; // How many years do you want to compare? count the variable $years
 
         // Provide basic data used by all graphs
@@ -118,7 +118,7 @@ class LogbookEntryController extends Controller
         ->get()
         ->count();
 
-        return view('logbook.tabs.year', compact('visits', 'years', 'days'));
+        return view('logbook.tabs.year', compact('visits', 'years', 'days', 'data', 'year'));
     }
 
     /**
