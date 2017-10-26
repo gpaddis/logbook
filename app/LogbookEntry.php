@@ -147,4 +147,40 @@ class LogbookEntry extends Model
         ->having('year', '>=', $year - $depth + 1)
         ->get();
     }
+
+    /**
+     * Get total number of visits the browse.year tab grouped by year and month.
+     *
+     * @param  int $year
+     * @param  int $depth
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public static function getTotalVisitsByYear(int $year, int $depth = 1)
+    {
+        $entries = static::selectRaw('YEAR(visited_at) as year, MONTH(visited_at) as month, count(*) as visits')
+        ->groupBy('year', 'month')
+        ->having('year', '<=', $year)
+        ->having('year', '>=', $year - $depth + 1)
+        ->get()
+        ->groupBy('year');
+
+        $result = [];
+
+        foreach ($entries as $year => $months) {
+            foreach ($months as $item) {
+                for ($month = 1; $month < 13 ; $month++) {
+                    if ($month == $item->month) {
+                        $visits = $item->visits;
+                    } else {
+                        $visits = 0;
+                    }
+
+                    $result[$year][$month] = $visits;
+                };
+            }
+        };
+
+        return collect($result);
+    }
 }
