@@ -138,7 +138,7 @@ class LogbookEntry extends Model
      *
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public static function getYearData($year, $depth)
+    public static function getYearData(int $year, int $depth = 1)
     {
         return static::selectRaw('YEAR(visited_at) as year, MONTH(visited_at) as month, patron_category_id, count(*) as visits')
         ->with('patronCategory:id,name')

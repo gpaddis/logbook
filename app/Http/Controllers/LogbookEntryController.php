@@ -101,7 +101,7 @@ class LogbookEntryController extends Controller
         ->pluck('year');
 
         $year = 2017; // The year selected, the one for which the data is calculated
-        $depth = 3; // How many years do you want to compare? count the variable $years
+        $depth = 3; // How many years do you want to compare?
 
         // Provide basic data used by all graphs
         $data = LogbookEntry::getYearData($year, $depth);
