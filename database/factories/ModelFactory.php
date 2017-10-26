@@ -30,7 +30,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 $factory->define(App\PatronCategory::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->unique()->colorName,
-        'abbreviation' => $faker->unique()->word,
+        'abbreviation' => $faker->unique()->fileExtension,
         'is_active' => true,
         'is_primary' => true,
         'notes' => $faker->paragraph
