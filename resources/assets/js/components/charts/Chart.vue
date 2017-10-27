@@ -34,18 +34,6 @@ export default {
             });
 
             return datasets;
-        },
-
-        // TODO: series should be stored in a separate computed property
-        series() {
-            var series = [];
-
-            let variable = Object.entries(this.values)
-            variable.forEach((value, key) => {
-                series[key] = value[1];
-            });
-
-            return series;
         }
     },
 

@@ -77842,19 +77842,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
 
             return datasets;
-        },
-
-
-        // TODO: series should be stored in a separate computed property
-        series: function series() {
-            var series = [];
-
-            var variable = Object.entries(this.values);
-            variable.forEach(function (value, key) {
-                series[key] = value[1];
-            });
-
-            return series;
         }
     },
 
