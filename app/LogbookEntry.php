@@ -149,7 +149,7 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Get total number of visits the browse.year tab grouped by year and month.
+     * Get the total number of visits grouped by year and month.
      *
      * @param  int $year
      * @param  int $depth
@@ -165,8 +165,8 @@ class LogbookEntry extends Model
         ->get()
         ->groupBy('year');
 
+        // $result structure = year => [monthNo => visits, monthNo => visits, ...]
         $result = [];
-
         foreach ($collection as $year => $items) {
             foreach ($items as $item) {
                 for ($monthNo = 1; $monthNo < 13 ; $monthNo++) {
@@ -175,6 +175,7 @@ class LogbookEntry extends Model
             }
         };
 
+        // Collect the result to allow automatic conversion to JSON in the view.
         return collect($result);
     }
 }
