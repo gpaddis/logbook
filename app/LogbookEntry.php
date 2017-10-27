@@ -158,7 +158,7 @@ class LogbookEntry extends Model
      */
     public static function getTotalVisitsByYear(int $year, int $depth = 1)
     {
-        $entries = static::selectRaw('YEAR(visited_at) as year, MONTH(visited_at) as month, count(*) as visits')
+        $collection = static::selectRaw('YEAR(visited_at) as year, MONTH(visited_at) as month, count(*) as visits')
         ->groupBy('year', 'month')
         ->having('year', '<=', $year)
         ->having('year', '>=', $year - $depth + 1)
@@ -167,16 +167,10 @@ class LogbookEntry extends Model
 
         $result = [];
 
-        foreach ($entries as $year => $months) {
-            foreach ($months as $item) {
-                for ($month = 1; $month < 13 ; $month++) {
-                    if ($month == $item->month) {
-                        $visits = $item->visits;
-                    } else {
-                        $visits = 0;
-                    }
-
-                    $result[$year][$month] = $visits;
+        foreach ($collection as $year => $items) {
+            foreach ($items as $item) {
+                for ($monthNo = 1; $monthNo < 13 ; $monthNo++) {
+                    $result[$year][$monthNo] = $monthNo == $item->month ? $item->visits : 0;
                 };
             }
         };
