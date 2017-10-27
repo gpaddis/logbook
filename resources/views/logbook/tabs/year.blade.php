@@ -12,12 +12,12 @@
       Days open
     </box-sum-sm>
 
-    <box-sum-sm value="{{ $data->where('year', $year)->sum('visits') ?: 0 }}">
+    <box-sum-sm value="{{ array_sum($collection->first()) ?: 0 }}">
       <i class="fa fa-user" aria-hidden="true"></i>
       Visits
     </box-sum-sm>
 
-    <box-avg-sm value="{{ $data->where('year', $year)->sum('visits') }}" number="{{ $days }}">
+    <box-avg-sm value="{{ array_sum($collection->first()) }}" number="{{ $days }}">
       <i class="fa fa-users" aria-hidden="true"></i>
       Visits / day
     </box-avg-sm>

@@ -118,7 +118,9 @@ class LogbookEntryController extends Controller
         ->get()
         ->count();
 
-        return view('logbook.tabs.year', compact('visits', 'years', 'days', 'data', 'year'));
+        $collection = LogbookEntry::getTotalVisitsByYear($year, $depth);
+
+        return view('logbook.tabs.year', compact('visits', 'years', 'days', 'data', 'collection'));
     }
 
     /**

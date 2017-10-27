@@ -133,6 +133,8 @@ class LogbookTest extends TestCase
             ], 5);
 
         $bothYears = LogbookEntry::getTotalVisitsByYear(2017, 2);
+
+        $this->assertEquals(2017, $bothYears->keys()->first());
         $this->assertEquals($bothYears->toArray(), [
             2016 => [
                 1 => 5,
