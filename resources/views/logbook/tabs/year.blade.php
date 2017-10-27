@@ -1,9 +1,6 @@
 @extends('logbook.index')
 
 @section('tab-content')
-<browse-year-view inline-template
-:data="{{ $data }}"
-:categories="{{ $data->pluck('patronCategory.name', 'patronCategory.id')->unique() }}">
 <div class="col">
 
   <div class="row">
@@ -12,12 +9,12 @@
       Days open
     </box-sum-sm>
 
-    <box-sum-sm value="{{ array_sum($collection->first()) ?: 0 }}">
+    <box-sum-sm value="{{ array_sum($visitsByYear->first()) ?: 0 }}">
       <i class="fa fa-user" aria-hidden="true"></i>
       Visits
     </box-sum-sm>
 
-    <box-avg-sm value="{{ array_sum($collection->first()) }}" number="{{ $days }}">
+    <box-avg-sm value="{{ array_sum($visitsByYear->first()) }}" number="{{ $days }}">
       <i class="fa fa-users" aria-hidden="true"></i>
       Visits / day
     </box-avg-sm>
@@ -92,7 +89,5 @@
     <p>This graph will display the visits in the year selected with stacked lines corresponding to the different user groups.</p>
   </div>
 </div>
-
 </div>
-</browse-year-view>
 @endsection

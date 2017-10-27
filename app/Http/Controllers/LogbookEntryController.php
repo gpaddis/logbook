@@ -96,15 +96,13 @@ class LogbookEntryController extends Controller
     public function browseYear(Request $request)
     {
         // Browse the years with available data in the dropdown menu.
-        $years = LogbookEntry::selectRaw('YEAR(visited_at) as year')
-        ->distinct()
-        ->pluck('year');
 
         $year = 2017; // The year selected, the one for which the data is calculated
         $depth = 3; // How many years do you want to compare?
 
-        // Provide basic data used by all graphs
-        $data = LogbookEntry::getYearData($year, $depth);
+        $years = LogbookEntry::selectRaw('YEAR(visited_at) as year')
+        ->distinct()
+        ->pluck('year');
 
         $visits = LogbookEntry::year($year)
         ->selectRaw('MONTH(visited_at) as month, count(*) as visits')
@@ -118,9 +116,9 @@ class LogbookEntryController extends Controller
         ->get()
         ->count();
 
-        $collection = LogbookEntry::getTotalVisitsByYear($year, $depth);
+        $visitsByYear = LogbookEntry::getTotalVisitsByYear($year, $depth);
 
-        return view('logbook.tabs.year', compact('visits', 'years', 'days', 'data', 'collection'));
+        return view('logbook.tabs.year', compact('visits', 'years', 'days', 'visitsByYear'));
     }
 
     /**
