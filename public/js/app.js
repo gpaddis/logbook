@@ -77796,34 +77796,55 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         type: {
             default: 'bar'
         },
-        label: {},
-        keys: {},
-        values: {},
-        backgroundColor: {},
-        borderColor: {}
+        values: {}
+    },
+
+    data: function data() {
+        return {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        };
+    },
+
+
+    computed: {
+        datasets: function datasets() {
+            var datasets = [];
+
+            var entries = new Map(Object.entries(this.values));
+            entries.forEach(function (values, year) {
+                datasets.push({
+                    label: year,
+                    data: Object.values(values),
+                    backgroundColor: 'rgba(255, 12, 2, 0.2)',
+                    borderColor: 'rgba(254, 43, 132, 1)',
+                    borderWidth: 1
+                });
+            });
+
+            return datasets;
+        },
+
+
+        // TODO: series should be stored in a separate computed property
+        series: function series() {
+            var series = [];
+
+            var variable = Object.entries(this.values);
+            variable.forEach(function (value, key) {
+                series[key] = value[1];
+            });
+
+            return series;
+        }
     },
 
     mounted: function mounted() {
         var myChart = new Chart(this.$el, {
             type: this.type,
             data: {
-                labels: this.keys,
-                datasets: [{
-                    label: this.label,
-                    data: this.values,
-                    backgroundColor: this.backgroundColor,
-                    borderColor: this.borderColor,
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
+                labels: this.labels,
+                datasets: this.datasets,
+                options: {}
             }
         });
     }

@@ -47,11 +47,9 @@
     <div class="col-md-8">
       <chart type="bar"
       label="# of Users in 2017"
-      :keys="{{ $visits->keys() }}"
-      :values="{{ $visits->values() }}"
-      background-color="rgba(255, 12, 2, 0.2)"
-      border-color="rgba(254, 43, 132, 1)"></chart>
+      :values="{{ $visitsByYear }}"></chart>
     </div>
+
     <div class="col">
       <h1>Visits by month</h1>
       <p>There will be two datasets, for comparison: one for the current year, one for the previous.</p>
@@ -79,10 +77,7 @@
   <div class="col-md-8">
     <chart type="line"
     label="Students"
-    :keys="{{ $visits->keys() }}"
-    :values="{{ $visits->values() }}"
-    background-color="rgba(255, 99, 132, 0.2)"
-    border-color="rgba(255, 99, 132, 1)"></chart>
+    :values="{{ $visitsByYear }}"></chart>
   </div>
   <div class="col">
     <h1>User groups</h1>
