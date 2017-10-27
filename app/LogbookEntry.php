@@ -168,10 +168,14 @@ class LogbookEntry extends Model
         // $result structure = year => [monthNo => visits, monthNo => visits, ...]
         $result = [];
         foreach ($collection as $year => $items) {
+            // Create the array skeleton
+            for ($monthNo = 1; $monthNo < 13 ; $monthNo++) {
+                $result[$year][$monthNo] = 0;
+            };
+
+            // Replace zeroes with real values from the collection
             foreach ($items as $item) {
-                for ($monthNo = 1; $monthNo < 13 ; $monthNo++) {
-                    $result[$year][$monthNo] = $monthNo == $item->month ? $item->visits : 0;
-                };
+                $result[$year][$item->month] = $item->visits;
             }
         };
 

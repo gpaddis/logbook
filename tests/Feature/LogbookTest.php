@@ -99,11 +99,8 @@ class LogbookTest extends TestCase
     /** @test */
     public function it_returns_the_total_visits_collected_by_year_and_month()
     {
-        list($patron1, $patron2) = factory('App\PatronCategory', 2)->create();
-
         create('App\LogbookEntry', [
             'visited_at' => '2016-01-02 12:00:00',
-            'patron_category_id' => $patron1->id
             ], 5);
 
         $visits2016 = LogbookEntry::getTotalVisitsByYear(2016, 1);
@@ -125,8 +122,15 @@ class LogbookTest extends TestCase
 
         create('App\LogbookEntry', [
             'visited_at' => '2017-05-02 12:00:00',
-            'patron_category_id' => $patron2->id
-            ], 15);
+            ], 5);
+
+        create('App\LogbookEntry', [
+            'visited_at' => '2017-04-02 12:00:00',
+            ], 5);
+
+        create('App\LogbookEntry', [
+            'visited_at' => '2017-06-02 12:00:00',
+            ], 5);
 
         $bothYears = LogbookEntry::getTotalVisitsByYear(2017, 2);
         $this->assertEquals($bothYears->toArray(), [
@@ -148,9 +152,9 @@ class LogbookTest extends TestCase
                 1 => 0,
                 2 => 0,
                 3 => 0,
-                4 => 0,
-                5 => 15,
-                6 => 0,
+                4 => 5,
+                5 => 5,
+                6 => 5,
                 7 => 0,
                 8 => 0,
                 9 => 0,
