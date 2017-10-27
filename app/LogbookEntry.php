@@ -163,6 +163,7 @@ class LogbookEntry extends Model
         ->having('year', '<=', $year)
         ->having('year', '>=', $year - $depth + 1)
         ->get()
+        ->sortByDesc('year')
         ->groupBy('year');
 
         // $result structure = year => [monthNo => visits, monthNo => visits, ...]
