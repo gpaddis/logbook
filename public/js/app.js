@@ -77821,22 +77821,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     data: function data() {
         return {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            backgroundColors: ['#ff6384', '#36a2eb', '#cc65fe'],
+            borderColors: ['#ff6384', '#36a2eb', '#cc65fe']
         };
     },
 
 
     computed: {
         datasets: function datasets() {
+            var _this = this;
+
             var datasets = [];
 
             var entries = new Map(Object.entries(this.values));
+            var index = 0;
+
             entries.forEach(function (values, year) {
                 datasets.push({
                     label: year,
                     data: Object.values(values),
-                    backgroundColor: 'rgba(255, 12, 2, 0.2)',
-                    borderColor: 'rgba(254, 43, 132, 1)',
+                    backgroundColor: _this.backgroundColors[index],
+                    borderColor: _this.borderColors[index++],
                     borderWidth: 1
                 });
             });

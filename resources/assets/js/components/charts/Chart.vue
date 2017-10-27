@@ -15,6 +15,8 @@ export default {
     data() {
         return {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            backgroundColors: ['#ff6384', '#36a2eb', '#cc65fe'],
+            borderColors: ['#ff6384', '#36a2eb', '#cc65fe']
         }
     },
 
@@ -23,12 +25,14 @@ export default {
             let datasets = [];
 
             let entries = new Map(Object.entries(this.values));
+            let index = 0;
+
             entries.forEach((values, year) => {
                 datasets.push({
                     label: year,
                     data: Object.values(values),
-                    backgroundColor: 'rgba(255, 12, 2, 0.2)',
-                    borderColor: 'rgba(254, 43, 132, 1)',
+                    backgroundColor: this.backgroundColors[index],
+                    borderColor: this.borderColors[index++],
                     borderWidth: 1
                 })
             });
