@@ -4,7 +4,7 @@
 <div class="col">
 
   <div class="row">
-    <box-sum-sm value="{{ $days or 0 }}">
+    <box-sum-sm value="{{ $openingDays or 0 }}">
       <i class="fa fa-calendar" aria-hidden="true"></i>
       Days open
     </box-sum-sm>
@@ -14,7 +14,7 @@
       Visits
     </box-sum-sm>
 
-    <box-avg-sm value="{{ array_sum($visitsByYear->first()) }}" number="{{ $days }}">
+    <box-avg-sm value="{{ array_sum($visitsByYear->first()) }}" number="{{ $openingDays }}">
       <i class="fa fa-users" aria-hidden="true"></i>
       Visits / day
     </box-avg-sm>
@@ -30,7 +30,7 @@
 
           <select class="custom-select">
             <option selected>Select a year</option>
-            @forelse($years as $year)
+            @forelse($yearsAvailable as $year)
             <option value="{{ $year }}">{{ $year }}</option>
             @empty
             <option value="none">No data available</option>

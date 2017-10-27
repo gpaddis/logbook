@@ -100,7 +100,7 @@ class LogbookEntryController extends Controller
         $year = 2017; // The year selected, the one for which the data is calculated
         $depth = 3; // How many years do you want to compare?
 
-        $years = LogbookEntry::selectRaw('YEAR(visited_at) as year')
+        $yearsAvailable = LogbookEntry::selectRaw('YEAR(visited_at) as year')
         ->distinct()
         ->pluck('year');
 
@@ -110,7 +110,7 @@ class LogbookEntryController extends Controller
         ->pluck('visits', 'month')
         ->sortBy('month');
 
-        $days = LogbookEntry::year($year)
+        $openingDays = LogbookEntry::year($year)
         ->selectRaw('DATE(visited_at) as day')
         ->distinct('days')
         ->get()
@@ -118,7 +118,7 @@ class LogbookEntryController extends Controller
 
         $visitsByYear = LogbookEntry::getTotalVisitsByYear($year, $depth);
 
-        return view('logbook.tabs.year', compact('visits', 'years', 'days', 'visitsByYear'));
+        return view('logbook.tabs.year', compact('visits', 'yearsAvailable', 'openingDays', 'visitsByYear'));
     }
 
     /**
