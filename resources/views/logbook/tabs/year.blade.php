@@ -9,12 +9,12 @@
       Days open
     </box-sum-sm>
 
-    <box-sum-sm value="{{ array_sum($visitsByYear->first()) ?: 0 }}">
+    <box-sum-sm value="{{ $visitsByYear->first() != null ? array_sum($visitsByYear->first()) : 0 }}">
       <i class="fa fa-user" aria-hidden="true"></i>
       Visits
     </box-sum-sm>
 
-    <box-avg-sm value="{{ array_sum($visitsByYear->first()) }}" number="{{ $openingDays }}">
+    <box-avg-sm value="{{ $visitsByYear->first() != null ? array_sum($visitsByYear->first()) : 0 }}" number="{{ $openingDays }}">
       <i class="fa fa-users" aria-hidden="true"></i>
       Visits / day
     </box-avg-sm>
