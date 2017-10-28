@@ -97,6 +97,16 @@ class LogbookTest extends TestCase
     }
 
     /** @test */
+    public function it_returns_the_number_of_days_with_entries_in_the_db()
+    {
+        create('App\LogbookEntry', ['visited_at' => '2017-01-12 10:00:00']);
+        create('App\LogbookEntry', ['visited_at' => '2017-01-13 10:00:00']);
+        create('App\LogbookEntry', ['visited_at' => '2017-01-14 10:00:00']);
+
+        $this->assertEquals(3, LogbookEntry::getOpeningDays(2017));
+    }
+
+    /** @test */
     public function it_returns_the_total_visits_collected_by_year_and_month()
     {
         create('App\LogbookEntry', [

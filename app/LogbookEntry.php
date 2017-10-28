@@ -149,6 +149,22 @@ class LogbookEntry extends Model
     }
 
     /**
+     * Get the number of days containing logbook entries in a given year.
+     *
+     * @param  int $year
+     *
+     * @return int
+     */
+    public static function getOpeningDays($year)
+    {
+        return static::year($year)
+        ->selectRaw('DATE(visited_at) as day')
+        ->distinct('days')
+        ->get()
+        ->count();
+    }
+
+    /**
      * Get the total number of visits grouped by year and month, with an optional second year for comparison.
      *
      * @param  int $year1

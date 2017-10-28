@@ -107,12 +107,7 @@ class LogbookEntryController extends Controller
         $year = $request->input('y1') ?? date('Y'); // The year selected or the current year
         $year2 = $request->input('y2') ?? $year - 1; // The year to compare or the previous year
 
-        $openingDays = LogbookEntry::year($year)
-        ->selectRaw('DATE(visited_at) as day')
-        ->distinct('days')
-        ->get()
-        ->count();
-
+        $openingDays = LogbookEntry::getOpeningDays(2017);
         $visitsByYear = LogbookEntry::getTotalVisitsByYear($year, $year2);
         $visitsByPatronCategory = LogbookEntry::getTotalVisitsByPatronCategory($year);
 
