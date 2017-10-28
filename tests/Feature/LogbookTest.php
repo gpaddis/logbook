@@ -39,15 +39,15 @@ class LogbookTest extends TestCase
 
         create('App\LogbookEntry', [
             'visited_at' => $timeslot->start()->subHour()
-            ], 5);
+        ], 5);
 
         $target = create('App\LogbookEntry', [
             'visited_at' => $timeslot->start()
-            ], 3);
+        ], 3);
 
         create('App\LogbookEntry', [
             'visited_at' => $timeslot->start()->addHour()
-            ], 6);
+        ], 6);
 
         $result = LogbookEntry::withinTimeslot($timeslot)->get();
 
@@ -62,19 +62,19 @@ class LogbookTest extends TestCase
 
         create('App\LogbookEntry', [
             'visited_at' => '2017-08-10 10:00:00'
-            ], 5);
+        ], 5);
 
         create('App\LogbookEntry', [
             'visited_at' => '2017-08-11 00:00:00'
-            ], 3);
+        ], 3);
 
         create('App\LogbookEntry', [
             'visited_at' => '2017-08-12 10:00:00'
-            ], 6);
+        ], 6);
 
         create('App\LogbookEntry', [
             'visited_at' => '2017-08-13 23:59:59'
-            ], 5);
+        ], 5);
 
         $result = LogbookEntry::getAggregatesWithin(Carbon::parse('2017-08-11'), Carbon::parse('2017-08-13'));
 
@@ -89,7 +89,7 @@ class LogbookTest extends TestCase
     {
         create('App\LogbookEntry', [
             'visited_at' => Carbon::now()->subYear()
-            ], 10);
+        ], 10);
 
         factory('App\LogbookEntry', 9)->create();
 
@@ -101,7 +101,7 @@ class LogbookTest extends TestCase
     {
         create('App\LogbookEntry', [
             'visited_at' => '2016-01-02 12:00:00',
-            ], 5);
+        ], 5);
 
         $visits2016 = LogbookEntry::getTotalVisitsByYear(2016, 1);
         $this->assertEquals($visits2016->toArray(), [
@@ -122,15 +122,15 @@ class LogbookTest extends TestCase
 
         create('App\LogbookEntry', [
             'visited_at' => '2017-05-02 12:00:00',
-            ], 5);
+        ], 5);
 
         create('App\LogbookEntry', [
             'visited_at' => '2017-04-02 12:00:00',
-            ], 5);
+        ], 5);
 
         create('App\LogbookEntry', [
             'visited_at' => '2017-06-02 12:00:00',
-            ], 5);
+        ], 5);
 
         $bothYears = LogbookEntry::getTotalVisitsByYear(2017, 2);
 
@@ -164,6 +164,33 @@ class LogbookTest extends TestCase
                 11 => 0,
                 12 => 0
             ]
-            ]);
+        ]);
+    }
+
+    /** @test */
+    public function it_returns_the_total_visits_grouped_by_patron_category()
+    {
+        list($cat1, $cat2, $cat3) = factory('App\PatronCategory', 3)->create();
+
+        create('App\LogbookEntry', [
+            'visited_at' => '2017-05-02 12:00:00',
+            'patron_category_id' => $cat1->id
+        ], 5);
+
+        create('App\LogbookEntry', [
+            'visited_at' => '2017-04-02 12:00:00',
+            'patron_category_id' => $cat2->id
+        ], 6);
+
+        create('App\LogbookEntry', [
+            'visited_at' => '2017-06-02 12:00:00',
+            'patron_category_id' => $cat3->id
+        ], 7);
+
+        $this->assertEquals([
+            $cat1->name => 5,
+            $cat2->name => 6,
+            $cat3->name => 7,
+        ], LogbookEntry::getTotalVisitsByPatronCategory(2017)->toArray());
     }
 }

@@ -121,8 +121,16 @@ class LogbookEntryController extends Controller
         ->count();
 
         $visitsByYear = LogbookEntry::getTotalVisitsByYear($year, $depth);
+        $visitsByPatronCategory = LogbookEntry::getTotalVisitsByPatronCategory($year);
 
-        return view('logbook.tabs.year', compact('year', 'visits', 'yearsAvailable', 'openingDays', 'visitsByYear'));
+        return view('logbook.tabs.year', compact(
+            'year',
+            'visits',
+            'yearsAvailable',
+            'openingDays',
+            'visitsByYear',
+            'visitsByPatronCategory'
+        ));
     }
 
     /**

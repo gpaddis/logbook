@@ -183,4 +183,21 @@ class LogbookEntry extends Model
         // Collect the result to allow automatic conversion to JSON in the view.
         return collect($result);
     }
+
+    /**
+     * Get the total number of visits for the year specified, grouped by patron category.
+     *
+     * @param  int    $year
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public static function getTotalVisitsByPatronCategory(int $year)
+    {
+        return static::year($year)
+        ->selectRaw('count(*) as visits, patron_category_id')
+        ->groupBy('patron_category_id')
+        ->with('patronCategory')
+        ->get()
+        ->pluck('visits', 'patronCategory.name');
+    }
 }
