@@ -16,9 +16,10 @@
                 <th scope="row">
                     <i class="fa fa-line-chart" aria-hidden="true" title="Increase / decrease percentage"></i>
                 </th>
-                <td v-for="n in this.fields">
-                    <p>-
-                        <!-- {{ variation(dataset1[n], dataset2[n]) }} -->
+                <td v-for="element in this.percentage"
+                :class="element >= 0 ? 'text-success' : 'text-danger'">
+                    <p v-if="element">
+                        {{ element }}%
                     </p>
                 </td>
             </tr>
@@ -42,19 +43,40 @@ export default {
 
     computed: {
         series() {
-            return new Map(Object.entries(this.values));
+            return this.convertToArray(this.values);
+        },
+
+        percentage() {
+            let serie1 = this.series[0];
+            let serie2 = this.series[1];
+
+            let collection = [];
+
+            for (let index in serie1) {
+                collection.push(this.calculateVariation(serie1[index], serie2[index]));
+            }
+
+            return collection;
         }
     },
 
     methods: {
-        variation(first, second) {
+        calculateVariation(first, second) {
             if (first && second) {
                 let variation = second - first;
 
-                return ((variation / first) * 100) + '%';
+                return (Math.round((variation / first) * 100));
+            }
+        },
+
+        convertToArray(object) {
+            let collection = [];
+
+            for (let prop in object) {
+                collection.push(object[prop]);
             }
 
-            return '-';
+            return collection;
         }
     }
 }

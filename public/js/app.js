@@ -77320,6 +77320,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
@@ -77337,19 +77338,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     computed: {
         series: function series() {
-            return new Map(Object.entries(this.values));
+            return this.convertToArray(this.values);
+        },
+        percentage: function percentage() {
+            var serie1 = this.series[0];
+            var serie2 = this.series[1];
+
+            var collection = [];
+
+            for (var index in serie1) {
+                collection.push(this.calculateVariation(serie1[index], serie2[index]));
+            }
+
+            return collection;
         }
     },
 
     methods: {
-        variation: function variation(first, second) {
+        calculateVariation: function calculateVariation(first, second) {
             if (first && second) {
                 var variation = second - first;
 
-                return variation / first * 100 + '%';
+                return Math.round(variation / first * 100);
+            }
+        },
+        convertToArray: function convertToArray(object) {
+            var collection = [];
+
+            for (var prop in object) {
+                collection.push(object[prop]);
             }
 
-            return '-';
+            return collection;
         }
     }
 });
@@ -77399,8 +77419,22 @@ var render = function() {
           [
             _vm._m(0),
             _vm._v(" "),
-            _vm._l(this.fields, function(n) {
-              return _c("td", [_c("p", [_vm._v("-\n                    ")])])
+            _vm._l(this.percentage, function(element) {
+              return _c(
+                "td",
+                { class: element >= 0 ? "text-success" : "text-danger" },
+                [
+                  element
+                    ? _c("p", [
+                        _vm._v(
+                          "\n                    " +
+                            _vm._s(element) +
+                            "%\n                "
+                        )
+                      ])
+                    : _vm._e()
+                ]
+              )
             })
           ],
           2
