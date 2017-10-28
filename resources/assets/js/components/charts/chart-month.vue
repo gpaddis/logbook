@@ -1,10 +1,7 @@
-<template>
-    <canvas>
-    </canvas>
-</template>
-
 <script>
-export default {
+import Graph from './Graph';
+
+export default Graph.extend({
     props: {
         type: {
             default: 'bar'
@@ -15,8 +12,6 @@ export default {
     data() {
         return {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            backgroundColors: ['#ff6384', '#36a2eb', '#cc65fe'],
-            borderColors: ['#ff6384', '#36a2eb', '#cc65fe']
         }
     },
 
@@ -39,17 +34,6 @@ export default {
 
             return datasets;
         }
-    },
-
-    mounted() {
-        var myChart = new Chart(this.$el, {
-            type: this.type,
-            data: {
-                labels: this.labels,
-                datasets: this.datasets,
-                options: {}
-            }
-        });
     }
-}
+});
 </script>

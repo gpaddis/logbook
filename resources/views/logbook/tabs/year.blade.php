@@ -45,9 +45,9 @@
 
   <div class="row">
     <div class="col-md-8">
-      <chart type="bar"
+      <chart-month type="bar"
       label="# of Users in 2017"
-      :values="{{ $visitsByYear }}"></chart>
+      :values="{{ $visitsByYear }}"></chart-month>
     </div>
 
     <div class="col">
@@ -75,9 +75,9 @@
 
 <div class="row">
   <div class="col-md-8">
-    <chart type="line"
+    <chart-month type="line"
     label="Students"
-    :values="{{ $visitsByYear }}"></chart>
+    :values="{{ $visitsByYear }}"></chart-month>
   </div>
   <div class="col">
     <h1>User groups</h1>

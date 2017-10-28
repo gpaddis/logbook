@@ -23,7 +23,7 @@ Vue.component('flash', require('./components/Flash.vue'));
 Vue.component('category-cards', require('./components/livecounter/CategoryCards.vue'));
 
 // Charts & reports
-Vue.component('chart', require('./components/charts/Chart.vue'));
+Vue.component('chart-month', require('./components/charts/chart-month.vue'));
 Vue.component('table-report', require('./components/Table-report.vue'));
 
 // Infoboxes
