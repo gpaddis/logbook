@@ -71,28 +71,24 @@
     <div class="col">
       <p>The data in detail:</p>
       <table-report
-      name="#"
-      :fields="['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']"
-      :dataset1="{{ $visits }}"
-      dataset1-name="2016"
-      :dataset2="{{ $visits }}"
-      dataset2-name="2017">
-    </table-report>
+      :values="{{ $visitsByYear }}">
+      </table-report>
+    </div>
   </div>
-</div>
 
-<hr>
+  <hr>
 
-<div class="row">
-  <div class="col-md-8">
-    <chart-categories
-    :keys="{{ $visitsByPatronCategory->keys() }}"
-    :values="{{ $visitsByPatronCategory->values() }}"></chart-month>
+  <div class="row">
+    <div class="col-md-8">
+      <chart-categories
+      :keys="{{ $visitsByPatronCategory->keys() }}"
+      :values="{{ $visitsByPatronCategory->values() }}"></chart-categories>
+    </div>
+
+    <div class="col">
+      <h1>User groups</h1>
+      <p>This graph will display the visits in the year selected with stacked lines corresponding to the different user groups.</p>
+    </div>
   </div>
-  <div class="col">
-    <h1>User groups</h1>
-    <p>This graph will display the visits in the year selected with stacked lines corresponding to the different user groups.</p>
-  </div>
-</div>
 </div>
 @endsection
