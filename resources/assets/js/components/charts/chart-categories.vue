@@ -18,7 +18,7 @@ export default Graph.extend({
         return {
             datasets: [{
                 data: this.values,
-                backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe']
+                backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#f9b248', '#fc3a52', '#ff6384', '#36a2eb', '#cc65fe']
             }],
 
             labels: this.keys,

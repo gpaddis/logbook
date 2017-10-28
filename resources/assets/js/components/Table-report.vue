@@ -12,19 +12,19 @@
                 <td v-for="value in values">{{ value }}</td>
             </tr>
 
-            <tr>
+            <tr v-if="this.series[1]">
                 <th scope="row">
                     <i class="fa fa-line-chart" aria-hidden="true" title="Increase / decrease percentage"></i>
                 </th>
                 <td v-for="element in this.percentage"
                 :class="element >= 0 ? 'text-success' : 'text-danger'">
-                    <p v-if="element">
-                        {{ element }}%
-                    </p>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                <p v-if="element">
+                    {{ element }}%
+                </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
 </template>
 
 <script>
@@ -52,8 +52,10 @@ export default {
 
             let collection = [];
 
-            for (let index in serie1) {
-                collection.push(this.calculateVariation(serie1[index], serie2[index]));
+            if (serie2) {
+                for (let index in serie1) {
+                    collection.push(this.calculateVariation(serie1[index], serie2[index]));
+                }
             }
 
             return collection;

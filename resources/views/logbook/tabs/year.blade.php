@@ -63,7 +63,6 @@
   <div class="row">
     <div class="col-md-8">
       <chart-month type="bar"
-      label="# of Users in 2017"
       :values="{{ $visitsByYear }}"></chart-month>
     </div>
 
@@ -74,9 +73,8 @@
   </div>
 
   <!-- Table: visits per month / year -->
-  <div class="row">
+  <div class="row mt-4">
     <div class="col">
-      <p>The data in detail:</p>
       <table-report
       :values="{{ $visitsByYear }}"></table-report>
     </div>
@@ -92,8 +90,9 @@
     </div>
 
     <div class="col">
-      <h1>User groups</h1>
-      <p>This graph will display the visits in the year selected with stacked lines corresponding to the different user groups.</p>
+      <h1>Patron categories</h1>
+      <p>In {{ $year }}, most of the users who visited the library were <strong>{{ $visitsByPatronCategory->sort()->reverse()->keys()->first() }}</strong> ({{ $visitsByPatronCategory->max() }} visits of {{ $visitsByYear->first() != null ? array_sum($visitsByYear->first()) : 0 }} in total). </p>
+      <p>This graph shows the visits in the year selected with each segment of the doughnut chart corresponding to a different user group.</p>
     </div>
   </div>
 </div>

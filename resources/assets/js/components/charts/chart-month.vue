@@ -26,8 +26,8 @@ export default Graph.extend({
                 datasets.push({
                     label: year,
                     data: Object.values(values),
-                    backgroundColor: this.backgroundColors[index],
-                    borderColor: this.borderColors[index++],
+                    backgroundColor: this.colors[index],
+                    borderColor: this.colors[index++],
                     borderWidth: 1
                 })
             });

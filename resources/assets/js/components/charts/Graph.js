@@ -9,8 +9,7 @@ import Chart from 'chart.js';
 
     data() {
         return {
-            backgroundColors: ['#ff6384', '#36a2eb', '#cc65fe'],
-            borderColors: ['#ff6384', '#36a2eb', '#cc65fe']
+            colors: ['rgba(249, 178, 72, 0.5)', 'rgba(252, 58, 82, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(204, 101, 254, 0.5)'],
         }
     },
 
