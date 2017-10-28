@@ -30,8 +30,8 @@
             <div class="form-row align-items-center">
               <div class="col-auto">
                 <select name="y1" class="custom-select">
-                  @forelse($yearsAvailable as $year)
-                  <option value="{{ $year }}" {{ $year == $year ? 'selected' : '' }}>{{ $year }}</option>
+                  @forelse($yearsAvailable as $value)
+                  <option value="{{ $value }}" {{ $year == $value ? 'selected' : '' }}>{{ $value }}</option>
                   @empty
                   <option value="none">No data available</option>
                   @endforelse
@@ -40,8 +40,8 @@
 
               <div class="col-auto">
                 <select name="y2" class="custom-select">
-                  @forelse($yearsAvailable as $year)
-                  <option value="{{ $year }}" {{ $year == $year - 1 ? 'selected' : '' }}>{{ $year }}</option>
+                  @forelse($yearsAvailable as $value)
+                  <option value="{{ $value }}" {{ $value == $year - 1 ? 'selected' : '' }}>{{ $value }}</option>
                   @empty
                   <option value="none">No data available</option>
                   @endforelse
