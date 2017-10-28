@@ -100,12 +100,13 @@ class LogbookTest extends TestCase
     public function it_returns_the_total_visits_collected_by_year_and_month()
     {
         create('App\LogbookEntry', [
-            'visited_at' => '2016-01-02 12:00:00',
+            'visited_at' => '2015-01-02 12:00:00',
         ], 5);
 
-        $visits2016 = LogbookEntry::getTotalVisitsByYear(2016, 1);
-        $this->assertEquals($visits2016->toArray(), [
-            2016 => [
+        $visits2015 = LogbookEntry::getTotalVisitsByYear(2015);
+
+        $this->assertEquals($visits2015->toArray(), [
+            2015 => [
                 1 => 5,
                 2 => 0,
                 3 => 0,
@@ -132,11 +133,11 @@ class LogbookTest extends TestCase
             'visited_at' => '2017-06-02 12:00:00',
         ], 5);
 
-        $bothYears = LogbookEntry::getTotalVisitsByYear(2017, 2);
+        $bothYears = LogbookEntry::getTotalVisitsByYear(2017, 2015);
 
         $this->assertEquals(2017, $bothYears->keys()->first());
         $this->assertEquals($bothYears->toArray(), [
-            2016 => [
+            2015 => [
                 1 => 5,
                 2 => 0,
                 3 => 0,

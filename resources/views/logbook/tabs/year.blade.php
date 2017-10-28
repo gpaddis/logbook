@@ -2,7 +2,6 @@
 
 @section('tab-content')
 <div class="col">
-
   <div class="row">
     <box-sum-sm value="{{ $openingDays or 0 }}">
       <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -22,29 +21,37 @@
     <div class="col-6 mb-2">
       <div class="card">
         <div class="card-body">
-          <h3>User statistics: {{ $year }}</h3>
+          <h3>User statistics: {{ $year1 }}</h3>
 
           <p class="card-text">
-            Choose a year and a range to display the relative statistics:
+            Choose two years to compare:
           </p>
           <form method="get" action="{{ route('logbook.year') }}">
-            <select name="y" class="custom-select">
-              <option value="0" selected>Select a year</option>
-              @forelse($yearsAvailable as $year)
-              <option value="{{ $year }}">{{ $year }}</option>
-              @empty
-              <option value="none">No data available</option>
-              @endforelse
-            </select>
+            <div class="form-row align-items-center">
+              <div class="col-auto">
+                <select name="y1" class="custom-select">
+                  @forelse($yearsAvailable as $year)
+                  <option value="{{ $year }}" {{ $year == $year1 ? 'selected' : '' }}>{{ $year }}</option>
+                  @empty
+                  <option value="none">No data available</option>
+                  @endforelse
+                </select>
+              </div>
 
-            <select name="d" class="custom-select">
-              <option value="1" selected>Years to compare</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
+              <div class="col-auto">
+                <select name="y2" class="custom-select">
+                  @forelse($yearsAvailable as $year)
+                  <option value="{{ $year }}" {{ $year == $year1 - 1 ? 'selected' : '' }}>{{ $year }}</option>
+                  @empty
+                  <option value="none">No data available</option>
+                  @endforelse
+                </select>
+              </div>
 
-            <button class="btn btn-primary" type="submit">Update</button>
+              <div class="col-auto">
+                <button class="btn btn-primary" type="submit">Update</button>
+              </div>
+            </div>
           </form>
         </div>
       </div>
@@ -71,8 +78,7 @@
     <div class="col">
       <p>The data in detail:</p>
       <table-report
-      :values="{{ $visitsByYear }}">
-      </table-report>
+      :values="{{ $visitsByYear }}"></table-report>
     </div>
   </div>
 

@@ -100,31 +100,31 @@ class LogbookEntryController extends Controller
         ->pluck('year');
 
         $request->validate([
-            'y' => 'integer|in:' . implode(',', $yearsAvailable->toArray()),
-            'd' => 'integer|min:1|max:3'
+            'y1' => 'integer|in:' . implode(',', $yearsAvailable->toArray()),
+            'y2' => 'integer|in:' . implode(',', $yearsAvailable->toArray()),
         ]);
 
-        $year = $request->input('y') ?? date('Y'); // The year selected or the current year
-        $depth = $request->input('d') ?? 1; // How many years do you want to compare?
+        $year1 = $request->input('y1') ?? date('Y'); // The year selected or the current year
+        $year2 = $request->input('y2') ?? $year1 - 1; // The year to compare or the previous year
 
 
-        $visits = LogbookEntry::year($year)
+        $visits = LogbookEntry::year($year1)
         ->selectRaw('MONTH(visited_at) as month, count(*) as visits')
         ->groupBy('month')
         ->pluck('visits', 'month')
         ->sortBy('month');
 
-        $openingDays = LogbookEntry::year($year)
+        $openingDays = LogbookEntry::year($year1)
         ->selectRaw('DATE(visited_at) as day')
         ->distinct('days')
         ->get()
         ->count();
 
-        $visitsByYear = LogbookEntry::getTotalVisitsByYear($year, $depth);
-        $visitsByPatronCategory = LogbookEntry::getTotalVisitsByPatronCategory($year);
+        $visitsByYear = LogbookEntry::getTotalVisitsByYear($year1, $year2);
+        $visitsByPatronCategory = LogbookEntry::getTotalVisitsByPatronCategory($year1);
 
         return view('logbook.tabs.year', compact(
-            'year',
+            'year1',
             'visits',
             'yearsAvailable',
             'openingDays',

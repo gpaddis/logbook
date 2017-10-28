@@ -18,7 +18,10 @@ class YearTest extends TestCase
             'visited_at' => '2015-04-05 12:00:09'
         ], 6);
 
-        $this->get('/logbook/year?y=2017')
-        ->assertSessionHasErrors('y');
+        $this->get('/logbook/year?y1=2017')
+        ->assertSessionHasErrors('y1');
+
+        $this->get('/logbook/year?y1=2015')
+        ->assertStatus(200);
     }
 }

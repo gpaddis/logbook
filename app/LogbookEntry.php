@@ -149,19 +149,19 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Get the total number of visits grouped by year and month.
+     * Get the total number of visits grouped by year and month, with an optional second year for comparison.
      *
-     * @param  int $year
-     * @param  int $depth
+     * @param  int $year1
+     * @param  int $year2
      *
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public static function getTotalVisitsByYear(int $year, int $depth = 1)
+    public static function getTotalVisitsByYear(int $year1, int $year2 = null)
     {
         $collection = static::selectRaw('YEAR(visited_at) as year, MONTH(visited_at) as month, count(*) as visits')
         ->groupBy('year', 'month')
-        ->having('year', '<=', $year)
-        ->having('year', '>=', $year - $depth + 1)
+        ->having('year', $year1)
+        ->orHaving('year', $year2)
         ->get()
         ->sortByDesc('year')
         ->groupBy('year');
