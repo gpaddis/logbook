@@ -87,7 +87,7 @@ class LogbookEntryController extends Controller
     }
 
     /**
-     * Browse the Year tab containing data for the year selected.
+     * Browse the Year tab containing data for the year(s) selected.
      *
      * @param  Request $request
      *
@@ -95,14 +95,18 @@ class LogbookEntryController extends Controller
      */
     public function browseYear(Request $request)
     {
-        // Browse the years with available data in the dropdown menu.
-
-        $year = 2017; // The year selected, the one for which the data is calculated
-        $depth = 2; // How many years do you want to compare?
-
         $yearsAvailable = LogbookEntry::selectRaw('YEAR(visited_at) as year')
         ->distinct()
         ->pluck('year');
+
+        $request->validate([
+            'y' => 'integer|in:' . implode(',', $yearsAvailable->toArray()),
+            'd' => 'integer|min:1|max:3'
+        ]);
+
+        $year = $request->input('y') ?? date('Y'); // The year selected or the current year
+        $depth = $request->input('d') ?? 1; // How many years do you want to compare?
+
 
         $visits = LogbookEntry::year($year)
         ->selectRaw('MONTH(visited_at) as month, count(*) as visits')
@@ -118,7 +122,7 @@ class LogbookEntryController extends Controller
 
         $visitsByYear = LogbookEntry::getTotalVisitsByYear($year, $depth);
 
-        return view('logbook.tabs.year', compact('visits', 'yearsAvailable', 'openingDays', 'visitsByYear'));
+        return view('logbook.tabs.year', compact('year', 'visits', 'yearsAvailable', 'openingDays', 'visitsByYear'));
     }
 
     /**

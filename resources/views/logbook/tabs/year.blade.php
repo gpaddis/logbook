@@ -22,20 +22,30 @@
     <div class="col-6 mb-2">
       <div class="card">
         <div class="card-body">
-          <h3>User statistics: 2017</h3>
+          <h3>User statistics: {{ $year }}</h3>
 
           <p class="card-text">
-            Choose a year from the dropdown to display the relative statistics:
+            Choose a year and a range to display the relative statistics:
           </p>
+          <form method="get" action="{{ route('logbook.year') }}">
+            <select name="y" class="custom-select">
+              <option value="0" selected>Select a year</option>
+              @forelse($yearsAvailable as $year)
+              <option value="{{ $year }}">{{ $year }}</option>
+              @empty
+              <option value="none">No data available</option>
+              @endforelse
+            </select>
 
-          <select class="custom-select">
-            <option selected>Select a year</option>
-            @forelse($yearsAvailable as $year)
-            <option value="{{ $year }}">{{ $year }}</option>
-            @empty
-            <option value="none">No data available</option>
-            @endforelse
-          </select>
+            <select name="d" class="custom-select">
+              <option value="1" selected>Years to compare</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+
+            <button class="btn btn-primary" type="submit">Update</button>
+          </form>
         </div>
       </div>
     </div>
