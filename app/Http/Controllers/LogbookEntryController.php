@@ -107,13 +107,6 @@ class LogbookEntryController extends Controller
         $year1 = $request->input('y1') ?? date('Y'); // The year selected or the current year
         $year2 = $request->input('y2') ?? $year1 - 1; // The year to compare or the previous year
 
-
-        $visits = LogbookEntry::year($year1)
-        ->selectRaw('MONTH(visited_at) as month, count(*) as visits')
-        ->groupBy('month')
-        ->pluck('visits', 'month')
-        ->sortBy('month');
-
         $openingDays = LogbookEntry::year($year1)
         ->selectRaw('DATE(visited_at) as day')
         ->distinct('days')
@@ -125,7 +118,6 @@ class LogbookEntryController extends Controller
 
         return view('logbook.tabs.year', compact(
             'year1',
-            'visits',
             'yearsAvailable',
             'openingDays',
             'visitsByYear',
