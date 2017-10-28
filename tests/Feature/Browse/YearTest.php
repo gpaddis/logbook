@@ -10,6 +10,17 @@ class YearTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function it_displays_the_tab_no_matter_what()
+    {
+        $this->signIn();
+
+        $this->get('/logbook/year')
+        ->assertStatus(200)
+        ->assertSee('User statistics: ' . date('Y'))
+        ->assertSee(auth()->user()->first_name);
+    }
+
+    /** @test */
     public function the_year_requested_must_be_present_in_the_database()
     {
         $this->signIn()->withExceptionHandling();
