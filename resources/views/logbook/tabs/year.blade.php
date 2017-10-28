@@ -21,7 +21,7 @@
     <div class="col-6 mb-2">
       <div class="card">
         <div class="card-body">
-          <h3>User statistics: {{ $year1 }}</h3>
+          <h3>User statistics: {{ $year }}</h3>
 
           <p class="card-text">
             Choose two years to compare:
@@ -31,7 +31,7 @@
               <div class="col-auto">
                 <select name="y1" class="custom-select">
                   @forelse($yearsAvailable as $year)
-                  <option value="{{ $year }}" {{ $year == $year1 ? 'selected' : '' }}>{{ $year }}</option>
+                  <option value="{{ $year }}" {{ $year == $year ? 'selected' : '' }}>{{ $year }}</option>
                   @empty
                   <option value="none">No data available</option>
                   @endforelse
@@ -41,7 +41,7 @@
               <div class="col-auto">
                 <select name="y2" class="custom-select">
                   @forelse($yearsAvailable as $year)
-                  <option value="{{ $year }}" {{ $year == $year1 - 1 ? 'selected' : '' }}>{{ $year }}</option>
+                  <option value="{{ $year }}" {{ $year == $year - 1 ? 'selected' : '' }}>{{ $year }}</option>
                   @empty
                   <option value="none">No data available</option>
                   @endforelse
