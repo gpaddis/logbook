@@ -21,6 +21,7 @@ Vue.component('category-cards', require('./components/livecounter/category-cards
 
 // Charts & reports
 Vue.component('chart-month', require('./components/charts/chart-month.vue'));
+Vue.component('chart-categories', require('./components/charts/chart-categories.vue'));
 Vue.component('table-report', require('./components/table-report.vue'));
 
 // Infoboxes

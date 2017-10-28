@@ -85,9 +85,9 @@
 
 <div class="row">
   <div class="col-md-8">
-    <chart-month type="line"
-    label="Students"
-    :values="{{ $visitsByYear }}"></chart-month>
+    <chart-categories
+    :keys="{{ $visitsByPatronCategory->keys() }}"
+    :values="{{ $visitsByPatronCategory->values() }}"></chart-month>
   </div>
   <div class="col">
     <h1>User groups</h1>
