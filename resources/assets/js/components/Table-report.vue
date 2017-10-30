@@ -1,83 +1,84 @@
 <template>
     <table class="table table-sm">
-      <thead>
-        <tr>
-          <th>{{ name }}</th>
-          <th v-for="field in fields">{{ field }}</th>
-      </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">{{ dataset1Name }}</th>
-      <td v-for="n in fieldKeys">{{ dataset1[n] }}</td>
-  </tr>
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th v-for="field in this.fields">{{ field }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="values, year in this.values ">
+                <th scope="row">{{ year }}</th>
+                <td v-for="value in values">{{ value }}</td>
+            </tr>
 
-  <tr>
-      <th scope="row">{{ dataset2Name }}</th>
-      <td v-for="n in fieldKeys">{{ dataset2[n] }}</td>
-  </tr>
-
-  <tr>
-    <th scope="row">
-      <i class="fa fa-line-chart" aria-hidden="true" title="Increase / decrease percentage"></i>
-    </th>
-    <td v-for="n in fieldKeys">
-        <p v-bind:class="[dataset1[n] > dataset2[n] ? 'text-success' : '', dataset1[n] < dataset2[n] ? 'text-danger' : '']">
-            {{ variation(dataset1[n], dataset2[n]) }}
-        </p>
-    </td>
-</tr>
-</tbody>
+            <tr v-if="this.series[1]">
+                <th scope="row">
+                    <i class="fa fa-line-chart" aria-hidden="true" title="Increase / decrease percentage"></i>
+                </th>
+                <td v-for="element in this.percentage"
+                :class="element >= 0 ? 'text-success' : 'text-danger'">
+                <p v-if="element">
+                    {{ element }}%
+                </p>
+            </td>
+        </tr>
+    </tbody>
 </table>
 </template>
 
 <script>
 export default {
     props: {
-        name: {
-            required: true,
-            default: '#'
-        },
-        fields: {
-            required: true,
-        },
-        dataset1: {
-            default: function () {
-                return ['-'];
-            }
-        },
-        dataset1Name: {
-          default: 'dataset 1'
-        },
-        dataset2: {
-            default: function () {
-                return ['-'];
-            }
-        },
-        dataset2Name: {
-          default: 'dataset 2'
+        values: {
+            required: true
+        }
+    },
+
+    data() {
+        return {
+            fields: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         }
     },
 
     computed: {
-        fieldKeys() {
-          if (typeof this.fields != 'undefined') {
-            return this.fields.length;
-          }
-
-          return 0;
+        series() {
+            return this.convertToArray(this.values);
         },
+
+        percentage() {
+            let serie1 = this.series[0];
+            let serie2 = this.series[1];
+
+            let collection = [];
+
+            if (serie2) {
+                for (let index in serie1) {
+                    collection.push(this.calculateVariation(serie1[index], serie2[index]));
+                }
+            }
+
+            return collection;
+        }
     },
 
     methods: {
-        variation(first, second) {
+        calculateVariation(first, second) {
             if (first && second) {
                 let variation = second - first;
 
-                return ((variation / first) * 100) + '%';
+                return (Math.round((variation / first) * 100));
+            }
+        },
+
+        convertToArray(object) {
+            let collection = [];
+
+            for (let prop in object) {
+                collection.push(object[prop]);
             }
 
-            return '-';
+            return collection;
         }
     }
 }

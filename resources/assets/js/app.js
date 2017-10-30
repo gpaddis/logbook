@@ -17,15 +17,16 @@ Vue.component('example', require('./components/Example.vue'));
 Vue.component('flash', require('./components/Flash.vue'));
 
 // Livecounter
-Vue.component('category-cards', require('./components/livecounter/CategoryCards.vue'));
+Vue.component('category-cards', require('./components/livecounter/category-cards.vue'));
 
 // Charts & reports
-Vue.component('chart', require('./components/charts/Chart.vue'));
-Vue.component('table-report', require('./components/Table-report.vue'));
+Vue.component('chart-month', require('./components/charts/chart-month.vue'));
+Vue.component('chart-categories', require('./components/charts/chart-categories.vue'));
+Vue.component('table-report', require('./components/table-report.vue'));
 
 // Infoboxes
-Vue.component('box-sum-sm', require('./components/infoboxes/Box-sum-sm.vue'));
-Vue.component('box-avg-sm', require('./components/infoboxes/Box-avg-sm.vue'));
+Vue.component('box-sum-sm', require('./components/infoboxes/box-sum-sm.vue'));
+Vue.component('box-avg-sm', require('./components/infoboxes/box-avg-sm.vue'));
 
 const app = new Vue({
     el: '#app'

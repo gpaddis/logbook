@@ -35,13 +35,17 @@ class LiveCounterController extends Controller
         return view('logbook.livecounter.index', compact('patronCategories', 'initialCount'));
     }
 
+    /**
+     * Return the visits count keyed by patron category for the current date.
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
     public function show()
     {
         return PatronCategory::active()
         ->withCount(['logbookEntries as visits_count' => function ($query) {
             $query->whereDate('visited_at', date('Y-m-d'));
-        }
-        ])
+        }])
         ->get()
         ->pluck('visits_count', 'id');
     }

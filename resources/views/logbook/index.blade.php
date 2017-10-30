@@ -17,7 +17,7 @@
             <a class="nav-link" href="{{ route('logbook.day') }}">Day</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Month</a>
+            <a class="nav-link">Month</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('logbook.year') }}">Year</a>
@@ -43,6 +43,7 @@
  */
  $(document).ready(function(){
   let full_path = location.href.split("?")[0];
+
   $(".nav li a").each(function(){
     let $this = $(this);
     if($this.prop("href").split("?")[0] == full_path) {

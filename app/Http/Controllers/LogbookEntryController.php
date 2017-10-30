@@ -87,7 +87,7 @@ class LogbookEntryController extends Controller
     }
 
     /**
-     * Browse the Year tab containing data for the year selected.
+     * Browse the Year tab containing data for the year(s) selected.
      *
      * @param  Request $request
      *
@@ -95,26 +95,29 @@ class LogbookEntryController extends Controller
      */
     public function browseYear(Request $request)
     {
-        // Browse the years with available data in the dropdown menu.
-        $years = LogbookEntry::selectRaw('YEAR(visited_at) as year')
+        $yearsAvailable = LogbookEntry::selectRaw('YEAR(visited_at) as year')
         ->distinct()
         ->pluck('year');
 
-        $year = 2017;
+        $request->validate([
+            'y1' => 'integer|in:' . implode(',', $yearsAvailable->toArray()),
+            'y2' => 'integer|in:' . implode(',', $yearsAvailable->toArray()),
+        ]);
 
-        $visits = LogbookEntry::year($year)
-        ->selectRaw('MONTH(visited_at) as month, count(*) as visits')
-        ->groupBy('month')
-        ->pluck('visits', 'month')
-        ->sortBy('month');
+        $year = $request->input('y1') ?? date('Y'); // The year selected or the current year
+        $year2 = $request->input('y2') ?? $year - 1; // The year to compare or the previous year
 
-        $days = LogbookEntry::year($year)
-        ->selectRaw('DATE(visited_at) as day')
-        ->distinct('days')
-        ->get()
-        ->count();
+        $openingDays = LogbookEntry::getOpeningDays(2017);
+        $visitsByYear = LogbookEntry::getTotalVisitsByYear($year, $year2);
+        $visitsByPatronCategory = LogbookEntry::getTotalVisitsByPatronCategory($year);
 
-        return view('logbook.tabs.year', compact('visits', 'years', 'days'));
+        return view('logbook.tabs.year', compact(
+            'year',
+            'yearsAvailable',
+            'openingDays',
+            'visitsByYear',
+            'visitsByPatronCategory'
+        ));
     }
 
     /**

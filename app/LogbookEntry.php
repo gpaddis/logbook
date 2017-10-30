@@ -129,4 +129,91 @@ class LogbookEntry extends Model
             $entry->delete();
         }
     }
+
+    /**
+     * Get logbook entry data for the browse.year tab.
+     *
+     * @param  int $year
+     * @param  int $depth
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public static function getYearData(int $year, int $depth = 1)
+    {
+        return static::selectRaw('YEAR(visited_at) as year, MONTH(visited_at) as month, patron_category_id, count(*) as visits')
+        ->with('patronCategory:id,name')
+        ->groupBy('year', 'month', 'patron_category_id')
+        ->having('year', '<=', $year)
+        ->having('year', '>=', $year - $depth + 1)
+        ->get();
+    }
+
+    /**
+     * Get the number of days containing logbook entries in a given year.
+     *
+     * @param  int $year
+     *
+     * @return int
+     */
+    public static function getOpeningDays($year)
+    {
+        return static::year($year)
+        ->selectRaw('DATE(visited_at) as day')
+        ->distinct('days')
+        ->get()
+        ->count();
+    }
+
+    /**
+     * Get the total number of visits grouped by year and month, with an optional second year for comparison.
+     *
+     * @param  int $year1
+     * @param  int $year2
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public static function getTotalVisitsByYear(int $year1, int $year2 = null)
+    {
+        $collection = static::selectRaw('YEAR(visited_at) as year, MONTH(visited_at) as month, count(*) as visits')
+        ->groupBy('year', 'month')
+        ->having('year', $year1)
+        ->orHaving('year', $year2)
+        ->get()
+        ->sortByDesc('year')
+        ->groupBy('year');
+
+        // $result structure = year => [monthNo => visits, monthNo => visits, ...]
+        $result = [];
+        foreach ($collection as $year => $items) {
+            // Create the array skeleton
+            for ($monthNo = 1; $monthNo < 13 ; $monthNo++) {
+                $result[$year][$monthNo] = 0;
+            };
+
+            // Replace zeroes with real values from the collection
+            foreach ($items as $item) {
+                $result[$year][$item->month] = $item->visits;
+            }
+        };
+
+        // Collect the result to allow automatic conversion to JSON in the view.
+        return collect($result);
+    }
+
+    /**
+     * Get the total number of visits for the year specified, grouped by patron category.
+     *
+     * @param  int    $year
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public static function getTotalVisitsByPatronCategory(int $year)
+    {
+        return static::year($year)
+        ->selectRaw('count(*) as visits, patron_category_id')
+        ->groupBy('patron_category_id')
+        ->with('patronCategory')
+        ->get()
+        ->pluck('visits', 'patronCategory.name');
+    }
 }
