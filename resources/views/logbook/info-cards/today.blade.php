@@ -13,7 +13,7 @@ Visits
 @endslot
 
 @slot('footer')
-<span class="text-{{ $today - $yesterday >= 0 ? 'success' : 'danger' }}">
-    {{ abs($today - $yesterday) }} {{ $today - $yesterday > 0 ? 'more' : 'less' }}</span> than yesterday
+<span class="text-{{ $today - $lastAvailableDay >= 0 ? 'success' : 'danger' }}">
+    {{ abs($today - $lastAvailableDay) }} {{ $today - $lastAvailableDay > 0 ? 'more' : 'less' }}</span> than last time
 @endslot
 @endcomponent

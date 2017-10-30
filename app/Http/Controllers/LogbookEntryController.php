@@ -31,18 +31,12 @@ class LogbookEntryController extends Controller
         $aggregates = LogbookEntry::getAggregatesWithin(Carbon::now()->subWeek()->startOfWeek(), Carbon::now());
 
         $today = $aggregates->where('day', Carbon::now()->toDateString())->first()->visits ?? 0;
-        $yesterday = $aggregates->where('day', Carbon::now()->subDay()->toDateString())->first()->visits ?? 0;
+        $lastAvailableDay = LogbookEntry::lastAvailableDay()->visits ?? 0;
         $thisWeeksAverage = $aggregates->where('week', Carbon::now()->weekOfYear)->pluck('visits')->average();
         $lastWeeksAverage = $aggregates->where('week', Carbon::now()->subWeek()->weekOfYear)->pluck('visits')->average();
 
-        return view('logbook.tabs.overview', [
-            'today' => $today,
-            'yesterday' => $yesterday,
-            'thisWeeksAverage' => $thisWeeksAverage,
-            'lastWeeksAverage' => $lastWeeksAverage,
-        ]);
+        return view('logbook.tabs.overview', compact('today', 'lastAvailableDay', 'thisWeeksAverage', 'lastWeeksAverage'));
     }
-
 
     /**
      * Validate and store the visits submitted with the logbook update form.

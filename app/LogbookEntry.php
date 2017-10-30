@@ -216,4 +216,18 @@ class LogbookEntry extends Model
         ->get()
         ->pluck('visits', 'patronCategory.name');
     }
+
+    /**
+     * Get the visits count for the last available day before today.
+     *
+     * @return Illuminate\Database\Eloquent\Collection | null
+     */
+    public static function lastAvailableDay()
+    {
+        return static::whereDate('visited_at', '<', date('Y-m-d'))
+        ->selectRaw('DATE(visited_at)as date, count(*) as visits')
+        ->groupBy('date')
+        ->orderBy('date', 'desc')
+        ->first();
+    }
 }

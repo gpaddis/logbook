@@ -204,4 +204,19 @@ class LogbookTest extends TestCase
             $cat3->name => 7,
         ], LogbookEntry::getTotalVisitsByPatronCategory(2017)->toArray());
     }
+
+    /** @test */
+    public function it_returns_the_visits_count_for_the_latest_available_day_before_today()
+    {
+        create('App\LogbookEntry', [], 5);
+
+        $this->assertNull(LogbookEntry::lastAvailableDay());
+
+        $latest = create('App\LogbookEntry', [
+            'visited_at' => '2017-06-02 12:00:00',
+        ], 7);
+
+        $this->assertEquals(7, LogbookEntry::lastAvailableDay()->visits);
+        $this->assertEquals('2017-06-02', LogbookEntry::lastAvailableDay()->date);
+    }
 }
