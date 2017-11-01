@@ -30,16 +30,21 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * This and the following methods have been stolen from 
+     * This and the following methods have been stolen from
      * https://gist.github.com/adamwathan/125847c7e3f16b88fa33a9f8b42333da
      */
     protected function disableExceptionHandling()
     {
         $this->oldExceptionHandler = $this->app->make(ExceptionHandler::class);
         $this->app->instance(ExceptionHandler::class, new class extends Handler {
-            public function __construct() {}
-            public function report(\Exception $e) {}
-            public function render($request, \Exception $e) {
+            public function __construct()
+            {
+            }
+            public function report(\Exception $e)
+            {
+            }
+            public function render($request, \Exception $e)
+            {
                 throw $e;
             }
         });
