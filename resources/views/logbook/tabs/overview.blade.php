@@ -1,8 +1,21 @@
 @extends('logbook.index')
 
 @section('tab-content')
-@include('logbook.info-cards.today')
-@include('logbook.info-cards.this-week')
+<box-generic-lg value="{{ $today }}" v-cloak>
+    <div slot="title">Today</div>
+    <div slot="subtitle">Visits</div>
+    <div slot="footer">
+        <span class="text-{{ $today - $lastAvailableDay >= 0 ? 'success' : 'danger' }}">
+            {{ abs($today - $lastAvailableDay) }} {{ $today - $lastAvailableDay > 0 ? 'more' : 'less' }}
+        </span> than last time
+    </div>
+</box-generic-lg>
+
+<box-generic-lg value="{{ number_format($thisWeeksAverage, 1) }}" v-cloak>
+    <div slot="title">This Week</div>
+    <div slot="subtitle">Average visits / day</div>
+    <div slot="footer">Last week was {{ number_format($lastWeeksAverage, 1) }}</div>
+</box-generic-lg>
 @endsection
 
 @section('tab-sidebar')
