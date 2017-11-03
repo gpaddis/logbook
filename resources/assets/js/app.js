@@ -14,7 +14,7 @@ require('./bootstrap');
  */
 
 Vue.component('example', require('./components/Example.vue'));
-Vue.component('flash', require('./components/Flash.vue'));
+Vue.component('flash', require('./components/flash.vue'));
 
 // Livecounter
 Vue.component('category-cards', require('./components/livecounter/category-cards.vue'));
@@ -27,6 +27,7 @@ Vue.component('table-report', require('./components/table-report.vue'));
 // Infoboxes
 Vue.component('box-sum-sm', require('./components/infoboxes/box-sum-sm.vue'));
 Vue.component('box-avg-sm', require('./components/infoboxes/box-avg-sm.vue'));
+Vue.component('box-generic-lg', require('./components/infoboxes/box-generic-lg.vue'));
 
 const app = new Vue({
     el: '#app'
