@@ -1,7 +1,7 @@
 @extends('logbook.index')
 
 @section('tab-content')
-<div class="col">
+<div class="col" v-cloak>
   <div class="row">
     <box-sum-sm value="{{ $openingDays or 0 }}">
       <i class="fa fa-calendar" aria-hidden="true"></i>
