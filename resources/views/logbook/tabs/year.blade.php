@@ -91,7 +91,7 @@
 
     <div class="col">
       <h1>Patron categories</h1>
-      <p>In {{ $year }}, most of the users who visited the library were <strong>{{ $visitsByPatronCategory->sort()->reverse()->keys()->first() }}</strong> ({{ $visitsByPatronCategory->max() }} visits of {{ $visitsByYear->first() != null ? array_sum($visitsByYear->first()) : 0 }} in total). </p>
+      <p>In {{ $year }}, most of the users who visited the library were <strong>{{ $visitsByPatronCategory->sort()->reverse()->keys()->first() }}</strong> ({{ $visitsByPatronCategory->max() }} visits of {{ $visitsByYear->first() != null ? array_sum($visitsByYear->sort()->first()) : 0 }} in total). </p>
       @if($visitsByPatronCategory->isNotEmpty())
       <p><strong>Todo:</strong> display a comparison between this year and last year (only if a second year is available).</p>
       @endif
