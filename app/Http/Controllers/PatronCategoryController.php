@@ -19,6 +19,9 @@ class PatronCategoryController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->middleware('permission:manage patron categories')
+        ->except('index', 'show');
     }
 
     /**

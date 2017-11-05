@@ -22,27 +22,11 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // create roles and assign existing permissions
         $role = Role::updateOrCreate(['name' => 'admin']);
-        $this->checkAndAllow($role, 'manage patron categories');
-        $this->checkAndAllow($role, 'manage users');
+        $role->syncPermissions([
+            'manage patron categories',
+            'manage users'
+        ]);
 
         $role = Role::updateOrCreate(['name' => 'standard']);
-    }
-
-    /**
-     * Check if the role already has a permission and skip it if it does.
-     * This avoids throwing an exception and stopping the seeding process.
-     *
-     * @param  Role   $role
-     * @param  string $permissions
-     *
-     * @return bool
-     */
-    protected function checkAndAllow(Role $role, $permissions)
-    {
-        if (! $role->hasPermissionTo($permissions)) {
-            $role->givePermissionTo($permissions);
-        }
-
-        return true;
     }
 }
