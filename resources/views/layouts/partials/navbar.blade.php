@@ -18,14 +18,8 @@
         <a class="nav-link" href="{{ route('logbook.index') }}">Browse</a>
       </li>
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Admin
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a href="{{ route('patron-categories.index') }}" class="dropdown-item">Patron Categories</a>
-          <a href="#" class="dropdown-item">App Settings</a>
-        </div>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('patron-categories.index') }}">Categories</a>
       </li>
     </ul>
 
