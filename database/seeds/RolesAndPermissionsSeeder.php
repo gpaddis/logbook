@@ -17,18 +17,32 @@ class RolesAndPermissionsSeeder extends Seeder
         app()['cache']->forget('spatie.permission.cache');
 
         // create permissions
-        // Permission::create(['name' => 'edit articles']);
-        // Permission::create(['name' => 'delete articles']);
-        // Permission::create(['name' => 'publish articles']);
-        // Permission::create(['name' => 'unpublish articles']);
+        Permission::updateOrCreate(['name' => 'manage patron categories']);
+        Permission::updateOrCreate(['name' => 'manage users']);
 
         // create roles and assign existing permissions
         $role = Role::updateOrCreate(['name' => 'admin']);
-        // $role->givePermissionTo('edit articles');
-        // $role->givePermissionTo('delete articles');
+        $this->checkAndAllow($role, 'manage patron categories');
+        $this->checkAndAllow($role, 'manage users');
 
         $role = Role::updateOrCreate(['name' => 'standard']);
-        // $role->givePermissionTo('publish articles');
-        // $role->givePermissionTo('unpublish articles');
+    }
+
+    /**
+     * Check if the role already has a permission and skip it if it does.
+     * This avoids throwing an exception and stopping the seeding process.
+     *
+     * @param  Role   $role
+     * @param  string $permissions
+     *
+     * @return bool
+     */
+    protected function checkAndAllow(Role $role, $permissions)
+    {
+        if (! $role->hasPermissionTo($permissions)) {
+            $role->givePermissionTo($permissions);
+        }
+
+        return true;
     }
 }
