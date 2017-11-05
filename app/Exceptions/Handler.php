@@ -44,6 +44,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        // If the user does not have enough permissions, we'll redirect her to the homepage.
+        if ($exception instanceof \Spatie\Permission\Exceptions\UnauthorizedException) {
+            return redirect()->home();
+        }
+
         return parent::render($request, $exception);
     }
 

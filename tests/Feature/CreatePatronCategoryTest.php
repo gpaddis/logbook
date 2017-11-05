@@ -26,15 +26,25 @@ class CreatePatronCategoryTest extends TestCase
 
         $this->signIn($user);
         $this->post('/patron-categories', [])
-        ->assertStatus(403);
+        ->assertStatus(302);
+    }
+
+    /** @test */
+    public function a_normal_user_cannot_see_the_protected_routes()
+    {
+        $this->withExceptionHandling();
+        $user = create('App\User')->assignRole('standard');
+
+        $this->signIn($user);
+
+        $this->get('/patron-categories/create')
+        ->assertStatus(302);
     }
 
     /** @test */
     public function only_an_admin_can_create_a_new_patron_category()
     {
-        $admin = create('App\User')->assignRole('admin');
-
-        $this->signIn($admin);
+        $this->signIn();
         $patronCategory = make('App\PatronCategory');
 
         $this->post('/patron-categories', $patronCategory->toArray())

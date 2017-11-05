@@ -16,6 +16,7 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
+        // Seed roles and permissions.
         Artisan::call('db:seed');
 
         $this->disableExceptionHandling();
