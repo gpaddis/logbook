@@ -31,9 +31,11 @@
         <p>Created: {{ $category->created_at->diffForHumans() }}</p>
         <p>Last updated {{ $category->updated_at->diffForHumans() }}</p>
 
+        @can('manage patron categories')
         <div>
           <a href="{{ $category->path() . '/edit' }}" class="btn btn-outline-secondary btn-sm">Edit this category</a>
         </div>
+        @endcan
       </div>
     </div>
   </div>
