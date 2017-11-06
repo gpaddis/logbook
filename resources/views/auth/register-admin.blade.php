@@ -7,7 +7,14 @@
         <div class="card">
             <h4 class="card-header">Register the administrator account</h4>
             <div class="card-body">
-                <p class="card-text">After you register the administrator, this path will be disabled. <strong>Make sure you keep the password in a safe place!</strong></p>
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    After you register the administrator account, this path will be disabled.<br>
+                    <strong>Make sure you keep the password in a safe place!</strong>
+                </div>
+
                 <form class="form-horizontal" method="POST" action="{{ route('register-admin') }}">
                     {{ csrf_field() }}
 
