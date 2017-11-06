@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -56,6 +58,37 @@ class RegisterController extends Controller
     }
 
     /**
+     * Show the admin registration form.
+     *
+     * @return Illuminate\Http\Response
+     */
+    public function showAdminRegistrationForm()
+    {
+        $this->checkIfAdminExists();
+
+        return view('auth.register-admin');
+    }
+
+    /**
+     * Handle an admin registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function registerAdmin(Request $request)
+    {
+        $this->checkIfAdminExists();
+        $this->validator($request->all())->validate();
+
+        event(new Registered($user = $this->createAdmin($request->all())));
+
+        $this->guard()->login($user);
+
+        return $this->registered($request, $user)
+                        ?: redirect($this->redirectPath());
+    }
+
+    /**
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
@@ -69,5 +102,38 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+    }
+
+    /**
+     * Create a new admin instance after a valid registration.
+     *
+     * @param  array  $data
+     * @return \App\User
+     */
+    protected function createAdmin(array $data)
+    {
+        return User::create([
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+        ])->assignRole('admin');
+    }
+
+    /**
+     * Check if an admin is already present in the database and throw an exception
+     * if this is the case.
+     *
+     * @throws Symfony\Component\HttpKernel\Exception\HttpException
+     *
+     * @return void
+     */
+    protected function checkIfAdminExists()
+    {
+        $role = \Spatie\Permission\Models\Role::findByName('admin');
+
+        if ($role->users->isNotEmpty()) {
+            abort(403, 'An admin is already present in the database.');
+        }
     }
 }

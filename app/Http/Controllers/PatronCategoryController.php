@@ -8,17 +8,14 @@ use Illuminate\Http\Request;
 class PatronCategoryController extends Controller
 {
     /**
-     * TODO: add a middleware in the constructor to only allow the admin
-     * to access store(), delete() and such methods. All other users are
-     * only allowed to see the index() and show() methods.
-     */
-
-    /**
-     * ThreadsController constructor
+     * ThreadsController constructor.
      */
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->middleware('permission:manage patron categories')
+        ->except('index', 'show');
     }
 
     /**

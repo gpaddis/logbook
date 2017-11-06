@@ -10,6 +10,7 @@
 
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav mr-auto">
+      @auth
       <li class="nav-item">
         <a class="nav-link" href="{{ route('livecounter.index') }}">Live Counter</a>
       </li>
@@ -18,19 +19,14 @@
         <a class="nav-link" href="{{ route('logbook.index') }}">Browse</a>
       </li>
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Admin
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a href="{{ route('patron-categories.index') }}" class="dropdown-item">Patron Categories</a>
-          <a href="#" class="dropdown-item">App Settings</a>
-        </div>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('patron-categories.index') }}">Categories</a>
       </li>
+      @endauth
     </ul>
 
     <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
-      @if(Auth::guest())
+      @guest
       <!-- Authentication Links -->
       <li class="nav-item">
         <a class="nav-link" href="{{ route('login') }}">Login</a>
@@ -39,8 +35,9 @@
       <li class="nav-item">
         <a class="nav-link" href="{{ route('register') }}">Register</a>
       </li>
-      @else
+      @endguest
 
+      @auth
       <!-- User menu -->
       <li class="nav-item dropdown">
         <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -50,15 +47,14 @@
           <a class="dropdown-item" href="{{ route('logout') }}"
           onclick="event.preventDefault();
           document.getElementById('logout-form').submit();">
-          <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
-        </a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-          {{ csrf_field() }}
-        </form>
-      </div>
-    </li>
-    @endif
+          <i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            {{ csrf_field() }}
+          </form>
+        </div>
+      </li>
+      @endauth
 
-  </ul>
-</div>
+    </ul>
+  </div>
 </nav>

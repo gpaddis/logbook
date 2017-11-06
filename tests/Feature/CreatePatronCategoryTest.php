@@ -10,8 +10,6 @@ class CreatePatronCategoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    // TODO: only an admin can create or edit a patron category
-
     /** @test */
     public function an_unauthenticated_user_cannot_create_a_patron_category()
     {
@@ -21,13 +19,36 @@ class CreatePatronCategoryTest extends TestCase
     }
 
     /** @test */
-    public function an_authenticated_user_can_create_a_new_patron_category()
+    public function a_normal_user_cannot_create_a_patron_category()
+    {
+        $this->withExceptionHandling();
+        $user = create('App\User')->assignRole('standard');
+
+        $this->signIn($user);
+        $this->post('/patron-categories', [])
+        ->assertStatus(302);
+    }
+
+    /** @test */
+    public function a_normal_user_cannot_see_the_protected_routes()
+    {
+        $this->withExceptionHandling();
+        $user = create('App\User')->assignRole('standard');
+
+        $this->signIn($user);
+
+        $this->get('/patron-categories/create')
+        ->assertStatus(302);
+    }
+
+    /** @test */
+    public function only_an_admin_can_create_a_new_patron_category()
     {
         $this->signIn();
-
         $patronCategory = make('App\PatronCategory');
 
-        $this->post('/patron-categories', $patronCategory->toArray());
+        $this->post('/patron-categories', $patronCategory->toArray())
+        ->assertStatus(302);
 
         $this->get('/patron-categories')
         ->assertSee($patronCategory->name)
