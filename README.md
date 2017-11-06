@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/gpaddis/logbook.svg?branch=develop)](https://travis-ci.org/gpaddis/logbook)
+[![StyleCI](https://styleci.io/repos/104880175/shield?branch=develop)](https://styleci.io/repos/104880175)
 
 **Logbook** is a database powered web application for the collection and analysis of library statistics.
 
@@ -10,5 +11,6 @@
 * run `composer install`
 * run `php artisan key:generate`
 * run `php artisan migrate`
+* run `php artisan db:seed`
 
-To start the app and test it, run `php artisan serve` and open the link in your browser.
+To start the app and test it, run `php artisan serve` and open the link in your browser. As a first move, you will have to register an **admin account**: go to `/register-admin` and fill the form. Enjoy!
