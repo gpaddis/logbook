@@ -66,6 +66,7 @@ Route::get('/patron-categories/{category}', 'PatronCategoryController@show')->na
  */
 Route::middleware('permission:manage users')->group(function () {
     Route::get('/users', 'UserController@index')->name('users.index');
+    Route::get('/users/create', 'UserController@create')->name('users.create');
 });
 
 /**

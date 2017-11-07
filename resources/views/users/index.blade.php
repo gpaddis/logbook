@@ -44,11 +44,9 @@
           </table>
         </div>
 
-        @can('manage patron categories')
         <div class="text-center">
-          <a href="#" class="btn btn-primary">Add a new user</a>
+          <a href="{{ route('users.create') }}" class="btn btn-primary">Add a new user</a>
         </div>
-        @endcan
       </div>
     </div>
   </div>
