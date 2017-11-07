@@ -64,7 +64,9 @@ Route::get('/patron-categories/{category}', 'PatronCategoryController@show')->na
 /**
  * Users Management
  */
-Route::get('/users', 'UserController@index')->name('users.index');
+Route::middleware('permission:manage users')->group(function () {
+    Route::get('/users', 'UserController@index')->name('users.index');
+});
 
 /**
  * Application Settings
