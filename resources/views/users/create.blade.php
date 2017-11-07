@@ -8,9 +8,9 @@
             <div class="card-header">
                 Create a new user account
             </div>
-            <div class="card-body">
 
-                <form action="#" method="post">
+            <div class="card-body">
+                <form action="{{ route('users.store') }}" method="post">
                     {{ csrf_field() }}
 
                     <div class="form-group">

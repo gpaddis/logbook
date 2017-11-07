@@ -16,7 +16,7 @@ class UserController extends Controller
         $this->middleware([
             'auth',
             'permission:manage users',
-        ]);
+            ]);
     }
 
     /**
@@ -51,7 +51,15 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6',
+            'role' => 'required|exists:roles,name',
+        ]);
+
+        // TODO: save the user account in the database
     }
 
     /**
