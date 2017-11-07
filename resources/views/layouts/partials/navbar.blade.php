@@ -22,6 +22,12 @@
       <li class="nav-item">
         <a class="nav-link" href="{{ route('patron-categories.index') }}">Categories</a>
       </li>
+
+      @can('manage users')
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('users.index') }}">Users</a>
+      </li>
+      @endcan
       @endauth
     </ul>
 

@@ -62,5 +62,10 @@ Route::get('/patron-categories', 'PatronCategoryController@index')->name('patron
 Route::get('/patron-categories/{category}', 'PatronCategoryController@show')->name('patron-categories.show');
 
 /**
+ * Users Management
+ */
+Route::get('/users', 'UserController@index')->name('users.index');
+
+/**
  * Application Settings
  */
