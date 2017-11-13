@@ -113,6 +113,10 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        User::destroy($id);
+
+        return redirect()
+        ->route('users.index')
+        ->with('flash', 'The account was deleted from the database.');
     }
 }

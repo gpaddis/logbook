@@ -36,7 +36,13 @@
                   @endforeach
                 </td>
                 <td>
-                  <a href="#" class="btn btn-outline-secondary btn-sm">Edit</a>
+                  <a href="#" class="btn btn-outline-secondary btn-xs">Edit</a>
+
+                  <form method="post" action="{{ route('users.delete', compact('user')) }}">
+                    {{ csrf_field() }}
+                    {{ method_field('DELETE') }}
+                    <button type="submit" class="btn btn-outline-danger btn-xs">Delete</button>
+                  </form>
                 </td>
               </tr>
               @endforeach

@@ -40,7 +40,7 @@ class ManageUsersTest extends TestCase
     }
 
     /** @test */
-    public function an_admin_can_save_a_new_user_account()
+    public function it_saves_a_new_user_account()
     {
         $this->signIn();
         $user = [
@@ -56,5 +56,17 @@ class ManageUsersTest extends TestCase
 
         $savedUser = User::whereEmail('test@example.com')->first();
         $this->assertTrue($savedUser->hasRole('standard'));
+    }
+
+    /** @test */
+    public function it_deletes_a_user_account()
+    {
+        $this->signIn();
+
+        $user = create('App\User');
+        $this->delete('/users/' . $user->id . '/delete')
+        ->assertStatus(302);
+
+        $this->assertDatabaseMissing('users', ['first_name' => $user->first_name]);
     }
 }
