@@ -38,4 +38,23 @@ class ManageUsersTest extends TestCase
         ->assertSee($user->email)
         ->assertSee($user->roles->first()->name);
     }
+
+    /** @test */
+    public function an_admin_can_save_a_new_user_account()
+    {
+        $this->signIn();
+        $user = [
+            'first_name' => 'Testname',
+            'last_name' => 'TestLastName',
+            'email' => 'test@example.com',
+            'password' => 'secret',
+            'role' => 'standard',
+        ];
+
+        $this->post('/users', $user)
+        ->assertStatus(302);
+
+        $savedUser = User::whereEmail('test@example.com')->first();
+        $this->assertTrue($savedUser->hasRole('standard'));
+    }
 }

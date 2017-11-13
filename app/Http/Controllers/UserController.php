@@ -59,7 +59,16 @@ class UserController extends Controller
             'role' => 'required|exists:roles,name',
         ]);
 
-        // TODO: save the user account in the database
+        User::create([
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'email' => $request->input('email'),
+            'password' => bcrypt($request->input('password')),
+        ])->assignRole($request->input('role'));
+
+        return redirect()
+        ->route('users.index')
+        ->with('flash', 'The user was saved in the database.');
     }
 
     /**

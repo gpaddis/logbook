@@ -78,9 +78,9 @@
 
                     <div class="form-group">
                         <h5 for="custom-select">Role</h5>
-                        <select class="custom-select">
+                        <select class="custom-select" name="role" >
                             @foreach($roles as $role)
-                            <option value="{{ $role }}"{{ $role == 'standard' ? ' selected' : '' }}>{{ ucfirst($role) }}</option>
+                            <option name="{{ $role }}" value="{{ $role }}"{{ $role == 'standard' ? ' selected' : '' }}>{{ ucfirst($role) }}</option>
                             @endforeach
                         </select>
                     </div>
