@@ -12,10 +12,8 @@ Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 /**
- * Registration Routes
+ * Admin Registration Routes
  */
-Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-Route::post('register', 'Auth\RegisterController@register');
 Route::get('register-admin', 'Auth\RegisterController@showAdminRegistrationForm')->name('register-admin');
 Route::post('register-admin', 'Auth\RegisterController@registerAdmin');
 
@@ -60,6 +58,18 @@ Route::middleware('permission:manage patron categories')->group(function () {
 });
 Route::get('/patron-categories', 'PatronCategoryController@index')->name('patron-categories.index');
 Route::get('/patron-categories/{category}', 'PatronCategoryController@show')->name('patron-categories.show');
+
+/**
+ * Users Management
+ */
+Route::middleware('permission:manage users')->group(function () {
+    Route::get('/users', 'UserController@index')->name('users.index');
+    Route::get('/users/create', 'UserController@create')->name('users.create');
+    Route::post('/users', 'UserController@store')->name('users.store');
+    Route::get('/users/{id}/edit', 'UserController@edit')->name('users.edit');
+    Route::patch('/users/{id}', 'UserController@update')->name('users.update');
+    Route::delete('/users/{id}/delete', 'UserController@destroy')->name('users.delete');
+});
 
 /**
  * Application Settings

@@ -22,18 +22,20 @@
       <li class="nav-item">
         <a class="nav-link" href="{{ route('patron-categories.index') }}">Categories</a>
       </li>
+
+      @can('manage users')
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('users.index') }}">Users</a>
+      </li>
+      @endcan
       @endauth
     </ul>
 
     <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
       @guest
-      <!-- Authentication Links -->
+      <!-- Authentication -->
       <li class="nav-item">
         <a class="nav-link" href="{{ route('login') }}">Login</a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link" href="{{ route('register') }}">Register</a>
       </li>
       @endguest
 
