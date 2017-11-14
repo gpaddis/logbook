@@ -12,10 +12,8 @@ Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 /**
- * Registration Routes
+ * Admin Registration Routes
  */
-Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-Route::post('register', 'Auth\RegisterController@register');
 Route::get('register-admin', 'Auth\RegisterController@showAdminRegistrationForm')->name('register-admin');
 Route::post('register-admin', 'Auth\RegisterController@registerAdmin');
 
