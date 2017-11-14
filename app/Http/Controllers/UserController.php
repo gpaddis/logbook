@@ -90,7 +90,10 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::find($id);
+        $roles = Role::all()->pluck('name');
+
+        return view('users.edit', compact('user', 'roles'));
     }
 
     /**
@@ -102,7 +105,21 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::find($id);
+
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'role' => 'required|exists:roles,name',
+        ]);
+
+        $user->update($request->all());
+        $user->syncRoles($request->input('role'));
+
+        return redirect()
+        ->route('users.index')
+        ->with('flash', 'All changes were saved in the database.');
     }
 
     /**

@@ -27,4 +27,14 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Get the formatted user's full name.
+     *
+     * @return string
+     */
+    public function fullName()
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
 }

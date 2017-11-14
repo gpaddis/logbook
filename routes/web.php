@@ -68,6 +68,8 @@ Route::middleware('permission:manage users')->group(function () {
     Route::get('/users', 'UserController@index')->name('users.index');
     Route::get('/users/create', 'UserController@create')->name('users.create');
     Route::post('/users', 'UserController@store')->name('users.store');
+    Route::get('/users/{id}/edit', 'UserController@edit')->name('users.edit');
+    Route::patch('/users/{id}', 'UserController@update')->name('users.update');
     Route::delete('/users/{id}/delete', 'UserController@destroy')->name('users.delete');
 });
 

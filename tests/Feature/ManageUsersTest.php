@@ -69,4 +69,22 @@ class ManageUsersTest extends TestCase
 
         $this->assertDatabaseMissing('users', ['first_name' => $user->first_name]);
     }
+
+    /** @test */
+    public function it_can_update_a_user()
+    {
+        $this->signIn();
+
+        $user = create('App\User');
+
+        $this->patch('/users/' . $user->id, [
+            'first_name' => $user->first_name,
+            'last_name' => 'Hemingway',
+            'email' => $user->email,
+            'role' => 'admin'
+            ]);
+
+        $this->assertDatabaseHas('users', ['last_name' => 'Hemingway']);
+        $this->assertTrue($user->hasRole('admin'));
+    }
 }

@@ -25,7 +25,7 @@
                   {{ $user->id }}
                 </th>
                 <td>
-                  {{ $user->first_name . " " . $user->last_name }}
+                  {{ $user->fullName() }}
                 </td>
                 <td>
                   {{ $user->email }}
@@ -36,7 +36,7 @@
                   @endforeach
                 </td>
                 <td>
-                  <a href="#" class="btn btn-outline-secondary btn-xs">Edit</a>
+                  <a href="{{ route('users.edit', ['id' => $user]) }}" class="btn btn-outline-secondary btn-xs">Edit</a>
 
                   <form method="post" action="{{ route('users.delete', compact('user')) }}">
                     {{ csrf_field() }}
