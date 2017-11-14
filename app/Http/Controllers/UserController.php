@@ -119,7 +119,7 @@ class UserController extends Controller
 
         return redirect()
         ->route('users.index')
-        ->with('flash', 'All changes were saved in the database.');
+        ->with('flash', 'Your changes were saved in the database.');
     }
 
     /**

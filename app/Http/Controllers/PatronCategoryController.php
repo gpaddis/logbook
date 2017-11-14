@@ -58,7 +58,9 @@ class PatronCategoryController extends Controller
 
         PatronCategory::create($request->all());
 
-        return redirect()->route('patron-categories.index');
+        return redirect()
+        ->route('patron-categories.index')
+        ->with('flash', 'The new category was saved in the database.');
     }
 
     /**
@@ -105,7 +107,9 @@ class PatronCategoryController extends Controller
 
         $category->update($request->all());
 
-        return redirect()->route('patron-categories.index');
+        return redirect()
+        ->route('patron-categories.index')
+        ->with('flash', 'Your changes were saved in the database.');
     }
 
     /**
