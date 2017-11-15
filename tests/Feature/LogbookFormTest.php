@@ -190,7 +190,7 @@ class LogbookFormTest extends TestCase
         ];
 
         $this->post('/logbook', ['entry' => ['any_entry_id' => $entry]])
-        ->assertRedirect('/logbook');
+        ->assertStatus(302);
 
         $this->assertCount(0, LogbookEntry::within($entry['start_time'], $entry['end_time'])->get());
     }
