@@ -6,15 +6,15 @@
   <div class="col">
     <div class="card">
       <div class="card-header d-flex justify-content-between">
-        <a href="/logbook/update?date={{ $previousDay }}"><< Previous Day</a>
+        <a class="btn btn-sm btn-outline-secondary" href="/logbook/update?date={{ $previousDay }}">
+          <i class="fa fa-backward" aria-hidden="true"></i> Previous Day
+        </a>
 
-        <strong>Update the logbook for {{ $timeslots->start()->toFormattedDateString() }}</strong>
+        <h5>Update the logbook for <strong>{{ $timeslots->start()->toFormattedDateString() }}</strong></h5>
 
-        @if($nextDay)
-        <a href="/logbook/update?date={{ $nextDay }}">Next Day >></a>
-        @else
-        Next Day >>
-        @endif
+        <a class="btn btn-sm btn-outline-secondary{{ $nextDay ? '' : ' disabled' }}" {{ $nextDay ? 'href=/logbook/update?date=' . $nextDay : ''}}>
+          Next Day <i class="fa fa-forward" aria-hidden="true"></i>
+        </a>
       </div>
 
       {{-- Start main if clause --}}
