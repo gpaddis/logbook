@@ -19,14 +19,21 @@ class RolesAndPermissionsSeeder extends Seeder
         // create permissions
         Permission::updateOrCreate(['name' => 'manage patron categories']);
         Permission::updateOrCreate(['name' => 'manage users']);
+        Permission::updateOrCreate(['name' => 'edit logbook']);
 
         // create roles and assign existing permissions
         $role = Role::updateOrCreate(['name' => 'admin']);
         $role->syncPermissions([
             'manage patron categories',
-            'manage users'
+            'manage users',
+            'edit logbook'
         ]);
 
         $role = Role::updateOrCreate(['name' => 'standard']);
+        $role->syncPermissions([
+            'edit logbook'
+        ]);
+
+        $role = Role::updateOrCreate(['name' => 'guest']);
     }
 }

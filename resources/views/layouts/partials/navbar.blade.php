@@ -11,9 +11,11 @@
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav mr-auto">
       @auth
+      @can('edit logbook')
       <li class="nav-item">
         <a class="nav-link" href="{{ route('livecounter.index') }}">Live Counter</a>
       </li>
+      @endcan
 
       <li class="nav-item">
         <a class="nav-link" href="{{ route('logbook.index') }}">Browse</a>
@@ -44,6 +46,12 @@
       @hasrole('admin')
       <li class="nav-item">
         <a class="nav-link"><span class="badge badge-pill badge-danger">Admin</span></a>
+      </li>
+      @endhasrole
+
+      @hasrole('guest')
+      <li class="nav-item">
+        <a class="nav-link"><span class="badge badge-pill badge-secondary">Guest</span></a>
       </li>
       @endhasrole
 

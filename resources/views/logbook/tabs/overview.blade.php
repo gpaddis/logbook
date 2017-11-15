@@ -22,6 +22,7 @@
 <div class="col-md-3">
     <div class="row">
         <div class="col">
+            @can('edit logbook')
             <div class="card mb-3">
                 <div class="card-header">Update the logbook</div>
                 <div class="card-body">
@@ -34,6 +35,7 @@
                     </form>
                 </div>
             </div>
+            @endcan
 
             <div class="card">
                 <div class="card-header">Card header</div>
