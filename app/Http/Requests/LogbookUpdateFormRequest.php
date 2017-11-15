@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Carbon\Carbon;
 use App\LogbookEntry;
+use App\PatronCategory;
 use Illuminate\Validation\Validator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
@@ -126,26 +127,29 @@ class LogbookUpdateFormRequest extends FormRequest
      */
     protected function addEntries(array $entry, int $number)
     {
+        $entries = [];
+
         for ($i = 0; $i < $number; $i++) {
-            LogbookEntry::create([
-                'patron_category_id' => $entry['patron_category_id'],
+            $entries[] = [
                 'visited_at' => $entry['start_time']
-            ]);
+            ];
         }
+
+        PatronCategory::find($entry['patron_category_id'])
+        ->logbookEntries()
+        ->createMany($entries);
     }
 
     /**
      * Delete a $number of records for a given patron categories within a time range.
      *
-     * @param  Builder  $storedEntries
-     * @param  int      $number
+     * @param  Builder $storedEntries
+     * @param  int $number
      *
      * @return void
      */
     protected function deleteEntries(Builder $storedEntries, int $number = 1)
     {
-        for ($i=0; $i < $number; $i++) {
-            $storedEntries->first()->delete();
-        }
+        $storedEntries->take($number)->delete();
     }
 }

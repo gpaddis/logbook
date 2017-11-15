@@ -44,6 +44,17 @@
         </div>
         @endif
 
+        {{-- Errors. --}}
+        @if (count($errors))
+        <div class="row">
+          <div class="col">
+            <div class="alert alert-danger" role="alert">
+              <strong>Error:</strong> {{ $errors->first() }}
+            </div>
+          </div>
+        </div>
+        @endif
+
         {{-- Form begins --}}
         <form method="POST" action="/logbook">
           {{ csrf_field() }}
@@ -93,17 +104,6 @@
             <a href="{{ route('logbook.index') }}" class="btn btn-secondary">Discard Changes</a>
           </div>
         </form>
-
-        {{-- Errors. --}}
-        @if (count($errors))
-        <div class="row">
-          <div class="col">
-            <div class="alert alert-danger" role="alert">
-              <strong>Error:</strong> {{ $errors->first() }}
-            </div>
-          </div>
-        </div>
-        @endif
       </div>
       @endif
       {{-- End main if clause. --}}

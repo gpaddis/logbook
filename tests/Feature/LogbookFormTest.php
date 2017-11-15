@@ -59,8 +59,8 @@ class LogbookFormTest extends TestCase
         ];
 
         $entry2 = [
-            'start_time' => '2017-08-21 12:00:00',
-            'end_time' => '2017-08-21 13:00:00',
+            'start_time' => '2016-08-21 12:00:00',
+            'end_time' => '2016-08-21 13:00:00',
             'patron_category_id' => create('App\PatronCategory')->id,
             'visits' => 2
         ];
