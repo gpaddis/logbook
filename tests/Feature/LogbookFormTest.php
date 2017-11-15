@@ -16,7 +16,7 @@ class LogbookFormTest extends TestCase
     public function it_displays_the_form_for_the_date_requested()
     {
         $this->signIn()->get('/logbook/update?date=2017-08-18')
-        ->assertSee('Update the logbook for Aug 18, 2017');
+        ->assertSee('Aug 18, 2017');
     }
 
     /** @test */
