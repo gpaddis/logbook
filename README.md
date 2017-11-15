@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/gpaddis/logbook.svg?branch=develop)](https://travis-ci.org/gpaddis/logbook)
 [![StyleCI](https://styleci.io/repos/104880175/shield?branch=develop)](https://styleci.io/repos/104880175)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/gpaddis/logbook/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/gpaddis/logbook/?branch=develop)
 
 **Logbook** is a database powered web application for the collection and analysis of library statistics.
 
