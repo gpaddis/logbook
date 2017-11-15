@@ -7,19 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class PatronCategory extends Model
 {
     /**
-     * Disable timestamps for the patron_categories table.
-     *
-     * @var boolean
-     */
-    // public $timestamps = false;
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     public $fillable = [
-        'name', 'abbreviation', 'is_active', 'is_primary', 'notes'
+        'name',
+        'abbreviation',
+        'is_active',
+        'is_primary',
+        'notes'
     ];
 
     /**
@@ -33,16 +30,10 @@ class PatronCategory extends Model
     ];
 
     /**
-     * Related models to be eager loaded each time a Patron Category model is loaded.
-     *
-     * @var array
-     */
-    // protected $with = ['current_visits'];
-
-    /**
      * Scope a query to only include active patron categories.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function scopeActive($query)
@@ -54,6 +45,7 @@ class PatronCategory extends Model
      * Scope a query to only include primary patron categories.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function scopePrimary($query)
@@ -65,6 +57,7 @@ class PatronCategory extends Model
      * Scope a query to only include secondary patron categories.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function scopeSecondary($query)
@@ -86,6 +79,7 @@ class PatronCategory extends Model
      * Check if a patron category has visited within the given timeslot.
      *
      * @param  App\Timeslot  $timeslot
+     *
      * @return boolean
      */
     public function hasVisited($timeslot = null)
@@ -97,6 +91,7 @@ class PatronCategory extends Model
      * Return the number of visits within the current timeslot or 0 if there were none.
      *
      * @param  $timeslot
+     *
      * @return int
      */
     public function currentVisits($timeslot = null)
@@ -107,11 +102,6 @@ class PatronCategory extends Model
 
         return 0;
     }
-
-    // public function current_entry()
-    // {
-    //     return $this->logbookEntries()->withinTimeslot(Timeslot::now());
-    // }
 
     /**
      * Return the full path of the current patron category.
