@@ -11,9 +11,11 @@
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav mr-auto">
       @auth
+      @can('edit logbook')
       <li class="nav-item">
         <a class="nav-link" href="{{ route('livecounter.index') }}">Live Counter</a>
       </li>
+      @endcan
 
       <li class="nav-item">
         <a class="nav-link" href="{{ route('logbook.index') }}">Browse</a>
