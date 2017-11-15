@@ -49,6 +49,12 @@
       </li>
       @endhasrole
 
+      @hasrole('guest')
+      <li class="nav-item">
+        <a class="nav-link"><span class="badge badge-pill badge-secondary">Guest</span></a>
+      </li>
+      @endhasrole
+
       <li class="nav-item dropdown">
         <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {{ Auth::user()->first_name }} <span class="caret"></span>
