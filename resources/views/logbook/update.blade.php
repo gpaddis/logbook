@@ -5,7 +5,13 @@
 <div class="row">
   <div class="col">
     <div class="card">
-      <div class="card-header">Update the logbook for {{ $timeslots->start()->toFormattedDateString() }}</div>
+      <div class="card-header d-flex justify-content-between">
+        <a href="/logbook/update?date={{ $previousDay }}"><< Previous Day</a>
+
+        <strong>Update the logbook for {{ $timeslots->start()->toFormattedDateString() }}</strong>
+
+        <a href="/logbook/update?date={{ $nextDay or '#' }}">Next Day >></a>
+      </div>
 
       {{-- Start main if clause --}}
       @if($patronCategories->isEmpty())
