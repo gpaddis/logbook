@@ -13,6 +13,16 @@ class LogbookFormTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function a_guest_cannot_edit_the_logbook()
+    {
+        $guest = create('App\User')->assignRole('guest');
+        $this->signIn($guest)->withExceptionHandling();
+
+        $this->get('/logbook/update?date=2017-08-18')->assertStatus(302);
+        $this->post('logbook', [])->assertStatus(302);
+    }
+
+    /** @test */
     public function it_displays_the_form_for_the_date_requested()
     {
         $this->signIn()->get('/logbook/update?date=2017-08-18')

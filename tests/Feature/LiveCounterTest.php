@@ -15,9 +15,18 @@ class LiveCounterTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $response = $this->post('/logbook/livecounter/add', [
-            'id' => 1,
-        ])->assertRedirect('login');
+        $response = $this->post('/logbook/livecounter/add', [])->assertRedirect('login');
+    }
+
+    /** @test */
+    public function a_guest_may_not_submit_a_visit_count()
+    {
+        $guest = create('App\User')->assignRole('guest');
+        $this->signIn($guest)->withExceptionHandling();
+
+        $this->get('/logbook/livecounter')->assertStatus(302);
+        $this->post('/logbook/livecounter/add', [])->assertStatus(302);
+        $this->post('/logbook/livecounter/subtract', [])->assertStatus(302);
     }
 
     /** @test */
@@ -30,11 +39,11 @@ class LiveCounterTest extends TestCase
             'patron_category_id' => $patronCategory->id,
             'visited_at' => '2017-01-01 12:09:03',
             'recorded_live' => true
-        ])
+            ])
         ->assertStatus(200)
         ->assertJson([
             $patronCategory->id => 1
-        ]);
+            ]);
     }
 
     /** @test */
@@ -46,25 +55,25 @@ class LiveCounterTest extends TestCase
 
         $entry1 = create('App\LogbookEntry', [
             'patron_category_id' => $cat1->id
-        ]);
+            ]);
 
         $entry2 = create('App\LogbookEntry', [
             'patron_category_id' => $cat2->id
-        ]);
+            ]);
 
         $entry3 = create('App\LogbookEntry', [
             'patron_category_id' => $cat2->id,
             'visited_at' => Carbon::now()->addMinute()
-        ]);
+            ]);
 
         $this->post('/logbook/livecounter/subtract', [
             'patron_category_id' => $cat2->id
-        ])
+            ])
         ->assertStatus(200)
         ->assertJson([
             $cat1->id => 1,
             $cat2->id => 1
-        ]);
+            ]);
 
         $this->assertDatabaseMissing('logbook_entries', $entry3->toArray());
         $this->assertDatabaseHas('logbook_entries', $entry1->toArray());
@@ -78,11 +87,11 @@ class LiveCounterTest extends TestCase
 
         $entry = create('App\LogbookEntry', [
             'visited_at' => Carbon::now()->subDay()
-        ]);
+            ]);
 
         $this->post('/logbook/livecounter/subtract', [
             'patron_category_id' => $entry->patron_category_id
-        ]);
+            ]);
 
         $this->assertDatabaseHas('logbook_entries', $entry->toArray());
     }
@@ -96,11 +105,11 @@ class LiveCounterTest extends TestCase
 
         $this->post('/logbook/livecounter/add', [
             'patron_category_id' => 100
-        ])->assertSessionHasErrors('patron_category_id');
+            ])->assertSessionHasErrors('patron_category_id');
 
         $this->post('/logbook/livecounter/remove', [
             'patron_category_id' => 100
-        ])->assertSessionHasErrors('patron_category_id');
+            ])->assertSessionHasErrors('patron_category_id');
     }
 
     /** @test */
@@ -113,15 +122,15 @@ class LiveCounterTest extends TestCase
 
         $this->post('/logbook/livecounter/add', [
             'patron_category_id' => $active->id
-        ])->assertStatus(200);
+            ])->assertStatus(200);
 
         $this->post('/logbook/livecounter/add', [
             'patron_category_id' => $inactive->id
-        ])->assertSessionHasErrors('patron_category_id');
+            ])->assertSessionHasErrors('patron_category_id');
 
         $this->post('/logbook/livecounter/subtract', [
             'patron_category_id' => $inactive->id
-        ])->assertSessionHasErrors('patron_category_id');
+            ])->assertSessionHasErrors('patron_category_id');
     }
 
     /** @test */
@@ -133,11 +142,11 @@ class LiveCounterTest extends TestCase
 
         $entry1 = create('App\LogbookEntry', [
             'patron_category_id' => $cat1->id
-        ]);
+            ]);
 
         $entry2 = create('App\LogbookEntry', [
             'patron_category_id' => $cat2->id
-        ]);
+            ]);
 
         $response = $this->json('GET', '/logbook/livecounter/show');
 
@@ -147,6 +156,6 @@ class LiveCounterTest extends TestCase
             $cat1->id => 1,
             $cat2->id => 1,
             $cat3->id => 0
-        ]);
+            ]);
     }
 }
