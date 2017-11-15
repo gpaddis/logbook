@@ -10,7 +10,11 @@
 
         <strong>Update the logbook for {{ $timeslots->start()->toFormattedDateString() }}</strong>
 
-        <a href="/logbook/update?date={{ $nextDay or '#' }}">Next Day >></a>
+        @if($nextDay)
+        <a href="/logbook/update?date={{ $nextDay }}">Next Day >></a>
+        @else
+        Next Day >>
+        @endif
       </div>
 
       {{-- Start main if clause --}}
