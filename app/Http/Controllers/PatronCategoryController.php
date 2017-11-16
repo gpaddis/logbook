@@ -44,7 +44,7 @@ class PatronCategoryController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -68,7 +68,7 @@ class PatronCategoryController extends Controller
      * Display the specified resource.
      *
      * @param  \App\PatronCategory  $patronCategory
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function show(PatronCategory $category)
@@ -80,7 +80,7 @@ class PatronCategoryController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\PatronCategory  $patronCategory
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(PatronCategory $category)
