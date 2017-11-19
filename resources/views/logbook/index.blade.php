@@ -13,12 +13,12 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ route('logbook.index') }}">Overview</a>
           </li>
-          <li class="nav-item">
+          {{-- <li class="nav-item">
             <a class="nav-link" href="{{ route('logbook.day') }}">Day</a>
           </li>
           <li class="nav-item">
             <a class="nav-link">Month</a>
-          </li>
+          </li> --}}
           <li class="nav-item">
             <a class="nav-link" href="{{ route('logbook.year') }}">Year</a>
           </li>
