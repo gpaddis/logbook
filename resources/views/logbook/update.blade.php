@@ -7,13 +7,13 @@
     <div class="card">
       <div class="card-header d-flex justify-content-between">
         <a class="btn btn-sm btn-outline-secondary" href="/logbook/update?date={{ $previousDay }}">
-          <i class="fa fa-backward" aria-hidden="true"></i> Previous Day
+          <i class="fa fa-backward" aria-hidden="true"></i> Previous
         </a>
 
         <h5>Update the logbook for <strong>{{ $timeslots->start()->toFormattedDateString() }}</strong></h5>
 
         <a class="btn btn-sm btn-outline-secondary{{ $nextDay ? '' : ' disabled' }}" {{ $nextDay ? 'href=/logbook/update?date=' . $nextDay : ''}}>
-          Next Day <i class="fa fa-forward" aria-hidden="true"></i>
+          Next <i class="fa fa-forward" aria-hidden="true"></i>
         </a>
       </div>
 
