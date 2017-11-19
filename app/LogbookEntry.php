@@ -131,24 +131,6 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Get logbook entry data for the browse.year tab.
-     *
-     * @param  int $year
-     * @param  int $depth
-     *
-     * @return Illuminate\Database\Eloquent\Collection
-     */
-    public static function getYearData(int $year, int $depth = 1)
-    {
-        return static::selectRaw('YEAR(visited_at) as year, MONTH(visited_at) as month, patron_category_id, count(*) as visits')
-        ->with('patronCategory:id,name')
-        ->groupBy('year', 'month', 'patron_category_id')
-        ->having('year', '<=', $year)
-        ->having('year', '>=', $year - $depth + 1)
-        ->get();
-    }
-
-    /**
      * Get the number of days containing logbook entries in a given year.
      *
      * @param  int $year
