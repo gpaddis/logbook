@@ -78,4 +78,6 @@ Route::middleware('permission:manage users')->group(function () {
 /**
  * Api Routes
  */
-Route::get('/api/visits/year/{year}', 'Api\VisitsController@year');
+Route::prefix('api')->namespace('Api')->group(function () {
+    Route::get('visits/year/{year}', 'VisitsController@year');
+});
