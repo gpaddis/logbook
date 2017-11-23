@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\JsonResponse;
+use App\LogbookEntry;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -29,15 +29,15 @@ class VisitsController extends Controller
         $data = ['year' => $year];
 
         $validator = Validator::make($data, [
-            'year' => 'int|max:' . date('Y')
+            'year' => 'digits:4|max:' . date('Y')
         ]);
 
         if ($validator->fails()) {
-            return new JsonResponse('Your request cannot be processed', 422);
+            abort(422, 'Your request cannot be processed.');
         }
 
         return [
-            'Year' => $year
+            'visits' => LogbookEntry::getTotalVisitsByYear($year)
         ];
     }
 }
