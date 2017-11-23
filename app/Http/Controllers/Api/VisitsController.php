@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class VisitsController extends Controller
 {
@@ -22,8 +24,20 @@ class VisitsController extends Controller
      * @param int $year
      * @return void
      */
-    public function year(int $year)
+    public function year($year)
     {
-        return ['Year' => $year];
+        $data = ['year' => $year];
+
+        $validator = Validator::make($data, [
+            'year' => 'int|max:' . date('Y')
+        ]);
+
+        if ($validator->fails()) {
+            return new JsonResponse('Your request cannot be processed', 422);
+        }
+
+        return [
+            'Year' => $year
+        ];
     }
 }
