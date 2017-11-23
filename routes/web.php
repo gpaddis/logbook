@@ -76,5 +76,6 @@ Route::middleware('permission:manage users')->group(function () {
 });
 
 /**
- * Application Settings
+ * Api Routes
  */
+Route::get('/api/visits/year/{year}', 'Api\VisitsController@year');
