@@ -44,11 +44,16 @@ class VisitsController extends Controller
     /**
      * Return the visits count for a specific day, grouped by hour.
      *
+     * @param [type] $year
+     * @param [type] $month
      * @param [type] $day
      * @return void
      */
-    public function day($day)
+    public function day($year, $month, $day)
     {
-        return LogbookEntry::getVisitsByDay($day);
+        // TODO: validate
+        $date = $year . '-' . $month . '-' . $day;
+
+        return LogbookEntry::getVisitsByDay($date);
     }
 }
