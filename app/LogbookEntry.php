@@ -80,9 +80,11 @@ class LogbookEntry extends Model
      *
      * @return Illuminate\Database\Query\Builder
      */
-    public function scopeToday($query)
+    public function scopeDay($query, $day = null)
     {
-        return $query->whereDate('visited_at', date('Y-m-d'));
+        $date = $day ?? date('Y-m-d');
+
+        return $query->whereDate('visited_at', $date);
     }
 
     /**
@@ -122,10 +124,10 @@ class LogbookEntry extends Model
      */
     public static function deleteLatestRecord(int $category)
     {
-        if ($entry = static::today()
-            ->wherePatronCategoryId($category)
-            ->latest('visited_at')
-            ->first()) {
+        if ($entry = static::day()
+        ->wherePatronCategoryId($category)
+        ->latest('visited_at')
+        ->first()) {
             $entry->delete();
         }
     }
@@ -211,5 +213,20 @@ class LogbookEntry extends Model
         ->groupBy('date')
         ->orderBy('date', 'desc')
         ->first();
+    }
+
+    /**
+     * Get the visits number for a day, organized by hour.
+     *
+     * @param string $day
+     * @return Collection
+     */
+    public static function getVisitsByDay($day)
+    {
+        return static::whereDate('visited_at', $day)
+        ->selectRaw('HOUR(visited_at) as hour, count(*) as visits')
+        ->groupBy('hour')
+        ->orderBy('hour')
+        ->pluck('visits', 'hour');
     }
 }
