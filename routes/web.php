@@ -79,5 +79,6 @@ Route::middleware('permission:manage users')->group(function () {
  * Api Routes
  */
 Route::prefix('api')->namespace('Api')->group(function () {
+    Route::get('visits/day/{day}', 'VisitsController@day');
     Route::get('visits/year/{year}', 'VisitsController@year');
 });

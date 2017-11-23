@@ -40,4 +40,15 @@ class VisitsController extends Controller
             'visits' => LogbookEntry::getTotalVisitsByYear($year)
         ];
     }
+
+    /**
+     * Return the visits count for a specific day, grouped by hour.
+     *
+     * @param [type] $day
+     * @return void
+     */
+    public function day($day)
+    {
+        return LogbookEntry::getVisitsByDay($day);
+    }
 }

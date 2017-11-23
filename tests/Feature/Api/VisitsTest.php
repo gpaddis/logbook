@@ -20,11 +20,13 @@ class VisitsTest extends TestCase
     /** @test */
     public function it_returns_the_visits_per_hour_on_a_specific_day()
     {
-        $this->assertTrue(true);
-        // $expected = [
-        //     '' => ''
-        // ];
+        $this->signIn();
 
-        // $this->assertEquals($expected, $visitsPerHour);
+        $response = $this->json('GET', '/api/visits/day/2010-02-13');
+        $response->assertStatus(200)
+        ->assertJson([
+            '12' => '14',
+            '13' => '14',
+        ]);
     }
 }

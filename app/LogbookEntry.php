@@ -216,14 +216,14 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Get the visits number for a day, organized by hour.
+     * Get the visits count for a day, grouped by hour.
      *
      * @param string $day
      * @return Collection
      */
     public static function getVisitsByDay($day)
     {
-        return static::whereDate('visited_at', $day)
+        return static::day($day)
         ->selectRaw('HOUR(visited_at) as hour, count(*) as visits')
         ->groupBy('hour')
         ->orderBy('hour')
