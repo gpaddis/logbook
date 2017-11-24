@@ -87,17 +87,25 @@ class LogbookEntry extends Model
     }
 
     /**
+     * Scope the query to include only logbook entries of the day specified.
+     *
+     * @param  Builder $query
+     * @return Illuminate\Database\Query\Builder
+     */
+    public function scopeDay($query, $day)
+    {
+        return $query->whereDay('visited_at', $day);
+    }
+
+    /**
      * Scope the query to include only today's logbook entries.
      *
      * @param  Builder $query
-     *
      * @return Illuminate\Database\Query\Builder
      */
-    public function scopeDay($query, $day = null)
+    public function scopeToday($query)
     {
-        $date = $day ?? date('Y-m-d');
-
-        return $query->whereDate('visited_at', $date);
+        return $query->whereDate('visited_at', date('Y-m-d'));
     }
 
     /**
@@ -137,7 +145,7 @@ class LogbookEntry extends Model
      */
     public static function deleteLatestRecord(int $category)
     {
-        if ($entry = static::day()
+        if ($entry = static::today()
         ->wherePatronCategoryId($category)
         ->latest('visited_at')
         ->first()) {
@@ -266,12 +274,11 @@ class LogbookEntry extends Model
      * @param string $date
      * @return Collection
      */
-    public static function getVisitsByDay($date)
+    public function scopeGroupVisitsByHour($builder)
     {
-        return static::day($date)
-        ->selectRaw('HOUR(visited_at) as hour, count(*) as visits')
-        ->groupBy('hour')
-        ->orderBy('hour')
-        ->pluck('visits', 'hour');
+        return $builder->selectRaw('HOUR(visited_at) as hour, count(*) as visits')
+            ->groupBy('hour')
+            ->orderBy('hour')
+            ->pluck('visits', 'hour');
     }
 }

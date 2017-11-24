@@ -74,11 +74,14 @@ class VisitsController extends Controller
     {
         $this->validateParameters($year, $month, $day);
 
-        $date = $year . '-' . $month . '-' . $day;
+        $visits = LogbookEntry::year($year)
+            ->month($month)
+            ->day($day)
+            ->groupVisitsByHour();
 
         return [
             'data' => [
-                'visits' => LogbookEntry::getVisitsByDay($date),
+                'visits' => $visits,
                 'period' => [
                     'year' => $year,
                     'month' => $month,
