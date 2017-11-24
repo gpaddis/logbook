@@ -29,7 +29,11 @@ class VisitsTest extends TestCase
                 'visits' => [
                     '1' => '28',
                     '2' => '28'
-                ]
+                ],
+                'period' => [
+                    'year' => 2010
+                ],
+                'groupedBy' => 'month'
             ]
         ]);
     }
@@ -45,7 +49,12 @@ class VisitsTest extends TestCase
             'data' => [
                 'visits' => [
                     '13' => '28'
-                ]
+                ],
+                'period' => [
+                    'year' => 2010,
+                    'month' => 02
+                ],
+                'groupedBy' => 'day'
             ]
         ]);
     }
@@ -62,7 +71,13 @@ class VisitsTest extends TestCase
                 'visits' => [
                     '12' => '14',
                     '13' => '14',
-                ]
+                ],
+                'period' => [
+                    'year' => 2010,
+                    'month' => 02,
+                    'day' => 13
+                ],
+                'groupedBy' => 'hour'
             ]
         ]);
     }

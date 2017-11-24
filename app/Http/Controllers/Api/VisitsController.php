@@ -38,7 +38,11 @@ class VisitsController extends Controller
 
         return [
             'data' => [
-                'visits' => LogbookEntry::getVisitsByYear($year)
+                'visits' => LogbookEntry::getVisitsByYear($year),
+                'period' => [
+                    'year' => $year
+                ],
+                'groupedBy' => 'month'
             ]
         ];
     }
@@ -56,8 +60,13 @@ class VisitsController extends Controller
 
         return [
             'data' => [
-                'visits' => LogbookEntry::getVisitsByMonth($year, $month)
-            ]
+                'visits' => LogbookEntry::getVisitsByMonth($year, $month),
+                'period' => [
+                    'year' => $year,
+                    'month' => $month
+                ],
+                'groupedBy' => 'day'
+            ],
         ];
     }
 
@@ -76,7 +85,13 @@ class VisitsController extends Controller
 
         return [
             'data' => [
-                'visits' => LogbookEntry::getVisitsByDay($date)
+                'visits' => LogbookEntry::getVisitsByDay($date),
+                'period' => [
+                    'year' => $year,
+                    'month' => $month,
+                    'day' => $day
+                ],
+                'groupedBy' => 'hour'
             ]
         ];
     }
