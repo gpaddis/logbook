@@ -106,104 +106,104 @@ class LogbookTest extends TestCase
         $this->assertEquals(3, LogbookEntry::getOpeningDays(2017));
     }
 
-    /** @test */
-    public function it_returns_the_total_visits_collected_by_year_and_month()
-    {
-        create('App\LogbookEntry', [
-            'visited_at' => '2015-01-02 12:00:00',
-        ], 5);
+    // /** @test */
+    // public function it_returns_the_total_visits_collected_by_year_and_month()
+    // {
+    //     create('App\LogbookEntry', [
+    //         'visited_at' => '2015-01-02 12:00:00',
+    //     ], 5);
 
-        $visits2015 = LogbookEntry::getTotalVisitsByYear(2015);
+    //     $visits2015 = LogbookEntry::getTotalVisitsByYear(2015);
 
-        $this->assertEquals($visits2015->toArray(), [
-            2015 => [
-                1 => 5,
-                2 => 0,
-                3 => 0,
-                4 => 0,
-                5 => 0,
-                6 => 0,
-                7 => 0,
-                8 => 0,
-                9 => 0,
-                10 => 0,
-                11 => 0,
-                12 => 0
-            ]]);
+    //     $this->assertEquals($visits2015->toArray(), [
+    //         2015 => [
+    //             1 => 5,
+    //             2 => 0,
+    //             3 => 0,
+    //             4 => 0,
+    //             5 => 0,
+    //             6 => 0,
+    //             7 => 0,
+    //             8 => 0,
+    //             9 => 0,
+    //             10 => 0,
+    //             11 => 0,
+    //             12 => 0
+    //         ]]);
 
-        create('App\LogbookEntry', [
-            'visited_at' => '2017-05-02 12:00:00',
-        ], 5);
+    //     create('App\LogbookEntry', [
+    //         'visited_at' => '2017-05-02 12:00:00',
+    //     ], 5);
 
-        create('App\LogbookEntry', [
-            'visited_at' => '2017-04-02 12:00:00',
-        ], 5);
+    //     create('App\LogbookEntry', [
+    //         'visited_at' => '2017-04-02 12:00:00',
+    //     ], 5);
 
-        create('App\LogbookEntry', [
-            'visited_at' => '2017-06-02 12:00:00',
-        ], 5);
+    //     create('App\LogbookEntry', [
+    //         'visited_at' => '2017-06-02 12:00:00',
+    //     ], 5);
 
-        $bothYears = LogbookEntry::getTotalVisitsByYear(2017, 2015);
+    //     $bothYears = LogbookEntry::getTotalVisitsByYear(2017, 2015);
 
-        $this->assertEquals(2017, $bothYears->keys()->first());
-        $this->assertEquals($bothYears->toArray(), [
-            2015 => [
-                1 => 5,
-                2 => 0,
-                3 => 0,
-                4 => 0,
-                5 => 0,
-                6 => 0,
-                7 => 0,
-                8 => 0,
-                9 => 0,
-                10 => 0,
-                11 => 0,
-                12 => 0
-            ],
-            2017 => [
-                1 => 0,
-                2 => 0,
-                3 => 0,
-                4 => 5,
-                5 => 5,
-                6 => 5,
-                7 => 0,
-                8 => 0,
-                9 => 0,
-                10 => 0,
-                11 => 0,
-                12 => 0
-            ]
-        ]);
-    }
+    //     $this->assertEquals(2017, $bothYears->keys()->first());
+    //     $this->assertEquals($bothYears->toArray(), [
+    //         2015 => [
+    //             1 => 5,
+    //             2 => 0,
+    //             3 => 0,
+    //             4 => 0,
+    //             5 => 0,
+    //             6 => 0,
+    //             7 => 0,
+    //             8 => 0,
+    //             9 => 0,
+    //             10 => 0,
+    //             11 => 0,
+    //             12 => 0
+    //         ],
+    //         2017 => [
+    //             1 => 0,
+    //             2 => 0,
+    //             3 => 0,
+    //             4 => 5,
+    //             5 => 5,
+    //             6 => 5,
+    //             7 => 0,
+    //             8 => 0,
+    //             9 => 0,
+    //             10 => 0,
+    //             11 => 0,
+    //             12 => 0
+    //         ]
+    //     ]);
+    // }
 
-    /** @test */
-    public function it_returns_the_total_visits_grouped_by_patron_category()
-    {
-        list($cat1, $cat2, $cat3) = factory('App\PatronCategory', 3)->create();
+    // /** @test */
+    // public function it_returns_the_total_visits_grouped_by_patron_category()
+    // {
+    //     list($cat1, $cat2, $cat3) = factory('App\PatronCategory', 3)->create();
 
-        create('App\LogbookEntry', [
-            'visited_at' => '2017-05-02 12:00:00',
-            'patron_category_id' => $cat1->id
-        ], 5);
+    //     create('App\LogbookEntry', [
+    //         'visited_at' => '2017-05-02 12:00:00',
+    //         'patron_category_id' => $cat1->id
+    //     ], 5);
 
-        create('App\LogbookEntry', [
-            'visited_at' => '2017-04-02 12:00:00',
-            'patron_category_id' => $cat2->id
-        ], 6);
+    //     create('App\LogbookEntry', [
+    //         'visited_at' => '2017-04-02 12:00:00',
+    //         'patron_category_id' => $cat2->id
+    //     ], 6);
 
-        create('App\LogbookEntry', [
-            'visited_at' => '2017-06-02 12:00:00',
-            'patron_category_id' => $cat3->id
-        ], 7);
+    //     create('App\LogbookEntry', [
+    //         'visited_at' => '2017-06-02 12:00:00',
+    //         'patron_category_id' => $cat3->id
+    //     ], 7);
 
-        $this->assertEquals([
-            $cat1->name => 5,
-            $cat2->name => 6,
-            $cat3->name => 7,
-        ], LogbookEntry::getTotalVisitsByPatronCategory(2017)->toArray());
-    }
+    //     $this->assertEquals([
+    //         $cat1->name => 5,
+    //         $cat2->name => 6,
+    //         $cat3->name => 7,
+    //     ], LogbookEntry::getTotalVisitsByPatronCategory(2017)->toArray());
+    // }
 
     /** @test */
     public function it_returns_the_visits_count_for_the_latest_available_day_before_today()
