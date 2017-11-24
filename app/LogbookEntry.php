@@ -52,11 +52,24 @@ class LogbookEntry extends Model
      * @param  Builder $query
      * @param  int     $year
      *
-     * @return Illuminate\Database\Query\Builder
+     * @return Builder
      */
     public function scopeYear($query, int $year)
     {
         return $query->whereYear('visited_at', $year);
+    }
+
+    /**
+     * Scope a query to only include logbook entries within the given month.
+     *
+     * @param  Builder $query
+     * @param  int     $month
+     *
+     * @return Builder
+     */
+    public function scopeMonth($query, int $month)
+    {
+        return $query->whereMonth('visited_at', $month);
     }
 
     /**
@@ -216,21 +229,6 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Get the visits count for a day, grouped by hour.
-     *
-     * @param string $day
-     * @return Collection
-     */
-    public static function getVisitsByDay($day)
-    {
-        return static::day($day)
-        ->selectRaw('HOUR(visited_at) as hour, count(*) as visits')
-        ->groupBy('hour')
-        ->orderBy('hour')
-        ->pluck('visits', 'hour');
-    }
-
-    /**
      * Get the visits count for a year, grouped by month.
      *
      * @param string $year
@@ -243,5 +241,37 @@ class LogbookEntry extends Model
         ->groupBy('month')
         ->orderBy('month')
         ->pluck('visits', 'month');
+    }
+
+    /**
+     * Get the visits count for a month, grouped by day.
+     *
+     * @param int $year
+     * @param int $month
+     * @return Collection
+     */
+    public static function getVisitsByMonth($year, $month)
+    {
+        return static::year($year)
+        ->month($month)
+        ->selectRaw('DAY(visited_at) as day, count(*) as visits')
+        ->groupBy('day')
+        ->orderBy('day')
+        ->pluck('visits', 'day');
+    }
+
+    /**
+     * Get the visits count for a day, grouped by hour.
+     *
+     * @param string $date
+     * @return Collection
+     */
+    public static function getVisitsByDay($date)
+    {
+        return static::day($date)
+        ->selectRaw('HOUR(visited_at) as hour, count(*) as visits')
+        ->groupBy('hour')
+        ->orderBy('hour')
+        ->pluck('visits', 'hour');
     }
 }

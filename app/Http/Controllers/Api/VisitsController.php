@@ -44,6 +44,24 @@ class VisitsController extends Controller
     }
 
     /**
+     * Return the visits count for a specific month, grouped by day.
+     *
+     * @param [type] $year
+     * @param [type] $month
+     * @return void
+     */
+    public function month($year, $month)
+    {
+        // TODO: validate
+
+        return [
+            'data' => [
+                'visits' => LogbookEntry::getVisitsByMonth($year, $month)
+            ]
+        ];
+    }
+
+    /**
      * Return the visits count for a specific day, grouped by hour.
      *
      * @param [type] $year

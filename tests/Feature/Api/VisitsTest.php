@@ -18,24 +18,7 @@ class VisitsTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_the_visits_per_hour_on_a_specific_day()
-    {
-        $this->signIn();
-
-        $response = $this->json('GET', '/api/visits/2010/02/13');
-        $response->assertStatus(200)
-        ->assertJson([
-            'data' => [
-                'visits' => [
-                    '12' => '14',
-                    '13' => '14',
-                ]
-            ]
-        ]);
-    }
-
-    /** @test */
-    public function it_returns_the_visits_per_month_on_a_specific_year()
+    public function it_gets_the_visits_by_year_grouped_by_month()
     {
         $this->signIn();
 
@@ -46,6 +29,39 @@ class VisitsTest extends TestCase
                 'visits' => [
                     '1' => '28',
                     '2' => '28'
+                ]
+            ]
+        ]);
+    }
+
+    /** @test */
+    public function it_gets_the_visits_by_month_grouped_by_day()
+    {
+        $this->signIn();
+
+        $response = $this->json('GET', '/api/visits/2010/02');
+        $response->assertStatus(200)
+        ->assertJson([
+            'data' => [
+                'visits' => [
+                    '13' => '28'
+                ]
+            ]
+        ]);
+    }
+
+    /** @test */
+    public function it_gets_the_visits_by_day_grouped_by_hour()
+    {
+        $this->signIn();
+
+        $response = $this->json('GET', '/api/visits/2010/02/13');
+        $response->assertStatus(200)
+        ->assertJson([
+            'data' => [
+                'visits' => [
+                    '12' => '14',
+                    '13' => '14',
                 ]
             ]
         ]);
