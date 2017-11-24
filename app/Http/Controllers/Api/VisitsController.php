@@ -26,15 +26,7 @@ class VisitsController extends Controller
      */
     public function year($year)
     {
-        $data = ['year' => $year];
-
-        $validator = Validator::make($data, [
-            'year' => 'digits:4|max:' . date('Y')
-        ]);
-
-        if ($validator->fails()) {
-            abort(422, 'Your request cannot be processed.');
-        }
+        $this->validateFields($year);
 
         return [
             'data' => [
@@ -50,13 +42,13 @@ class VisitsController extends Controller
     /**
      * Return the visits count for a specific month, grouped by day.
      *
-     * @param [type] $year
-     * @param [type] $month
+     * @param int $year
+     * @param int $month
      * @return void
      */
     public function month($year, $month)
     {
-        // TODO: validate
+        $this->validateFields($year, $month);
 
         return [
             'data' => [
@@ -73,14 +65,15 @@ class VisitsController extends Controller
     /**
      * Return the visits count for a specific day, grouped by hour.
      *
-     * @param [type] $year
-     * @param [type] $month
-     * @param [type] $day
+     * @param int $year
+     * @param int $month
+     * @param int $day
      * @return void
      */
     public function day($year, $month, $day)
     {
-        // TODO: validate
+        $this->validateFields($year, $month, $day);
+
         $date = $year . '-' . $month . '-' . $day;
 
         return [
@@ -94,5 +87,32 @@ class VisitsController extends Controller
                 'groupedBy' => 'hour'
             ]
         ];
+    }
+
+    /**
+     * Validate the parameters passed to the routes.
+     *
+     * @param int $year
+     * @param int $month
+     * @param int $day
+     * @return void
+     */
+    protected function validateFields($year, $month = null, $day = null)
+    {
+        $data = [
+            'year' => $year,
+            'month' => $month,
+            'day' => $day
+        ];
+
+        $validator = Validator::make($data, [
+            'year' => 'digits:4|max:' . date('Y'),
+            'month' => 'nullable|numeric|min:1|max:12',
+            'day' => 'nullable|numeric|min:1|max:31'
+        ]);
+
+        if ($validator->fails()) {
+            abort(422, 'Your request cannot be processed.');
+        }
     }
 }
