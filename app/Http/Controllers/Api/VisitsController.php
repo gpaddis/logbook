@@ -26,7 +26,7 @@ class VisitsController extends Controller
      */
     public function year($year)
     {
-        $this->validateFields($year);
+        $this->validateParameters($year);
 
         return [
             'data' => [
@@ -48,7 +48,7 @@ class VisitsController extends Controller
      */
     public function month($year, $month)
     {
-        $this->validateFields($year, $month);
+        $this->validateParameters($year, $month);
 
         return [
             'data' => [
@@ -72,7 +72,7 @@ class VisitsController extends Controller
      */
     public function day($year, $month, $day)
     {
-        $this->validateFields($year, $month, $day);
+        $this->validateParameters($year, $month, $day);
 
         $date = $year . '-' . $month . '-' . $day;
 
@@ -97,7 +97,7 @@ class VisitsController extends Controller
      * @param int $day
      * @return void
      */
-    protected function validateFields($year, $month = null, $day = null)
+    protected function validateParameters($year, $month = null, $day = null)
     {
         $data = [
             'year' => $year,
