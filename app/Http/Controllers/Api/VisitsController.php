@@ -99,20 +99,20 @@ class VisitsController extends Controller
      */
     protected function validateParameters($year, $month = null, $day = null)
     {
-        $data = [
-            'year' => $year,
-            'month' => $month,
-            'day' => $day
-        ];
+        $data = ['year' => $year];
+
+        if ($month) {
+            $data['month'] = $month;
+        }
+
+        if ($day) {
+            $data['day'] = $day;
+        }
 
         $validator = Validator::make($data, [
             'year' => 'required_with:month|digits:4|max:' . date('Y'),
-            'month' => 'nullable|required_with:day|numeric|min:1|max:12',
-            'day' => 'nullable|numeric|min:1|max:31'
-        ]);
-
-        if ($validator->fails()) {
-            abort(422, 'Your request cannot be processed.');
-        }
+            'month' => 'sometimes|required_with:day|numeric|min:1|max:12',
+            'day' => 'sometimes|numeric|min:1|max:31'
+        ])->validate();
     }
 }
