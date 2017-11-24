@@ -14,14 +14,14 @@ class VisitsTest extends TestCase
     {
         parent::setUp();
 
+        $this->signIn();
+
         Artisan::call('db:seed', ['--class' => 'LogbookEntrySeeder']);
     }
 
     /** @test */
     public function it_gets_the_visits_by_year_grouped_by_month()
     {
-        $this->signIn();
-
         $response = $this->json('GET', '/api/visits/2010');
         $response->assertStatus(200)
         ->assertJson([
@@ -41,8 +41,6 @@ class VisitsTest extends TestCase
     /** @test */
     public function it_gets_the_visits_by_month_grouped_by_day()
     {
-        $this->signIn();
-
         $response = $this->json('GET', '/api/visits/2010/02');
         $response->assertStatus(200)
         ->assertJson([
@@ -62,8 +60,6 @@ class VisitsTest extends TestCase
     /** @test */
     public function it_gets_the_visits_by_day_grouped_by_hour()
     {
-        $this->signIn();
-
         $response = $this->json('GET', '/api/visits/2010/02/13');
         $response->assertStatus(200)
         ->assertJson([
@@ -80,5 +76,26 @@ class VisitsTest extends TestCase
                 'groupedBy' => 'hour'
             ]
         ]);
+    }
+
+    /** @test */
+    public function it_rejects_malformed_requests()
+    {
+        $this->withExceptionHandling();
+
+        $this->json('GET', '/api/visits/2010/02/499')
+            ->assertStatus(422);
+
+        $this->json('GET', '/api/visits/2010/900/12')
+            ->assertStatus(422);
+
+        $this->json('GET', '/api/visits/2010121/02/12')
+            ->assertStatus(422);
+
+        $this->json('GET', '/api/visits/abab/ab/ab')
+            ->assertStatus(422);
+
+        $this->json('GET', '/api/visits/2014/  /12')
+            ->assertStatus(422);
     }
 }
