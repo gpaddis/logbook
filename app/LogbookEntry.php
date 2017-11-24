@@ -237,22 +237,22 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Get the visits count for a year, grouped by month.
+     * Group the visits by month.
      *
-     * @param string $year
+     * @param Builder $builder
      * @return Collection
      */
-    public static function getVisitsByYear($year)
+    public function scopeGroupVisitsByMonth($builder)
     {
-        return static::year($year)
-        ->selectRaw('MONTH(visited_at) as month, count(*) as visits')
-        ->groupBy('month')
-        ->orderBy('month')
-        ->pluck('visits', 'month');
+        return $builder
+            ->selectRaw('MONTH(visited_at) as month, count(*) as visits')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('visits', 'month');
     }
 
     /**
-     * Get the visits count for a month, grouped by day.
+     * Group the visits by day.
      *
      * @param Builder $builder
      * @return Collection
@@ -267,7 +267,7 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Get the visits count for a day, grouped by hour.
+     * Group the visits by hour.
      *
      * @param Builder $builder
      * @return Collection

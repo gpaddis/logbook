@@ -28,9 +28,12 @@ class VisitsController extends Controller
     {
         $this->validateParameters($year);
 
+        $visits = LogbookEntry::year($year)
+            ->groupVisitsByMonth();
+
         return [
             'data' => [
-                'visits' => LogbookEntry::getVisitsByYear($year),
+                'visits' => $visits,
                 'period' => [
                     'year' => $year
                 ],
