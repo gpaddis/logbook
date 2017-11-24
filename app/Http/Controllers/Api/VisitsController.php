@@ -37,7 +37,9 @@ class VisitsController extends Controller
         }
 
         return [
-            'visits' => LogbookEntry::getTotalVisitsByYear($year)
+            'data' => [
+                'visits' => LogbookEntry::getVisitsByYear($year)
+            ]
         ];
     }
 

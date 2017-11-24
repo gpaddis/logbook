@@ -33,4 +33,21 @@ class VisitsTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+    public function it_returns_the_visits_per_month_on_a_specific_year()
+    {
+        $this->signIn();
+
+        $response = $this->json('GET', '/api/visits/2010');
+        $response->assertStatus(200)
+        ->assertJson([
+            'data' => [
+                'visits' => [
+                    '1' => '28',
+                    '2' => '28'
+                ]
+            ]
+        ]);
+    }
 }

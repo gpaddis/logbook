@@ -229,4 +229,19 @@ class LogbookEntry extends Model
         ->orderBy('hour')
         ->pluck('visits', 'hour');
     }
+
+    /**
+     * Get the visits count for a year, grouped by month.
+     *
+     * @param string $year
+     * @return Collection
+     */
+    public static function getVisitsByYear($year)
+    {
+        return static::year($year)
+        ->selectRaw('MONTH(visited_at) as month, count(*) as visits')
+        ->groupBy('month')
+        ->orderBy('month')
+        ->pluck('visits', 'month');
+    }
 }
