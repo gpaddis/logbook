@@ -203,10 +203,11 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Get the total number of visits for the year specified, grouped by patron category.
+     * Get the total number of visits for the year specified,
+     * grouped by patron category.
      *
-     * @param  int    $year
-     * @return Illuminate\Database\Eloquent\Collection
+     * @param int $year
+     * @return Collection
      */
     public static function getTotalVisitsByPatronCategory(int $year)
     {
@@ -226,10 +227,10 @@ class LogbookEntry extends Model
     public static function lastAvailableDay()
     {
         return static::whereDate('visited_at', '<', date('Y-m-d'))
-        ->selectRaw('DATE(visited_at)as date, count(*) as visits')
-        ->groupBy('date')
-        ->orderBy('date', 'desc')
-        ->first();
+            ->selectRaw('DATE(visited_at)as date, count(*) as visits')
+            ->groupBy('date')
+            ->orderBy('date', 'desc')
+            ->first();
     }
 
     /**
