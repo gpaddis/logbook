@@ -24,9 +24,13 @@ class VisitsTest extends TestCase
 
         $response = $this->json('GET', '/api/visits/2010/02/13');
         $response->assertStatus(200)
-        ->assertJson([ // TODO: structure the response more appropriately.
-            '12' => '14',
-            '13' => '14',
+        ->assertJson([
+            'data' => [
+                'visits' => [
+                    '12' => '14',
+                    '13' => '14',
+                ]
+            ]
         ]);
     }
 }

@@ -54,6 +54,10 @@ class VisitsController extends Controller
         // TODO: validate
         $date = $year . '-' . $month . '-' . $day;
 
-        return LogbookEntry::getVisitsByDay($date);
+        return [
+            'data' => [
+                'visits' => LogbookEntry::getVisitsByDay($date)
+            ]
+        ];
     }
 }
