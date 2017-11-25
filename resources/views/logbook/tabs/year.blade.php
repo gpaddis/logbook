@@ -19,42 +19,10 @@
     </box-avg-sm>
 
     <div class="col-6 mb-2">
-      <div class="card">
-        <div class="card-body">
-          <h3>User statistics: {{ $year }}</h3>
 
-          <p class="card-text">
-            Choose two years to compare:
-          </p>
-          <form method="get" action="{{ route('logbook.year') }}">
-            <div class="form-row align-items-center">
-              <div class="col-auto">
-                <select name="y1" class="custom-select">
-                  @forelse($yearsAvailable as $value)
-                  <option value="{{ $value }}" {{ $year == $value ? 'selected' : '' }}>{{ $value }}</option>
-                  @empty
-                  <option value="none">No data available</option>
-                  @endforelse
-                </select>
-              </div>
+      <selector-years :years-available={{ $yearsAvailable }}>
+      </selector-years>
 
-              <div class="col-auto">
-                <select name="y2" class="custom-select">
-                  @forelse($yearsAvailable as $value)
-                  <option value="{{ $value }}" {{ $value == $year - 1 ? 'selected' : '' }}>{{ $value }}</option>
-                  @empty
-                  <option value="none">No data available</option>
-                  @endforelse
-                </select>
-              </div>
-
-              <div class="col-auto">
-                <button class="btn btn-primary" type="submit">Update</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
     </div>
   </div>
 
