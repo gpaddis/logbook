@@ -30,26 +30,25 @@ Vue.component('box-sum-sm', require('./components/infoboxes/box-sum-sm.vue'));
 Vue.component('box-avg-sm', require('./components/infoboxes/box-avg-sm.vue'));
 Vue.component('box-generic-lg', require('./components/infoboxes/box-generic-lg.vue'));
 
-/**
- * The app is our central store, it contains the datasets to share with
- * the other components, when they need to access them.
- */
+store = {
+    debug: true,
+    state: {
+        datasets: []
+    },
+    addDatasetAction(newDataset) {
+        if (this.debug) console.log('addDatasetAction triggered with', newDataset);
+        this.state.datasets.push(newDataset);
+    },
+    clearDatasetsAction() {
+        if (this.debug) console.log('clearDatasetsAction triggered');
+        this.state.datasets = ['']
+    }
+};
+
 const app = new Vue({
     el: '#app',
 
     data: {
-        datasets: [],
-        debug: true
-    },
-
-    methods: {
-        addDataset(dataset) {
-            if (this.debug) console.log('dataset added:', dataset);
-            this.datasets.push(dataset);
-        },
-        clearDatasets() {
-            if (this.debug) console.log('clearDatasets action triggered');
-            this.datasets = [];
-        }
+        sharedState: store.state
     }
 });
