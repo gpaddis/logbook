@@ -119,7 +119,7 @@ class VisitsController extends Controller
             $data['day'] = $day;
         }
 
-        $validator = Validator::make($data, [
+        Validator::make($data, [
             'year' => 'required_with:month|digits:4|max:' . date('Y'),
             'month' => 'sometimes|required_with:day|numeric|min:1|max:12',
             'day' => 'sometimes|numeric|min:1|max:31'
