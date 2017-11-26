@@ -13,7 +13,6 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', require('./components/Example.vue'));
 Vue.component('flash', require('./components/flash.vue'));
 
 // Livecounter
@@ -21,11 +20,7 @@ Vue.component('category-cards', require('./components/livecounter/category-cards
 
 // Logbook browse views
 Vue.component('year-view', require('./pages/Year.vue'));
-
-// Infoboxes
-Vue.component('box-sum-sm', require('./components/infoboxes/box-sum-sm.vue'));
-Vue.component('box-avg-sm', require('./components/infoboxes/box-avg-sm.vue'));
-Vue.component('box-generic-lg', require('./components/infoboxes/box-generic-lg.vue'));
+Vue.component('overview-view', require('./pages/Overview.vue'));
 
 import store from './store';
 

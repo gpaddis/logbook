@@ -1,21 +1,27 @@
 @extends('logbook.index')
 
 @section('tab-content')
-<box-generic-lg value="{{ $today }}" v-cloak>
-    <div slot="title">Today</div>
-    <div slot="subtitle">Visits</div>
-    <div slot="footer">
-        <span class="text-{{ $today - $lastAvailableDay >= 0 ? 'success' : 'danger' }}">
-            {{ abs($today - $lastAvailableDay) }} {{ $today - $lastAvailableDay > 0 ? 'more' : 'less' }}
-        </span> than last time
-    </div>
-</box-generic-lg>
+<overview-view inline-template v-cloak>
+<div class="col">
+    <div class="row">
+        <box-generic-lg value="{{ $today }}">
+            <div slot="title">Today</div>
+            <div slot="subtitle">Visits</div>
+            <div slot="footer">
+                <span class="text-{{ $today - $lastAvailableDay >= 0 ? 'success' : 'danger' }}">
+                    {{ abs($today - $lastAvailableDay) }} {{ $today - $lastAvailableDay > 0 ? 'more' : 'less' }}
+                </span> than last time
+            </div>
+        </box-generic-lg>
 
-<box-generic-lg value="{{ number_format($thisWeeksAverage, 1) }}" v-cloak>
-    <div slot="title">This Week</div>
-    <div slot="subtitle">Average visits / day</div>
-    <div slot="footer">Last week was {{ number_format($lastWeeksAverage, 1) }}</div>
-</box-generic-lg>
+        <box-generic-lg value="{{ number_format($thisWeeksAverage, 1) }}">
+            <div slot="title">This Week</div>
+            <div slot="subtitle">Average visits / day</div>
+            <div slot="footer">Last week was {{ number_format($lastWeeksAverage, 1) }}</div>
+        </box-generic-lg>
+    </div>
+</div>
+</overview-view>
 @endsection
 
 @section('tab-sidebar')
