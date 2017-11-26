@@ -27,20 +27,7 @@ Vue.component('box-sum-sm', require('./components/infoboxes/box-sum-sm.vue'));
 Vue.component('box-avg-sm', require('./components/infoboxes/box-avg-sm.vue'));
 Vue.component('box-generic-lg', require('./components/infoboxes/box-generic-lg.vue'));
 
-let store = {
-    debug: true,
-    state: {
-        datasets: []
-    },
-    addDatasetAction(newDataset) {
-        if (this.debug) console.log('addDatasetAction triggered with', newDataset);
-        this.state.datasets.push(newDataset);
-    },
-    clearDatasetsAction() {
-        if (this.debug) console.log('clearDatasetsAction triggered');
-        this.state.datasets = ['']
-    }
-};
+import store from './store';
 
 const app = new Vue({
     el: '#app',

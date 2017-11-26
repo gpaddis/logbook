@@ -28941,8 +28941,11 @@ module.exports = __webpack_require__(252);
 
 /***/ }),
 /* 140 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__store__ = __webpack_require__(266);
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -28972,27 +28975,14 @@ Vue.component('box-sum-sm', __webpack_require__(243));
 Vue.component('box-avg-sm', __webpack_require__(246));
 Vue.component('box-generic-lg', __webpack_require__(249));
 
-var store = {
-    debug: true,
-    state: {
-        datasets: []
-    },
-    addDatasetAction: function addDatasetAction(newDataset) {
-        if (this.debug) console.log('addDatasetAction triggered with', newDataset);
-        this.state.datasets.push(newDataset);
-    },
-    clearDatasetsAction: function clearDatasetsAction() {
-        if (this.debug) console.log('clearDatasetsAction triggered');
-        this.state.datasets = [''];
-    }
-};
+
 
 var app = new Vue({
-    el: '#app',
+  el: '#app',
 
-    data: {
-        sharedState: store.state
-    }
+  data: {
+    sharedState: __WEBPACK_IMPORTED_MODULE_0__store__["a" /* default */].state
+  }
 });
 
 /***/ }),
@@ -78817,6 +78807,26 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-a1907546", module.exports)
   }
 }
+
+/***/ }),
+/* 266 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = ({
+    debug: true,
+    state: {
+        datasets: []
+    },
+    addDatasetAction: function addDatasetAction(newDataset) {
+        if (this.debug) console.log('addDatasetAction triggered with', newDataset);
+        this.state.datasets.push(newDataset);
+    },
+    clearDatasetsAction: function clearDatasetsAction() {
+        if (this.debug) console.log('clearDatasetsAction triggered');
+        this.state.datasets = [''];
+    }
+});
 
 /***/ })
 /******/ ]);
