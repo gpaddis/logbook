@@ -1,6 +1,7 @@
 @extends('logbook.index')
 
 @section('tab-content')
+<year-view inline-template>
 <div class="col" v-cloak>
   <div class="row">
     <box-sum-sm value="{{ $openingDays or 0 }}">
@@ -20,8 +21,8 @@
 
     <div class="col-6 mb-2">
 
-      <selector-years :years-available={{ $yearsAvailable }}>
-      </selector-years>
+      <selector-year :years-available={{ $yearsAvailable }}>
+      </selector-year>
 
     </div>
   </div>
@@ -66,4 +67,5 @@
     </div>
   </div>
 </div>
+</year-view>
 @endsection

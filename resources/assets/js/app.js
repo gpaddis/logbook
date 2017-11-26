@@ -19,18 +19,15 @@ Vue.component('flash', require('./components/flash.vue'));
 // Livecounter
 Vue.component('category-cards', require('./components/livecounter/category-cards.vue'));
 
-// Charts & reports
-Vue.component('selector-years', require('./components/charts/SelectorYear.vue'));
-Vue.component('chart-month', require('./components/charts/chart-month.vue'));
-Vue.component('chart-categories', require('./components/charts/chart-categories.vue'));
-Vue.component('table-report', require('./components/table-report.vue'));
+// Logbook browse views
+Vue.component('year-view', require('./pages/Year.vue'));
 
 // Infoboxes
 Vue.component('box-sum-sm', require('./components/infoboxes/box-sum-sm.vue'));
 Vue.component('box-avg-sm', require('./components/infoboxes/box-avg-sm.vue'));
 Vue.component('box-generic-lg', require('./components/infoboxes/box-generic-lg.vue'));
 
-store = {
+let store = {
     debug: true,
     state: {
         datasets: []
