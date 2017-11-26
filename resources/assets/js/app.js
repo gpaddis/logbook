@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -13,17 +12,18 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+// Global components
 Vue.component('flash', require('./components/flash.vue'));
-
-// Livecounter
 Vue.component('category-cards', require('./components/livecounter/category-cards.vue'));
 
 // Logbook browse views
 Vue.component('year-view', require('./pages/Year.vue'));
 Vue.component('overview-view', require('./pages/Overview.vue'));
 
+// Import the global store (state management) object.
 import store from './store';
 
+// The Vue instance.
 const app = new Vue({
     el: '#app',
 
