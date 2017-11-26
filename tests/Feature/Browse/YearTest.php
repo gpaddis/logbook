@@ -16,7 +16,6 @@ class YearTest extends TestCase
 
         $this->get('/logbook/year')
         ->assertStatus(200)
-        ->assertSee('User statistics: ' . date('Y'))
         ->assertSee(auth()->user()->first_name);
     }
 
