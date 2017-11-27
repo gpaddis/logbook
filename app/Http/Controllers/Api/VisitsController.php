@@ -104,7 +104,8 @@ class VisitsController extends Controller
     }
 
     /**
-     * Validate the parameters passed to the routes.
+     * Validate the parameters passed to the routes by assembling the route
+     * parameters passed and checking if they form a valid date.
      *
      * @param int $year
      * @param int $month
@@ -113,20 +114,14 @@ class VisitsController extends Controller
      */
     protected function validateParameters($year, $month = null, $day = null)
     {
-        $data = ['year' => $year];
+        $formattedDate[] = $year;
+        $formattedDate[] = $month ?? '01';
+        $formattedDate[] = $day ?? '01';
 
-        if ($month) {
-            $data['month'] = $month;
-        }
-
-        if ($day) {
-            $data['day'] = $day;
-        }
+        $data['formattedDate'] = implode('-', $formattedDate);
 
         Validator::make($data, [
-            'year' => 'required_with:month|digits:4|max:' . date('Y'),
-            'month' => 'sometimes|required_with:day|numeric|min:1|max:12',
-            'day' => 'sometimes|numeric|min:1|max:31'
+            'formattedDate' => 'required|date|before:' . date('Y-m-d'),
         ])->validate();
     }
 }

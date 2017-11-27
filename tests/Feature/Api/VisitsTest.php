@@ -100,5 +100,8 @@ class VisitsTest extends TestCase
 
         $this->json('GET', '/api/visits/2014/  /12')
             ->assertStatus(422);
+
+        $this->json('GET', '/api/visits/2014/03/0')
+            ->assertStatus(422);
     }
 }
