@@ -20,10 +20,10 @@ class VisitsController extends Controller
     }
 
     /**
-     * Return structured information about the year's visits.
+     * Return the visits count for a specific year, grouped by month.
      *
      * @param int $year
-     * @return void
+     * @return array
      */
     public function year($year)
     {
@@ -49,7 +49,7 @@ class VisitsController extends Controller
      *
      * @param int $year
      * @param int $month
-     * @return void
+     * @return array
      */
     public function month($year, $month)
     {
@@ -78,7 +78,7 @@ class VisitsController extends Controller
      * @param int $year
      * @param int $month
      * @param int $day
-     * @return void
+     * @return array
      */
     public function day($year, $month, $day)
     {
@@ -121,7 +121,7 @@ class VisitsController extends Controller
         $data['formattedDate'] = implode('-', $formattedDate);
 
         Validator::make($data, [
-            'formattedDate' => 'required|date|before:' . date('Y-m-d'),
+            'formattedDate' => 'required|date|before:' . date('Y-m-d')
         ])->validate();
     }
 }
