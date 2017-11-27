@@ -14,6 +14,31 @@
             TableReport,
             BoxSumSm,
             BoxAvgSm
+        },
+
+        data() {
+            return {
+                datasets: []
             }
+        },
+
+        methods: {
+            fetch(year) {
+                axios.get('/api/visits/' + year)
+                .then(response => this.addDataset(response.data));
+            },
+
+            addDataset(data) {
+                let dataset = this.prepareDataset(data);
+                this.datasets.push(dataset);
+            },
+
+            prepareDataset(response) {
+                return {
+                    label: response.data.label,
+                    data: response.data.visits
+                }
+            }
+        }
     }
 </script>
