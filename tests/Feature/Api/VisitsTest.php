@@ -30,6 +30,7 @@ class VisitsTest extends TestCase
                     '1' => '28',
                     '2' => '28'
                 ],
+                'label' => 2010,
                 'period' => [
                     'year' => 2010
                 ],
@@ -48,6 +49,7 @@ class VisitsTest extends TestCase
                 'visits' => [
                     '13' => '28'
                 ],
+                'label' => 'February 2010',
                 'period' => [
                     'year' => 2010,
                     'month' => 02
@@ -68,6 +70,7 @@ class VisitsTest extends TestCase
                     '12' => '14',
                     '13' => '14',
                 ],
+                'label' => 'February 13, 2010',
                 'period' => [
                     'year' => 2010,
                     'month' => 02,

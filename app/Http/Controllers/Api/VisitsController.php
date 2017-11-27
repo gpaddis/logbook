@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\LogbookEntry;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class VisitsController extends Controller
 {
@@ -34,6 +35,7 @@ class VisitsController extends Controller
         return [
             'data' => [
                 'visits' => $visits,
+                'label' => $year,
                 'period' => [
                     'year' => $year
                 ],
@@ -60,6 +62,7 @@ class VisitsController extends Controller
         return [
             'data' => [
                 'visits' => $visits,
+                'label' => Carbon::create($year, $month, 1)->format('F Y'),
                 'period' => [
                     'year' => $year,
                     'month' => $month
@@ -89,6 +92,7 @@ class VisitsController extends Controller
         return [
             'data' => [
                 'visits' => $visits,
+                'label' => Carbon::create($year, $month, $day)->format('F j, Y'),
                 'period' => [
                     'year' => $year,
                     'month' => $month,
