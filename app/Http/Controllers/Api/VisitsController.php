@@ -68,7 +68,7 @@ class VisitsController extends Controller
                     'month' => $month
                 ],
                 'groupedBy' => 'day'
-            ],
+            ]
         ];
     }
 

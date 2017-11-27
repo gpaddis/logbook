@@ -23,6 +23,17 @@
         },
 
         methods: {
+            refreshDatasets(year) {
+                this.resetDatasets();
+
+                this.fetch(year);
+                this.fetch(year - 1);
+            },
+
+            resetDatasets() {
+                this.datasets = [];
+            },
+
             fetch(year) {
                 axios.get('/api/visits/' + year)
                 .then(response => this.addDataset(response.data));
@@ -37,7 +48,7 @@
                 return {
                     label: response.data.label,
                     data: response.data.visits
-                }
+                };
             }
         }
     }

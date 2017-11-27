@@ -64704,6 +64704,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
     methods: {
+        refreshDatasets: function refreshDatasets(year) {
+            this.resetDatasets();
+
+            this.fetch(year);
+            this.fetch(year - 1);
+        },
+        resetDatasets: function resetDatasets() {
+            this.datasets = [];
+        },
         fetch: function fetch(year) {
             var _this = this;
 
