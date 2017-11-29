@@ -257,10 +257,16 @@ class LogbookEntry extends Model
     public function scopeGroupVisitsByDay($builder)
     {
         return $builder
-            ->selectRaw('DAY(visited_at) as day, count(*) as visits')
-            ->groupBy('day')
+            ->selectRaw('DAY(visited_at) as day, patron_category_id, count(*) as visits')
+            ->with('patronCategory:id,name')
+            ->groupBy('patron_category_id', 'day')
             ->orderBy('day')
-            ->pluck('visits', 'day');
+            ->get()
+            ->map(function ($entry) {
+                return collect($entry->toArray())
+                ->only(['day', 'visits', 'patron_category'])
+                ->all();
+            });
     }
 
     /**
