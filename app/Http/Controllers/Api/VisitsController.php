@@ -30,7 +30,7 @@ class VisitsController extends Controller
         $this->validateParameters($year);
 
         $visits = LogbookEntry::year($year)
-            ->groupVisitsByMonth();
+            ->aggregateBy('month');
 
         return [
             'data' => [
@@ -57,7 +57,7 @@ class VisitsController extends Controller
 
         $visits = LogbookEntry::year($year)
             ->month($month)
-            ->groupVisitsByDay();
+            ->aggregateBy('day');
 
         return [
             'data' => [
@@ -87,7 +87,7 @@ class VisitsController extends Controller
         $visits = LogbookEntry::year($year)
             ->month($month)
             ->day($day)
-            ->groupVisitsByHour();
+            ->aggregateBy('hour');
 
         return [
             'data' => [

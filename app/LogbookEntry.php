@@ -234,55 +234,32 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Group the visits by month.
+     * Aggregate the entries according to the desired period (month, day, hour).
      *
      * @param Builder $builder
-     * @return Collection
+     * @param string $period
+     * @return array
      */
-    public function scopeGroupVisitsByMonth($builder)
+    public function scopeAggregateBy($builder, string $period)
     {
-        return $builder
-            ->selectRaw('MONTH(visited_at) as month, count(*) as visits')
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('visits', 'month');
-    }
+        $allowedPeriods = ['month', 'day', 'hour'];
 
-    /**
-     * Group the visits by day.
-     *
-     * @param Builder $builder
-     * @return Collection
-     */
-    public function scopeGroupVisitsByDay($builder)
-    {
+        if (!in_array($period, $allowedPeriods)) {
+            return [];
+        }
+
         $entries = $builder
-            ->selectRaw('DAY(visited_at) as day, patron_category_id, count(*) as visits')
+            ->selectRaw("{$period}(visited_at) as {$period}, patron_category_id, count(*) as visits")
             ->with('patronCategory:id,name')
-            ->groupBy('patron_category_id', 'day')
-            ->orderBy('day')
+            ->groupBy('patron_category_id', $period)
+            ->orderBy($period)
             ->get();
 
         $result = [];
         foreach ($entries as $entry) {
-            $result[$entry->day][$entry->patronCategory->name] = $entry->visits;
+            $result[$entry->$period][$entry->patronCategory->name] = $entry->visits;
         }
 
         return $result;
-    }
-
-    /**
-     * Group the visits by hour.
-     *
-     * @param Builder $builder
-     * @return Collection
-     */
-    public function scopeGroupVisitsByHour($builder)
-    {
-        return $builder
-            ->selectRaw('HOUR(visited_at) as hour, count(*) as visits')
-            ->groupBy('hour')
-            ->orderBy('hour')
-            ->pluck('visits', 'hour');
     }
 }
