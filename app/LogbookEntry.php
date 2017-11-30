@@ -256,17 +256,19 @@ class LogbookEntry extends Model
      */
     public function scopeGroupVisitsByDay($builder)
     {
-        return $builder
+        $entries = $builder
             ->selectRaw('DAY(visited_at) as day, patron_category_id, count(*) as visits')
             ->with('patronCategory:id,name')
             ->groupBy('patron_category_id', 'day')
             ->orderBy('day')
-            ->get()
-            ->map(function ($entry) {
-                return collect($entry->toArray())
-                ->only(['day', 'visits', 'patron_category'])
-                ->all();
-            });
+            ->get();
+
+        $result = [];
+        foreach ($entries as $entry) {
+            $result[$entry->day][$entry->patronCategory->name] = $entry->visits;
+        }
+
+        return $result;
     }
 
     /**
