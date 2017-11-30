@@ -85,6 +85,37 @@ class LogbookTest extends TestCase
     }
 
     /** @test */
+    public function it_gets_the_aggregate_values_by_time_unit()
+    {
+        $this->signIn();
+
+        list($category1, $category2) = factory('App\PatronCategory', 2)->create();
+
+        $entry1 = create('App\LogbookEntry', [
+            'patron_category_id' => $category1->id,
+            'visited_at' => '2017-02-13 10:01:02'
+        ], 10);
+
+        $entry2 = create('App\LogbookEntry', [
+            'patron_category_id' => $category2->id,
+            'visited_at' => '2017-02-13 17:01:02'
+        ], 5);
+
+        $entries = LogbookEntry::year(2017);
+
+        $this->assertTrue(array_key_exists(2, $entries->aggregateBy('month')));
+        $this->assertTrue(array_key_exists(13, $entries->aggregateBy('day')));
+        $this->assertTrue(array_key_exists(10, $entries->aggregateBy('hour')));
+        $this->assertTrue(array_key_exists(17, $entries->aggregateBy('hour')));
+
+        // The sum of all visits in February is equal to 15.
+        $this->assertEquals(15, array_sum($entries->aggregateBy('month')[2]));
+
+        // If there are no entries, expect an empty array.
+        $this->assertEquals([], LogbookEntry::year(1985)->aggregateBy('month'));
+    }
+
+    /** @test */
     public function it_returns_only_entries_within_a_specific_year()
     {
         create('App\LogbookEntry', [
