@@ -15,13 +15,14 @@
 </template>
 
 <script>
-    import {mapState, mapMutations} from 'vuex';
+    import {mapState, mapMutations, mapActions} from 'vuex';
 
     export default {
-        computed: mapState(['datasets']),
+        computed: mapState(['datasets', 'labels']),
 
         methods: {
-            ...mapMutations(['addDataset']),
+            ...mapActions(['addDataset']),
+            ...mapMutations(['clearDatasets'])
         } ,
         
         mounted() {
