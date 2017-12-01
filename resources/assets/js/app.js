@@ -22,6 +22,7 @@ Vue.component('overview-view', require('./pages/Overview.vue'));
 
 // Import the global store (state management) object.
 import store from './store';
+import Vuex from 'vuex';
 
 // The Vue instance.
 const app = new Vue({
