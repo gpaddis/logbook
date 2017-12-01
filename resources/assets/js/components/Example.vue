@@ -6,7 +6,7 @@
                     <div class="panel-heading">Example Component</div>
 
                     <div class="panel-body">
-                        I'm an example component!
+                        {{ datasets }}
                     </div>
                 </div>
             </div>
@@ -15,7 +15,15 @@
 </template>
 
 <script>
+    import {mapState, mapMutations} from 'vuex';
+
     export default {
+        computed: mapState(['datasets']),
+
+        methods: {
+            ...mapMutations(['addDataset']),
+        } ,
+        
         mounted() {
             console.log('Component mounted.')
         }
