@@ -107,4 +107,38 @@ class VisitsTest extends TestCase
         $this->json('GET', '/api/visits/2014/03/0')
             ->assertStatus(422);
     }
+
+    /** @test */
+    public function it_allows_for_custom_groupings()
+    {
+        $this->withExceptionHandling();
+
+        $this->json('GET', '/api/visits/2010?groupBy=month')
+        ->assertStatus(200)
+        ->assertJson([
+            'data' => [
+                'groupedBy' => 'month'
+            ]
+        ]);
+
+        $this->json('GET', '/api/visits/2010?groupBy=day')
+        ->assertStatus(200)
+        ->assertJson([
+            'data' => [
+                'groupedBy' => 'day'
+            ]
+        ]);
+
+        $this->json('GET', '/api/visits/2010?groupBy=hour')
+        ->assertStatus(200)
+        ->assertJson([
+            'data' => [
+                'groupedBy' => 'hour'
+            ]
+        ]);
+
+        // It validates the request
+        $this->json('GET', '/api/visits/2010?groupBy=minute')
+        ->assertStatus(422);
+    }
 }

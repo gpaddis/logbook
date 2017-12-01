@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use Carbon\Carbon;
 use App\LogbookEntry;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\VisitsRequest;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
 
 class VisitsController extends Controller
 {
@@ -22,15 +23,17 @@ class VisitsController extends Controller
     /**
      * Return the visits count for a specific year, grouped by month.
      *
+     * @param VisitsRequest $request
      * @param int $year
      * @return array
      */
-    public function year($year)
+    public function year(VisitsRequest $request, $year)
     {
         $this->validateParameters($year);
+        $period = $request->input('groupBy') ?? 'month';
 
         $visits = LogbookEntry::year($year)
-            ->aggregateBy('month');
+            ->aggregateBy($period);
 
         return [
             'data' => [
@@ -39,7 +42,7 @@ class VisitsController extends Controller
                 'period' => [
                     'year' => $year
                 ],
-                'groupedBy' => 'month'
+                'groupedBy' => $period
             ]
         ];
     }
@@ -47,17 +50,19 @@ class VisitsController extends Controller
     /**
      * Return the visits count for a specific month, grouped by day.
      *
+     * @param VisitsRequest $request
      * @param int $year
      * @param int $month
      * @return array
      */
-    public function month($year, $month)
+    public function month(VisitsRequest $request, $year, $month)
     {
         $this->validateParameters($year, $month);
+        $period = $request->input('groupBy') ?? 'day';
 
         $visits = LogbookEntry::year($year)
             ->month($month)
-            ->aggregateBy('day');
+            ->aggregateBy($period);
 
         return [
             'data' => [
@@ -67,7 +72,7 @@ class VisitsController extends Controller
                     'year' => $year,
                     'month' => $month
                 ],
-                'groupedBy' => 'day'
+                'groupedBy' => $period
             ]
         ];
     }
@@ -75,19 +80,21 @@ class VisitsController extends Controller
     /**
      * Return the visits count for a specific day, grouped by hour.
      *
+     * @param VisitsRequest $request
      * @param int $year
      * @param int $month
      * @param int $day
      * @return array
      */
-    public function day($year, $month, $day)
+    public function day(VisitsRequest $request, $year, $month, $day)
     {
         $this->validateParameters($year, $month, $day);
+        $period = $request->input('groupBy') ?? 'hour';
 
         $visits = LogbookEntry::year($year)
             ->month($month)
             ->day($day)
-            ->aggregateBy('hour');
+            ->aggregateBy($period);
 
         return [
             'data' => [
@@ -98,14 +105,14 @@ class VisitsController extends Controller
                     'month' => $month,
                     'day' => $day
                 ],
-                'groupedBy' => 'hour'
+                'groupedBy' => $period
             ]
         ];
     }
 
     /**
-     * Validate the parameters passed to the routes by assembling the route
-     * parameters passed and checking if they form a valid date.
+     * Validate the parameters passed to the routes by assembling them
+     * and checking if they form a valid date.
      *
      * @param int $year
      * @param int $month
