@@ -20,7 +20,10 @@
     export default {
         computed: {
             ...mapState(['rawDatasets']),
-            ...mapGetters(['totalVisits', 'groupedBy'])
+            ...mapGetters(['groupedBy']),
+            ...mapGetters({
+                datasets: 'totalVisits', 
+            })
         },
 
         mounted() {

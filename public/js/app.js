@@ -65316,7 +65316,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['rawDatasets']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'groupedBy'])),
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['rawDatasets']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['groupedBy']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        datasets: 'totalVisits'
+    })),
 
     mounted: function mounted() {
         var currentYear = new Date().getFullYear();
