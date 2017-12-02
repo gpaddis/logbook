@@ -20,16 +20,24 @@
     export default {
         computed: {
             ...mapState(['rawDatasets']),
-            ...mapGetters(['totalVisits'])
+            ...mapGetters(['totalVisits', 'groupedBy'])
+        },
+
+        mounted() {
+            let currentYear = new Date().getFullYear();
+            this.fetchDatasets(currentYear);
         },
 
         methods: {
             ...mapActions(['addDataset']),
-            ...mapMutations(['clearDatasets'])
-        } ,
-        
-        mounted() {
-            console.log('Component mounted.')
-        }
+            ...mapMutations(['clearDatasets']),
+
+            fetchDatasets(year) {
+                this.clearDatasets();
+
+                this.addDataset(year);
+                this.addDataset(year - 1);
+            }
+        } 
     }
 </script>

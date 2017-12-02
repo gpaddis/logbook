@@ -14,24 +14,33 @@ export default {
                 if (state.rawDatasets.hasOwnProperty(key)) {
                     let dataset = {};
 
-                    // Let's define the labels first
+                    // Let's define the labels first.
                     dataset['label'] = state.rawDatasets[key].data.label;
                     
+                    // Sum the visits for all categories and store them in the 'data' index.
                     let visits = [];
-                    for (const month in state.rawDatasets[key].data.visits) {
+                    for (let month in state.rawDatasets[key].data.visits) {
                         if (state.rawDatasets[key].data.visits.hasOwnProperty(month)) {
                             visits[month] = Object.values(state.rawDatasets[key].data.visits[month]).reduce((a, b) => a + b);
                         }
                     }
                     dataset['data'] = visits;
 
-                    // state.rawDatasets[key].data.visits;
                     totalVisits.push(dataset);
                 }
             }
             
             return totalVisits;  
-        } 
+        },
+
+        /**
+         * Get the time unit which the datasets are grouped by.
+         */
+        groupedBy: state => {
+            if (state.rawDatasets.hasOwnProperty(0)) {
+                return state.rawDatasets[0].data.groupedBy;
+            }
+        }
     },
 
     mutations: {

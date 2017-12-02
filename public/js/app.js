@@ -65316,13 +65316,22 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['rawDatasets']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits'])),
-
-    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])(['addDataset']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapMutations */])(['clearDatasets'])),
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['rawDatasets']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'groupedBy'])),
 
     mounted: function mounted() {
-        console.log('Component mounted.');
-    }
+        var currentYear = new Date().getFullYear();
+        this.fetchDatasets(currentYear);
+    },
+
+
+    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])(['addDataset']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapMutations */])(['clearDatasets']), {
+        fetchDatasets: function fetchDatasets(year) {
+            this.clearDatasets();
+
+            this.addDataset(year);
+            this.addDataset(year - 1);
+        }
+    })
 });
 
 /***/ }),
@@ -79870,9 +79879,10 @@ if (false) {
                 if (state.rawDatasets.hasOwnProperty(key)) {
                     var dataset = {};
 
-                    // Let's define the labels first
+                    // Let's define the labels first.
                     dataset['label'] = state.rawDatasets[key].data.label;
 
+                    // Sum the visits for all categories and store them in the 'data' index.
                     var visits = [];
                     for (var month in state.rawDatasets[key].data.visits) {
                         if (state.rawDatasets[key].data.visits.hasOwnProperty(month)) {
@@ -79883,12 +79893,20 @@ if (false) {
                     }
                     dataset['data'] = visits;
 
-                    // state.rawDatasets[key].data.visits;
                     totalVisits.push(dataset);
                 }
             }
 
             return totalVisits;
+        },
+
+        /**
+         * Get the time unit which the datasets are grouped by.
+         */
+        groupedBy: function groupedBy(state) {
+            if (state.rawDatasets.hasOwnProperty(0)) {
+                return state.rawDatasets[0].data.groupedBy;
+            }
         }
     },
 
