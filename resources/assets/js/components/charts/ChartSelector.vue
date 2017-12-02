@@ -28,25 +28,20 @@
             </div>
         </div>
 
-        <line-chart></line-chart>
+        <line-chart v-if="isLoaded"></line-chart>
     </div>
 </template>
 
 <script>
-    import {mapGetters, mapActions, mapMutations} from 'vuex';
-    import LineChart from './LineChart';
+    import {mapGetters, mapMutations} from 'vuex';
+    import LineChart from './LineChart.vue';
 
     export default {
         components: { LineChart },
 
         data() {
             return {
-                year: new Date().getFullYear(),
-
-                datacollection: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                    datasets: this.totalVisits
-                }
+                year: new Date().getFullYear()
             }
         },
 
@@ -59,15 +54,7 @@
         },
 
         methods: {
-            ...mapActions(['addDataset']),
-            ...mapMutations(['clearDatasets']),
-
-            /**
-             * Load the datasets in the data collection.
-             */
-            loadDatasets () {
-                this.datacollection.datasets = this.totalVisits;
-            },
+            ...mapMutations(['clearDatasets', 'pushDataset']),
 
             /**
              * Refresh the datasets in the store, loading the year passed
@@ -79,8 +66,18 @@
                 this.addDataset(year);
                 this.addDataset(year - 1);
 
-                this.loadDatasets();
+                this.updated = true;
+            },
+
+            /**
+             * Fetch a dataset for a given year and commit the mutation.
+             * 
+             * @param {*} year 
+             */
+            addDataset (year) {
+                axios.get('/api/visits/' + year)
+                    .then(response => this.pushDataset(response.data));
+                }
             }
-        },
     }
 </script>

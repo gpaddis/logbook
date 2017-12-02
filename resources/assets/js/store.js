@@ -9,28 +9,29 @@ export default {
          * selected. The datasets are formatted to be used with chart.js.
          */
         totalVisits: state => {
-            let totalVisits = [];
+            let datasets = [];
+
             for (let key in state.rawDatasets) {
                 if (state.rawDatasets.hasOwnProperty(key)) {
-                    let dataset = {};
+                    // Sum the visits
+                    let totals = [];
 
-                    // Let's define the labels first.
-                    dataset['label'] = state.rawDatasets[key].data.label;
-                    
-                    // Sum the visits for all categories and store them in the 'data' index.
-                    let visits = [];
-                    for (let month in state.rawDatasets[key].data.visits) {
-                        if (state.rawDatasets[key].data.visits.hasOwnProperty(month)) {
-                            visits[month] = Object.values(state.rawDatasets[key].data.visits[month]).reduce((a, b) => a + b);
+                    for (let unit in state.rawDatasets[key].data.visits) {
+                        if (state.rawDatasets[key].data.visits.hasOwnProperty(unit)) {
+                            totals[unit] = Object.values(state.rawDatasets[key].data.visits[unit])
+                                .reduce((a, b) => a + b);
                         }
                     }
-                    dataset['data'] = visits;
 
-                    totalVisits.push(dataset);
+                    datasets.push({
+                        data: totals,
+                        label: state.rawDatasets[key].data.label
+                    });
+
                 }
             }
-            
-            return totalVisits;  
+                
+            return datasets;  
         },
 
         /**
@@ -49,7 +50,8 @@ export default {
             if (state.rawDatasets !== null) {
                 return true;
             }
-
+            
+            console.log('not yet');
             return false;
         }
     },
@@ -72,19 +74,6 @@ export default {
          */
         clearDatasets (state) {
             state.rawDatasets = [];
-        }
-    },
-
-    actions: {
-        /**
-         * Fetch a dataset for a given year and commit the mutation.
-         * 
-         * @param {*} context 
-         * @param {*} year 
-         */
-        addDataset (context, year) {
-            axios.get('/api/visits/' + year)
-                .then(response => context.commit('pushDataset', response.data));
         }
     }
 };
