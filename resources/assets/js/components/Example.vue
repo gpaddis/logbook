@@ -6,7 +6,7 @@
                     <div class="panel-heading">Example Component</div>
 
                     <div class="panel-body">
-                        {{ datasets }}
+                        {{ rawDatasets }}
                     </div>
                 </div>
             </div>
@@ -15,10 +15,13 @@
 </template>
 
 <script>
-    import {mapState, mapMutations, mapActions} from 'vuex';
+    import {mapState, mapMutations, mapGetters, mapActions} from 'vuex';
 
     export default {
-        computed: mapState(['datasets', 'labels']),
+        computed: {
+            ...mapState(['rawDatasets']),
+            ...mapGetters(['totalVisits'])
+        },
 
         methods: {
             ...mapActions(['addDataset']),

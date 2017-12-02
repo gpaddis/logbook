@@ -1,38 +1,43 @@
 export default {
     state: {
-        datasets: [],
-        labels: []
+        rawDatasets: [],
     },
 
     getters: {
-        datasets: {
-            /**
-             * Foreach dataset in the state property "dataset"
-             * return the datasets in the format expected
-             * by chart.js.
-             * Change the name of state.datasets and relative calls.
-             */
-        }
+        totalVisits: state => {
+            let totalVisits = [];
+
+            for (let key in state.rawDatasets) {
+                if (state.rawDatasets.hasOwnProperty(key)) {
+                    let dataset = {};
+                    dataset['label'] = state.rawDatasets[key].data.label;
+                    dataset['data'] = state.rawDatasets[key].data.visits;
+                    totalVisits.push(dataset);
+                }
+            }
+            
+            return totalVisits;  
+        } 
     },
 
     mutations: {
         /**
-         * Add a dataset to the state once it has been retrieved.
+         * Push a dataset to the current state once it has been retrieved.
          * 
          * @param {*} state 
          * @param {*} dataset 
          */
-        addDataset (state, dataset) {
-            state.datasets.push(dataset);
+        pushDataset (state, dataset) {
+            state.rawDatasets.push(dataset);
         },
 
         /**
-         * Clear the datasets.
+         * Empty the raw datasets.
          * 
          * @param {*} state 
          */
         clearDatasets (state) {
-            state.datasets = [];
+            state.rawDatasets = [];
         }
     },
 
@@ -45,7 +50,7 @@ export default {
          */
         addDataset (context, year) {
             axios.get('/api/visits/' + year)
-                .then(response => context.commit('addDataset', response.data));
+                .then(response => context.commit('pushDataset', response.data));
         }
     }
 };
