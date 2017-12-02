@@ -79860,14 +79860,30 @@ if (false) {
     },
 
     getters: {
+        /**
+         * Get an array of datasets containing the total number of visits for the period
+         * selected. The datasets are formatted to be used with chart.js.
+         */
         totalVisits: function totalVisits(state) {
             var totalVisits = [];
-
             for (var key in state.rawDatasets) {
                 if (state.rawDatasets.hasOwnProperty(key)) {
                     var dataset = {};
+
+                    // Let's define the labels first
                     dataset['label'] = state.rawDatasets[key].data.label;
-                    dataset['data'] = state.rawDatasets[key].data.visits;
+
+                    var visits = [];
+                    for (var month in state.rawDatasets[key].data.visits) {
+                        if (state.rawDatasets[key].data.visits.hasOwnProperty(month)) {
+                            visits[month] = Object.values(state.rawDatasets[key].data.visits[month]).reduce(function (a, b) {
+                                return a + b;
+                            });
+                        }
+                    }
+                    dataset['data'] = visits;
+
+                    // state.rawDatasets[key].data.visits;
                     totalVisits.push(dataset);
                 }
             }

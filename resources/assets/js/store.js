@@ -4,14 +4,28 @@ export default {
     },
 
     getters: {
+        /**
+         * Get an array of datasets containing the total number of visits for the period
+         * selected. The datasets are formatted to be used with chart.js.
+         */
         totalVisits: state => {
             let totalVisits = [];
-
             for (let key in state.rawDatasets) {
                 if (state.rawDatasets.hasOwnProperty(key)) {
                     let dataset = {};
+
+                    // Let's define the labels first
                     dataset['label'] = state.rawDatasets[key].data.label;
-                    dataset['data'] = state.rawDatasets[key].data.visits;
+                    
+                    let visits = [];
+                    for (const month in state.rawDatasets[key].data.visits) {
+                        if (state.rawDatasets[key].data.visits.hasOwnProperty(month)) {
+                            visits[month] = Object.values(state.rawDatasets[key].data.visits[month]).reduce((a, b) => a + b);
+                        }
+                    }
+                    dataset['data'] = visits;
+
+                    // state.rawDatasets[key].data.visits;
                     totalVisits.push(dataset);
                 }
             }
