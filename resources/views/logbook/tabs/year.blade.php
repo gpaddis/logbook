@@ -1,7 +1,8 @@
 @extends('logbook.index')
 
 @section('tab-content')
-<example></example>
+{{-- <example></example> --}}
+<chart-selector></chart-selector>
 {{--  <year-view inline-template>
 <div class="col" v-cloak>
   <div class="row">

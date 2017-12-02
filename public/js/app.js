@@ -29867,6 +29867,9 @@ Vue.component('category-cards', __webpack_require__(178));
 Vue.component('year-view', __webpack_require__(184));
 Vue.component('overview-view', __webpack_require__(250));
 
+// Line chart (testing)
+Vue.component('chart-selector', __webpack_require__(287));
+
 // Import the global store (state management) object.
 
 Vue.use(__WEBPACK_IMPORTED_MODULE_0_vuex__["a" /* default */]);
@@ -65308,10 +65311,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
-//
-//
-//
 
 
 
@@ -65344,22 +65343,12 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-8 col-md-offset-2" }, [
-        _c("div", { staticClass: "panel panel-default" }, [
-          _c("div", { staticClass: "panel-heading" }, [
-            _vm._v("Example Component")
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "panel-body" }, [
-            _vm._v(
-              "\n                    " +
-                _vm._s(_vm.rawDatasets) +
-                "\n                "
-            )
-          ])
-        ])
+  return _c("div", { staticClass: "col" }, [
+    _c("div", { staticClass: "card" }, [
+      _c("p", [_vm._v("Example Component")]),
+      _vm._v(" "),
+      _c("div", [
+        _vm._v("\n            " + _vm._s(_vm.rawDatasets) + "\n        ")
       ])
     ])
   ])
@@ -79909,6 +79898,17 @@ if (false) {
             if (state.rawDatasets.hasOwnProperty(0)) {
                 return state.rawDatasets[0].data.groupedBy;
             }
+        },
+
+        /**
+         * Check if the data was loaded.
+         */
+        isLoaded: function isLoaded(state) {
+            if (state.rawDatasets.hasOwnProperty(0)) {
+                return true;
+            }
+
+            return false;
         }
     },
 
@@ -79954,6 +79954,263 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 257 */,
+/* 258 */,
+/* 259 */,
+/* 260 */,
+/* 261 */,
+/* 262 */,
+/* 263 */,
+/* 264 */,
+/* 265 */,
+/* 266 */,
+/* 267 */,
+/* 268 */,
+/* 269 */,
+/* 270 */,
+/* 271 */,
+/* 272 */,
+/* 273 */,
+/* 274 */,
+/* 275 */,
+/* 276 */,
+/* 277 */,
+/* 278 */,
+/* 279 */,
+/* 280 */,
+/* 281 */,
+/* 282 */,
+/* 283 */,
+/* 284 */,
+/* 285 */,
+/* 286 */,
+/* 287 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(288)
+/* template */
+var __vue_template__ = __webpack_require__(289)
+/* template functional */
+  var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/charts/ChartSelector.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-64491690", Component.options)
+  } else {
+    hotAPI.reload("data-v-64491690", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 288 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(19);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            year: new Date().getFullYear()
+        };
+    },
+
+
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'groupedBy'])),
+
+    mounted: function mounted() {
+        this.refreshDatasets(this.year);
+    },
+
+
+    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])(['addDataset']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapMutations */])(['clearDatasets']), {
+
+        /**
+         * Refresh the datasets in the store, loading the year passed
+         * and the previous year.
+         */
+        refreshDatasets: function refreshDatasets(year) {
+            this.clearDatasets();
+
+            this.addDataset(year);
+            this.addDataset(year - 1);
+        }
+    })
+});
+
+/***/ }),
+/* 289 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "col" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "card-body" }, [
+      _c("h4", { staticClass: "card-title" }, [_vm._v("Load new datasets")]),
+      _vm._v(" "),
+      _c("p", { staticClass: "card-text" }, [
+        _vm._v("Click on the button to load new datasets.")
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "input-group" }, [
+        _c("span", { staticClass: "input-group-btn" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary",
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  _vm.refreshDatasets(_vm.year)
+                }
+              }
+            },
+            [_vm._v("Load")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.year,
+              expression: "year"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: {
+            type: "text",
+            placeholder: "Type in a year",
+            "aria-label": "Search for..."
+          },
+          domProps: { value: _vm.year },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.year = $event.target.value
+            }
+          }
+        })
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card" }, [
+      _c("div", { staticClass: "card-header" }, [
+        _c("ul", { staticClass: "nav nav-pills card-header-pills" }, [
+          _c("li", { staticClass: "nav-item" }, [
+            _c("a", { staticClass: "nav-link active", attrs: { href: "#" } }, [
+              _vm._v("Active")
+            ])
+          ]),
+          _vm._v(" "),
+          _c("li", { staticClass: "nav-item" }, [
+            _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
+              _vm._v("Link")
+            ])
+          ]),
+          _vm._v(" "),
+          _c("li", { staticClass: "nav-item" }, [
+            _c(
+              "a",
+              { staticClass: "nav-link disabled", attrs: { href: "#" } },
+              [_vm._v("Disabled")]
+            )
+          ])
+        ])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-64491690", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

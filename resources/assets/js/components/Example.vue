@@ -1,17 +1,13 @@
 <template>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Example Component</div>
+        <div class="col">
+            <div class="card">
+                <p>Example Component</p>
 
-                    <div class="panel-body">
-                        {{ rawDatasets }}
-                    </div>
+                <div>
+                    {{ rawDatasets }}
                 </div>
             </div>
         </div>
-    </div>
 </template>
 
 <script>

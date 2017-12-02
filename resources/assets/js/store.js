@@ -1,6 +1,6 @@
 export default {
     state: {
-        rawDatasets: [],
+        rawDatasets: []
     },
 
     getters: {
@@ -40,6 +40,17 @@ export default {
             if (state.rawDatasets.hasOwnProperty(0)) {
                 return state.rawDatasets[0].data.groupedBy;
             }
+        },
+
+        /**
+         * Check if the data was loaded.
+         */
+        isLoaded: state => {
+            if (state.rawDatasets.hasOwnProperty(0)) {
+                return true;
+            }
+
+            return false;
         }
     },
 

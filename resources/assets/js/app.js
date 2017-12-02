@@ -21,6 +21,9 @@ Vue.component('category-cards', require('./components/livecounter/category-cards
 Vue.component('year-view', require('./pages/Year.vue'));
 Vue.component('overview-view', require('./pages/Overview.vue'));
 
+// Line chart (testing)
+Vue.component('chart-selector', require('./components/charts/ChartSelector.vue'));
+
 // Import the global store (state management) object.
 import Vuex from 'vuex';
 Vue.use(Vuex);
