@@ -27,21 +27,31 @@
                 <input type="text" class="form-control" placeholder="Type in a year" aria-label="Search for..." v-model="year">
             </div>
         </div>
+
+        <line-chart></line-chart>
     </div>
 </template>
 
 <script>
     import {mapGetters, mapActions, mapMutations} from 'vuex';
+    import LineChart from './LineChart';
 
     export default {
+        components: { LineChart },
+
         data() {
             return {
-                year: new Date().getFullYear()
+                year: new Date().getFullYear(),
+
+                datacollection: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: this.totalVisits
+                }
             }
         },
 
         computed: {
-            ...mapGetters(['totalVisits', 'groupedBy'])
+            ...mapGetters(['totalVisits', 'groupedBy', 'isLoaded'])
         },
 
         mounted() {
@@ -53,14 +63,23 @@
             ...mapMutations(['clearDatasets']),
 
             /**
+             * Load the datasets in the data collection.
+             */
+            loadDatasets () {
+                this.datacollection.datasets = this.totalVisits;
+            },
+
+            /**
              * Refresh the datasets in the store, loading the year passed
-             * and the previous year.
+             * and the previous year, then update the properties.
              */
             refreshDatasets(year) {
                 this.clearDatasets();
 
                 this.addDataset(year);
                 this.addDataset(year - 1);
+
+                this.loadDatasets();
             }
         },
     }

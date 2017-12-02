@@ -1,6 +1,6 @@
 export default {
     state: {
-        rawDatasets: []
+        rawDatasets: null
     },
 
     getters: {
@@ -46,7 +46,7 @@ export default {
          * Check if the data was loaded.
          */
         isLoaded: state => {
-            if (state.rawDatasets.hasOwnProperty(0)) {
+            if (state.rawDatasets !== null) {
                 return true;
             }
 
