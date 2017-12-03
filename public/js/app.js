@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 138);
+/******/ 	return __webpack_require__(__webpack_require__.s = 140);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1896,7 +1896,7 @@ function loadLocale(name) {
             module && module.exports) {
         try {
             oldLocale = globalLocale._abbr;
-            __webpack_require__(215)("./" + name);
+            __webpack_require__(221)("./" + name);
             // because defineLocale currently also sets the global locale, we
             // want to undo that for lazy loaded locales
             getSetGlobalLocale(oldLocale);
@@ -4531,7 +4531,7 @@ return hooks;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)(module)))
 
 /***/ }),
 /* 1 */
@@ -4540,10 +4540,10 @@ return hooks;
 "use strict";
 
 
-module.exports = __webpack_require__(9);
-module.exports.easing = __webpack_require__(187);
-module.exports.canvas = __webpack_require__(188);
-module.exports.options = __webpack_require__(189);
+module.exports = __webpack_require__(10);
+module.exports.easing = __webpack_require__(193);
+module.exports.canvas = __webpack_require__(194);
+module.exports.options = __webpack_require__(195);
 
 
 /***/ }),
@@ -4567,13 +4567,122 @@ module.exports = {
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports) {
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file.
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var bind = __webpack_require__(14);
-var isBuffer = __webpack_require__(149);
+var bind = __webpack_require__(15);
+var isBuffer = __webpack_require__(151);
 
 /*global toString:true*/
 
@@ -4876,13 +4985,13 @@ module.exports = {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var color = __webpack_require__(20);
+var color = __webpack_require__(22);
 var helpers = __webpack_require__(1);
 
 function interpolate(start, view, model, ease) {
@@ -4998,115 +5107,6 @@ module.exports = Element;
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file.
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
-    }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5114,10 +5114,10 @@ module.exports = function normalizeComponent (
 
 
 module.exports = {};
-module.exports.Arc = __webpack_require__(195);
-module.exports.Line = __webpack_require__(196);
-module.exports.Point = __webpack_require__(197);
-module.exports.Rectangle = __webpack_require__(198);
+module.exports.Arc = __webpack_require__(201);
+module.exports.Line = __webpack_require__(202);
+module.exports.Point = __webpack_require__(203);
+module.exports.Rectangle = __webpack_require__(204);
 
 
 /***/ }),
@@ -5360,6 +5360,951 @@ module.exports = g;
 
 /***/ }),
 /* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export Store */
+/* unused harmony export install */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return mapState; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return mapMutations; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return mapGetters; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return mapActions; });
+/* unused harmony export createNamespacedHelpers */
+/**
+ * vuex v3.0.1
+ * (c) 2017 Evan You
+ * @license MIT
+ */
+var applyMixin = function (Vue) {
+  var version = Number(Vue.version.split('.')[0]);
+
+  if (version >= 2) {
+    Vue.mixin({ beforeCreate: vuexInit });
+  } else {
+    // override init and inject vuex init procedure
+    // for 1.x backwards compatibility.
+    var _init = Vue.prototype._init;
+    Vue.prototype._init = function (options) {
+      if ( options === void 0 ) options = {};
+
+      options.init = options.init
+        ? [vuexInit].concat(options.init)
+        : vuexInit;
+      _init.call(this, options);
+    };
+  }
+
+  /**
+   * Vuex init hook, injected into each instances init hooks list.
+   */
+
+  function vuexInit () {
+    var options = this.$options;
+    // store injection
+    if (options.store) {
+      this.$store = typeof options.store === 'function'
+        ? options.store()
+        : options.store;
+    } else if (options.parent && options.parent.$store) {
+      this.$store = options.parent.$store;
+    }
+  }
+};
+
+var devtoolHook =
+  typeof window !== 'undefined' &&
+  window.__VUE_DEVTOOLS_GLOBAL_HOOK__;
+
+function devtoolPlugin (store) {
+  if (!devtoolHook) { return }
+
+  store._devtoolHook = devtoolHook;
+
+  devtoolHook.emit('vuex:init', store);
+
+  devtoolHook.on('vuex:travel-to-state', function (targetState) {
+    store.replaceState(targetState);
+  });
+
+  store.subscribe(function (mutation, state) {
+    devtoolHook.emit('vuex:mutation', mutation, state);
+  });
+}
+
+/**
+ * Get the first item that pass the test
+ * by second argument function
+ *
+ * @param {Array} list
+ * @param {Function} f
+ * @return {*}
+ */
+/**
+ * Deep copy the given object considering circular structure.
+ * This function caches all nested objects and its copies.
+ * If it detects circular structure, use cached copy to avoid infinite loop.
+ *
+ * @param {*} obj
+ * @param {Array<Object>} cache
+ * @return {*}
+ */
+
+
+/**
+ * forEach for object
+ */
+function forEachValue (obj, fn) {
+  Object.keys(obj).forEach(function (key) { return fn(obj[key], key); });
+}
+
+function isObject (obj) {
+  return obj !== null && typeof obj === 'object'
+}
+
+function isPromise (val) {
+  return val && typeof val.then === 'function'
+}
+
+function assert (condition, msg) {
+  if (!condition) { throw new Error(("[vuex] " + msg)) }
+}
+
+var Module = function Module (rawModule, runtime) {
+  this.runtime = runtime;
+  this._children = Object.create(null);
+  this._rawModule = rawModule;
+  var rawState = rawModule.state;
+  this.state = (typeof rawState === 'function' ? rawState() : rawState) || {};
+};
+
+var prototypeAccessors$1 = { namespaced: { configurable: true } };
+
+prototypeAccessors$1.namespaced.get = function () {
+  return !!this._rawModule.namespaced
+};
+
+Module.prototype.addChild = function addChild (key, module) {
+  this._children[key] = module;
+};
+
+Module.prototype.removeChild = function removeChild (key) {
+  delete this._children[key];
+};
+
+Module.prototype.getChild = function getChild (key) {
+  return this._children[key]
+};
+
+Module.prototype.update = function update (rawModule) {
+  this._rawModule.namespaced = rawModule.namespaced;
+  if (rawModule.actions) {
+    this._rawModule.actions = rawModule.actions;
+  }
+  if (rawModule.mutations) {
+    this._rawModule.mutations = rawModule.mutations;
+  }
+  if (rawModule.getters) {
+    this._rawModule.getters = rawModule.getters;
+  }
+};
+
+Module.prototype.forEachChild = function forEachChild (fn) {
+  forEachValue(this._children, fn);
+};
+
+Module.prototype.forEachGetter = function forEachGetter (fn) {
+  if (this._rawModule.getters) {
+    forEachValue(this._rawModule.getters, fn);
+  }
+};
+
+Module.prototype.forEachAction = function forEachAction (fn) {
+  if (this._rawModule.actions) {
+    forEachValue(this._rawModule.actions, fn);
+  }
+};
+
+Module.prototype.forEachMutation = function forEachMutation (fn) {
+  if (this._rawModule.mutations) {
+    forEachValue(this._rawModule.mutations, fn);
+  }
+};
+
+Object.defineProperties( Module.prototype, prototypeAccessors$1 );
+
+var ModuleCollection = function ModuleCollection (rawRootModule) {
+  // register root module (Vuex.Store options)
+  this.register([], rawRootModule, false);
+};
+
+ModuleCollection.prototype.get = function get (path) {
+  return path.reduce(function (module, key) {
+    return module.getChild(key)
+  }, this.root)
+};
+
+ModuleCollection.prototype.getNamespace = function getNamespace (path) {
+  var module = this.root;
+  return path.reduce(function (namespace, key) {
+    module = module.getChild(key);
+    return namespace + (module.namespaced ? key + '/' : '')
+  }, '')
+};
+
+ModuleCollection.prototype.update = function update$1 (rawRootModule) {
+  update([], this.root, rawRootModule);
+};
+
+ModuleCollection.prototype.register = function register (path, rawModule, runtime) {
+    var this$1 = this;
+    if ( runtime === void 0 ) runtime = true;
+
+  if (true) {
+    assertRawModule(path, rawModule);
+  }
+
+  var newModule = new Module(rawModule, runtime);
+  if (path.length === 0) {
+    this.root = newModule;
+  } else {
+    var parent = this.get(path.slice(0, -1));
+    parent.addChild(path[path.length - 1], newModule);
+  }
+
+  // register nested modules
+  if (rawModule.modules) {
+    forEachValue(rawModule.modules, function (rawChildModule, key) {
+      this$1.register(path.concat(key), rawChildModule, runtime);
+    });
+  }
+};
+
+ModuleCollection.prototype.unregister = function unregister (path) {
+  var parent = this.get(path.slice(0, -1));
+  var key = path[path.length - 1];
+  if (!parent.getChild(key).runtime) { return }
+
+  parent.removeChild(key);
+};
+
+function update (path, targetModule, newModule) {
+  if (true) {
+    assertRawModule(path, newModule);
+  }
+
+  // update target module
+  targetModule.update(newModule);
+
+  // update nested modules
+  if (newModule.modules) {
+    for (var key in newModule.modules) {
+      if (!targetModule.getChild(key)) {
+        if (true) {
+          console.warn(
+            "[vuex] trying to add a new module '" + key + "' on hot reloading, " +
+            'manual reload is needed'
+          );
+        }
+        return
+      }
+      update(
+        path.concat(key),
+        targetModule.getChild(key),
+        newModule.modules[key]
+      );
+    }
+  }
+}
+
+var functionAssert = {
+  assert: function (value) { return typeof value === 'function'; },
+  expected: 'function'
+};
+
+var objectAssert = {
+  assert: function (value) { return typeof value === 'function' ||
+    (typeof value === 'object' && typeof value.handler === 'function'); },
+  expected: 'function or object with "handler" function'
+};
+
+var assertTypes = {
+  getters: functionAssert,
+  mutations: functionAssert,
+  actions: objectAssert
+};
+
+function assertRawModule (path, rawModule) {
+  Object.keys(assertTypes).forEach(function (key) {
+    if (!rawModule[key]) { return }
+
+    var assertOptions = assertTypes[key];
+
+    forEachValue(rawModule[key], function (value, type) {
+      assert(
+        assertOptions.assert(value),
+        makeAssertionMessage(path, key, type, value, assertOptions.expected)
+      );
+    });
+  });
+}
+
+function makeAssertionMessage (path, key, type, value, expected) {
+  var buf = key + " should be " + expected + " but \"" + key + "." + type + "\"";
+  if (path.length > 0) {
+    buf += " in module \"" + (path.join('.')) + "\"";
+  }
+  buf += " is " + (JSON.stringify(value)) + ".";
+  return buf
+}
+
+var Vue; // bind on install
+
+var Store = function Store (options) {
+  var this$1 = this;
+  if ( options === void 0 ) options = {};
+
+  // Auto install if it is not done yet and `window` has `Vue`.
+  // To allow users to avoid auto-installation in some cases,
+  // this code should be placed here. See #731
+  if (!Vue && typeof window !== 'undefined' && window.Vue) {
+    install(window.Vue);
+  }
+
+  if (true) {
+    assert(Vue, "must call Vue.use(Vuex) before creating a store instance.");
+    assert(typeof Promise !== 'undefined', "vuex requires a Promise polyfill in this browser.");
+    assert(this instanceof Store, "Store must be called with the new operator.");
+  }
+
+  var plugins = options.plugins; if ( plugins === void 0 ) plugins = [];
+  var strict = options.strict; if ( strict === void 0 ) strict = false;
+
+  var state = options.state; if ( state === void 0 ) state = {};
+  if (typeof state === 'function') {
+    state = state() || {};
+  }
+
+  // store internal state
+  this._committing = false;
+  this._actions = Object.create(null);
+  this._actionSubscribers = [];
+  this._mutations = Object.create(null);
+  this._wrappedGetters = Object.create(null);
+  this._modules = new ModuleCollection(options);
+  this._modulesNamespaceMap = Object.create(null);
+  this._subscribers = [];
+  this._watcherVM = new Vue();
+
+  // bind commit and dispatch to self
+  var store = this;
+  var ref = this;
+  var dispatch = ref.dispatch;
+  var commit = ref.commit;
+  this.dispatch = function boundDispatch (type, payload) {
+    return dispatch.call(store, type, payload)
+  };
+  this.commit = function boundCommit (type, payload, options) {
+    return commit.call(store, type, payload, options)
+  };
+
+  // strict mode
+  this.strict = strict;
+
+  // init root module.
+  // this also recursively registers all sub-modules
+  // and collects all module getters inside this._wrappedGetters
+  installModule(this, state, [], this._modules.root);
+
+  // initialize the store vm, which is responsible for the reactivity
+  // (also registers _wrappedGetters as computed properties)
+  resetStoreVM(this, state);
+
+  // apply plugins
+  plugins.forEach(function (plugin) { return plugin(this$1); });
+
+  if (Vue.config.devtools) {
+    devtoolPlugin(this);
+  }
+};
+
+var prototypeAccessors = { state: { configurable: true } };
+
+prototypeAccessors.state.get = function () {
+  return this._vm._data.$$state
+};
+
+prototypeAccessors.state.set = function (v) {
+  if (true) {
+    assert(false, "Use store.replaceState() to explicit replace store state.");
+  }
+};
+
+Store.prototype.commit = function commit (_type, _payload, _options) {
+    var this$1 = this;
+
+  // check object-style commit
+  var ref = unifyObjectStyle(_type, _payload, _options);
+    var type = ref.type;
+    var payload = ref.payload;
+    var options = ref.options;
+
+  var mutation = { type: type, payload: payload };
+  var entry = this._mutations[type];
+  if (!entry) {
+    if (true) {
+      console.error(("[vuex] unknown mutation type: " + type));
+    }
+    return
+  }
+  this._withCommit(function () {
+    entry.forEach(function commitIterator (handler) {
+      handler(payload);
+    });
+  });
+  this._subscribers.forEach(function (sub) { return sub(mutation, this$1.state); });
+
+  if (
+    "development" !== 'production' &&
+    options && options.silent
+  ) {
+    console.warn(
+      "[vuex] mutation type: " + type + ". Silent option has been removed. " +
+      'Use the filter functionality in the vue-devtools'
+    );
+  }
+};
+
+Store.prototype.dispatch = function dispatch (_type, _payload) {
+    var this$1 = this;
+
+  // check object-style dispatch
+  var ref = unifyObjectStyle(_type, _payload);
+    var type = ref.type;
+    var payload = ref.payload;
+
+  var action = { type: type, payload: payload };
+  var entry = this._actions[type];
+  if (!entry) {
+    if (true) {
+      console.error(("[vuex] unknown action type: " + type));
+    }
+    return
+  }
+
+  this._actionSubscribers.forEach(function (sub) { return sub(action, this$1.state); });
+
+  return entry.length > 1
+    ? Promise.all(entry.map(function (handler) { return handler(payload); }))
+    : entry[0](payload)
+};
+
+Store.prototype.subscribe = function subscribe (fn) {
+  return genericSubscribe(fn, this._subscribers)
+};
+
+Store.prototype.subscribeAction = function subscribeAction (fn) {
+  return genericSubscribe(fn, this._actionSubscribers)
+};
+
+Store.prototype.watch = function watch (getter, cb, options) {
+    var this$1 = this;
+
+  if (true) {
+    assert(typeof getter === 'function', "store.watch only accepts a function.");
+  }
+  return this._watcherVM.$watch(function () { return getter(this$1.state, this$1.getters); }, cb, options)
+};
+
+Store.prototype.replaceState = function replaceState (state) {
+    var this$1 = this;
+
+  this._withCommit(function () {
+    this$1._vm._data.$$state = state;
+  });
+};
+
+Store.prototype.registerModule = function registerModule (path, rawModule, options) {
+    if ( options === void 0 ) options = {};
+
+  if (typeof path === 'string') { path = [path]; }
+
+  if (true) {
+    assert(Array.isArray(path), "module path must be a string or an Array.");
+    assert(path.length > 0, 'cannot register the root module by using registerModule.');
+  }
+
+  this._modules.register(path, rawModule);
+  installModule(this, this.state, path, this._modules.get(path), options.preserveState);
+  // reset store to update getters...
+  resetStoreVM(this, this.state);
+};
+
+Store.prototype.unregisterModule = function unregisterModule (path) {
+    var this$1 = this;
+
+  if (typeof path === 'string') { path = [path]; }
+
+  if (true) {
+    assert(Array.isArray(path), "module path must be a string or an Array.");
+  }
+
+  this._modules.unregister(path);
+  this._withCommit(function () {
+    var parentState = getNestedState(this$1.state, path.slice(0, -1));
+    Vue.delete(parentState, path[path.length - 1]);
+  });
+  resetStore(this);
+};
+
+Store.prototype.hotUpdate = function hotUpdate (newOptions) {
+  this._modules.update(newOptions);
+  resetStore(this, true);
+};
+
+Store.prototype._withCommit = function _withCommit (fn) {
+  var committing = this._committing;
+  this._committing = true;
+  fn();
+  this._committing = committing;
+};
+
+Object.defineProperties( Store.prototype, prototypeAccessors );
+
+function genericSubscribe (fn, subs) {
+  if (subs.indexOf(fn) < 0) {
+    subs.push(fn);
+  }
+  return function () {
+    var i = subs.indexOf(fn);
+    if (i > -1) {
+      subs.splice(i, 1);
+    }
+  }
+}
+
+function resetStore (store, hot) {
+  store._actions = Object.create(null);
+  store._mutations = Object.create(null);
+  store._wrappedGetters = Object.create(null);
+  store._modulesNamespaceMap = Object.create(null);
+  var state = store.state;
+  // init all modules
+  installModule(store, state, [], store._modules.root, true);
+  // reset vm
+  resetStoreVM(store, state, hot);
+}
+
+function resetStoreVM (store, state, hot) {
+  var oldVm = store._vm;
+
+  // bind store public getters
+  store.getters = {};
+  var wrappedGetters = store._wrappedGetters;
+  var computed = {};
+  forEachValue(wrappedGetters, function (fn, key) {
+    // use computed to leverage its lazy-caching mechanism
+    computed[key] = function () { return fn(store); };
+    Object.defineProperty(store.getters, key, {
+      get: function () { return store._vm[key]; },
+      enumerable: true // for local getters
+    });
+  });
+
+  // use a Vue instance to store the state tree
+  // suppress warnings just in case the user has added
+  // some funky global mixins
+  var silent = Vue.config.silent;
+  Vue.config.silent = true;
+  store._vm = new Vue({
+    data: {
+      $$state: state
+    },
+    computed: computed
+  });
+  Vue.config.silent = silent;
+
+  // enable strict mode for new vm
+  if (store.strict) {
+    enableStrictMode(store);
+  }
+
+  if (oldVm) {
+    if (hot) {
+      // dispatch changes in all subscribed watchers
+      // to force getter re-evaluation for hot reloading.
+      store._withCommit(function () {
+        oldVm._data.$$state = null;
+      });
+    }
+    Vue.nextTick(function () { return oldVm.$destroy(); });
+  }
+}
+
+function installModule (store, rootState, path, module, hot) {
+  var isRoot = !path.length;
+  var namespace = store._modules.getNamespace(path);
+
+  // register in namespace map
+  if (module.namespaced) {
+    store._modulesNamespaceMap[namespace] = module;
+  }
+
+  // set state
+  if (!isRoot && !hot) {
+    var parentState = getNestedState(rootState, path.slice(0, -1));
+    var moduleName = path[path.length - 1];
+    store._withCommit(function () {
+      Vue.set(parentState, moduleName, module.state);
+    });
+  }
+
+  var local = module.context = makeLocalContext(store, namespace, path);
+
+  module.forEachMutation(function (mutation, key) {
+    var namespacedType = namespace + key;
+    registerMutation(store, namespacedType, mutation, local);
+  });
+
+  module.forEachAction(function (action, key) {
+    var type = action.root ? key : namespace + key;
+    var handler = action.handler || action;
+    registerAction(store, type, handler, local);
+  });
+
+  module.forEachGetter(function (getter, key) {
+    var namespacedType = namespace + key;
+    registerGetter(store, namespacedType, getter, local);
+  });
+
+  module.forEachChild(function (child, key) {
+    installModule(store, rootState, path.concat(key), child, hot);
+  });
+}
+
+/**
+ * make localized dispatch, commit, getters and state
+ * if there is no namespace, just use root ones
+ */
+function makeLocalContext (store, namespace, path) {
+  var noNamespace = namespace === '';
+
+  var local = {
+    dispatch: noNamespace ? store.dispatch : function (_type, _payload, _options) {
+      var args = unifyObjectStyle(_type, _payload, _options);
+      var payload = args.payload;
+      var options = args.options;
+      var type = args.type;
+
+      if (!options || !options.root) {
+        type = namespace + type;
+        if ("development" !== 'production' && !store._actions[type]) {
+          console.error(("[vuex] unknown local action type: " + (args.type) + ", global type: " + type));
+          return
+        }
+      }
+
+      return store.dispatch(type, payload)
+    },
+
+    commit: noNamespace ? store.commit : function (_type, _payload, _options) {
+      var args = unifyObjectStyle(_type, _payload, _options);
+      var payload = args.payload;
+      var options = args.options;
+      var type = args.type;
+
+      if (!options || !options.root) {
+        type = namespace + type;
+        if ("development" !== 'production' && !store._mutations[type]) {
+          console.error(("[vuex] unknown local mutation type: " + (args.type) + ", global type: " + type));
+          return
+        }
+      }
+
+      store.commit(type, payload, options);
+    }
+  };
+
+  // getters and state object must be gotten lazily
+  // because they will be changed by vm update
+  Object.defineProperties(local, {
+    getters: {
+      get: noNamespace
+        ? function () { return store.getters; }
+        : function () { return makeLocalGetters(store, namespace); }
+    },
+    state: {
+      get: function () { return getNestedState(store.state, path); }
+    }
+  });
+
+  return local
+}
+
+function makeLocalGetters (store, namespace) {
+  var gettersProxy = {};
+
+  var splitPos = namespace.length;
+  Object.keys(store.getters).forEach(function (type) {
+    // skip if the target getter is not match this namespace
+    if (type.slice(0, splitPos) !== namespace) { return }
+
+    // extract local getter type
+    var localType = type.slice(splitPos);
+
+    // Add a port to the getters proxy.
+    // Define as getter property because
+    // we do not want to evaluate the getters in this time.
+    Object.defineProperty(gettersProxy, localType, {
+      get: function () { return store.getters[type]; },
+      enumerable: true
+    });
+  });
+
+  return gettersProxy
+}
+
+function registerMutation (store, type, handler, local) {
+  var entry = store._mutations[type] || (store._mutations[type] = []);
+  entry.push(function wrappedMutationHandler (payload) {
+    handler.call(store, local.state, payload);
+  });
+}
+
+function registerAction (store, type, handler, local) {
+  var entry = store._actions[type] || (store._actions[type] = []);
+  entry.push(function wrappedActionHandler (payload, cb) {
+    var res = handler.call(store, {
+      dispatch: local.dispatch,
+      commit: local.commit,
+      getters: local.getters,
+      state: local.state,
+      rootGetters: store.getters,
+      rootState: store.state
+    }, payload, cb);
+    if (!isPromise(res)) {
+      res = Promise.resolve(res);
+    }
+    if (store._devtoolHook) {
+      return res.catch(function (err) {
+        store._devtoolHook.emit('vuex:error', err);
+        throw err
+      })
+    } else {
+      return res
+    }
+  });
+}
+
+function registerGetter (store, type, rawGetter, local) {
+  if (store._wrappedGetters[type]) {
+    if (true) {
+      console.error(("[vuex] duplicate getter key: " + type));
+    }
+    return
+  }
+  store._wrappedGetters[type] = function wrappedGetter (store) {
+    return rawGetter(
+      local.state, // local state
+      local.getters, // local getters
+      store.state, // root state
+      store.getters // root getters
+    )
+  };
+}
+
+function enableStrictMode (store) {
+  store._vm.$watch(function () { return this._data.$$state }, function () {
+    if (true) {
+      assert(store._committing, "Do not mutate vuex store state outside mutation handlers.");
+    }
+  }, { deep: true, sync: true });
+}
+
+function getNestedState (state, path) {
+  return path.length
+    ? path.reduce(function (state, key) { return state[key]; }, state)
+    : state
+}
+
+function unifyObjectStyle (type, payload, options) {
+  if (isObject(type) && type.type) {
+    options = payload;
+    payload = type;
+    type = type.type;
+  }
+
+  if (true) {
+    assert(typeof type === 'string', ("Expects string as the type, but found " + (typeof type) + "."));
+  }
+
+  return { type: type, payload: payload, options: options }
+}
+
+function install (_Vue) {
+  if (Vue && _Vue === Vue) {
+    if (true) {
+      console.error(
+        '[vuex] already installed. Vue.use(Vuex) should be called only once.'
+      );
+    }
+    return
+  }
+  Vue = _Vue;
+  applyMixin(Vue);
+}
+
+var mapState = normalizeNamespace(function (namespace, states) {
+  var res = {};
+  normalizeMap(states).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    res[key] = function mappedState () {
+      var state = this.$store.state;
+      var getters = this.$store.getters;
+      if (namespace) {
+        var module = getModuleByNamespace(this.$store, 'mapState', namespace);
+        if (!module) {
+          return
+        }
+        state = module.context.state;
+        getters = module.context.getters;
+      }
+      return typeof val === 'function'
+        ? val.call(this, state, getters)
+        : state[val]
+    };
+    // mark vuex getter for devtools
+    res[key].vuex = true;
+  });
+  return res
+});
+
+var mapMutations = normalizeNamespace(function (namespace, mutations) {
+  var res = {};
+  normalizeMap(mutations).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    res[key] = function mappedMutation () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      var commit = this.$store.commit;
+      if (namespace) {
+        var module = getModuleByNamespace(this.$store, 'mapMutations', namespace);
+        if (!module) {
+          return
+        }
+        commit = module.context.commit;
+      }
+      return typeof val === 'function'
+        ? val.apply(this, [commit].concat(args))
+        : commit.apply(this.$store, [val].concat(args))
+    };
+  });
+  return res
+});
+
+var mapGetters = normalizeNamespace(function (namespace, getters) {
+  var res = {};
+  normalizeMap(getters).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    val = namespace + val;
+    res[key] = function mappedGetter () {
+      if (namespace && !getModuleByNamespace(this.$store, 'mapGetters', namespace)) {
+        return
+      }
+      if ("development" !== 'production' && !(val in this.$store.getters)) {
+        console.error(("[vuex] unknown getter: " + val));
+        return
+      }
+      return this.$store.getters[val]
+    };
+    // mark vuex getter for devtools
+    res[key].vuex = true;
+  });
+  return res
+});
+
+var mapActions = normalizeNamespace(function (namespace, actions) {
+  var res = {};
+  normalizeMap(actions).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    res[key] = function mappedAction () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      var dispatch = this.$store.dispatch;
+      if (namespace) {
+        var module = getModuleByNamespace(this.$store, 'mapActions', namespace);
+        if (!module) {
+          return
+        }
+        dispatch = module.context.dispatch;
+      }
+      return typeof val === 'function'
+        ? val.apply(this, [dispatch].concat(args))
+        : dispatch.apply(this.$store, [val].concat(args))
+    };
+  });
+  return res
+});
+
+var createNamespacedHelpers = function (namespace) { return ({
+  mapState: mapState.bind(null, namespace),
+  mapGetters: mapGetters.bind(null, namespace),
+  mapMutations: mapMutations.bind(null, namespace),
+  mapActions: mapActions.bind(null, namespace)
+}); };
+
+function normalizeMap (map) {
+  return Array.isArray(map)
+    ? map.map(function (key) { return ({ key: key, val: key }); })
+    : Object.keys(map).map(function (key) { return ({ key: key, val: map[key] }); })
+}
+
+function normalizeNamespace (fn) {
+  return function (namespace, map) {
+    if (typeof namespace !== 'string') {
+      map = namespace;
+      namespace = '';
+    } else if (namespace.charAt(namespace.length - 1) !== '/') {
+      namespace += '/';
+    }
+    return fn(namespace, map)
+  }
+}
+
+function getModuleByNamespace (store, helper, namespace) {
+  var module = store._modulesNamespaceMap[namespace];
+  if ("development" !== 'production' && !module) {
+    console.error(("[vuex] module namespace not found in " + helper + "(): " + namespace));
+  }
+  return module
+}
+
+var index_esm = {
+  Store: Store,
+  install: install,
+  version: '3.0.1',
+  mapState: mapState,
+  mapMutations: mapMutations,
+  mapGetters: mapGetters,
+  mapActions: mapActions,
+  createNamespacedHelpers: createNamespacedHelpers
+};
+
+
+/* harmony default export */ __webpack_exports__["a"] = (index_esm);
+
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5615,6 +6560,48 @@ var helpers = {
 	 */
 	mergeIf: function(target, source) {
 		return helpers.merge(target, source, {merger: helpers._mergerIf});
+	},
+
+	/**
+	 * Applies the contents of two or more objects together into the first object.
+	 * @param {Object} target - The target object in which all objects are merged into.
+	 * @param {Object} arg1 - Object containing additional properties to merge in target.
+	 * @param {Object} argN - Additional objects containing properties to merge in target.
+	 * @returns {Object} The `target` object.
+	 */
+	extend: function(target) {
+		var setFn = function(value, key) {
+			target[key] = value;
+		};
+		for (var i = 1, ilen = arguments.length; i < ilen; ++i) {
+			helpers.each(arguments[i], setFn);
+		}
+		return target;
+	},
+
+	/**
+	 * Basic javascript inheritance based on the model created in Backbone.js
+	 */
+	inherits: function(extensions) {
+		var me = this;
+		var ChartElement = (extensions && extensions.hasOwnProperty('constructor')) ? extensions.constructor : function() {
+			return me.apply(this, arguments);
+		};
+
+		var Surrogate = function() {
+			this.constructor = ChartElement;
+		};
+
+		Surrogate.prototype = me.prototype;
+		ChartElement.prototype = new Surrogate();
+		ChartElement.extend = helpers.inherits;
+
+		if (extensions) {
+			helpers.extend(ChartElement.prototype, extensions);
+		}
+
+		ChartElement.__super__ = me.prototype;
+		return ChartElement;
 	}
 };
 
@@ -5663,14 +6650,14 @@ helpers.getValueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(3);
-var normalizeHeaderName = __webpack_require__(151);
+var utils = __webpack_require__(4);
+var normalizeHeaderName = __webpack_require__(153);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -5686,10 +6673,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(15);
+    adapter = __webpack_require__(16);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(15);
+    adapter = __webpack_require__(16);
   }
   return adapter;
 }
@@ -5760,10 +6747,10 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -5791,7 +6778,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16357,10 +17344,10 @@ Vue$3.compile = compileToFunctions;
 
 module.exports = Vue$3;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(145).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(147).setImmediate))
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -16550,7 +17537,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16568,19 +17555,19 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(3);
-var settle = __webpack_require__(152);
-var buildURL = __webpack_require__(154);
-var parseHeaders = __webpack_require__(155);
-var isURLSameOrigin = __webpack_require__(156);
-var createError = __webpack_require__(16);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(157);
+var utils = __webpack_require__(4);
+var settle = __webpack_require__(154);
+var buildURL = __webpack_require__(156);
+var parseHeaders = __webpack_require__(157);
+var isURLSameOrigin = __webpack_require__(158);
+var createError = __webpack_require__(17);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(159);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -16677,7 +17664,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(158);
+      var cookies = __webpack_require__(160);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -16755,13 +17742,13 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var enhanceError = __webpack_require__(153);
+var enhanceError = __webpack_require__(155);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -16780,7 +17767,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16792,7 +17779,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16818,13 +17805,13 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_chart_js__ = __webpack_require__(185);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_chart_js__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_chart_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_chart_js__);
 
 
@@ -16853,12 +17840,96 @@ module.exports = Cancel;
 }));
 
 /***/ }),
-/* 20 */
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * @namespace Chart
+ */
+var Chart = __webpack_require__(192)();
+
+Chart.helpers = __webpack_require__(1);
+
+// @todo dispatch these helpers into appropriated helpers/helpers.* file and write unit tests!
+__webpack_require__(196)(Chart);
+
+Chart.defaults = __webpack_require__(2);
+Chart.Element = __webpack_require__(5);
+Chart.elements = __webpack_require__(6);
+Chart.Interaction = __webpack_require__(23);
+Chart.platform = __webpack_require__(24);
+
+__webpack_require__(207)(Chart);
+__webpack_require__(208)(Chart);
+__webpack_require__(209)(Chart);
+__webpack_require__(210)(Chart);
+__webpack_require__(211)(Chart);
+__webpack_require__(212)(Chart);
+__webpack_require__(213)(Chart);
+__webpack_require__(214)(Chart);
+
+__webpack_require__(215)(Chart);
+__webpack_require__(216)(Chart);
+__webpack_require__(217)(Chart);
+__webpack_require__(218)(Chart);
+__webpack_require__(219)(Chart);
+__webpack_require__(220)(Chart);
+
+// Controllers must be loaded after elements
+// See Chart.core.datasetController.dataElementType
+__webpack_require__(222)(Chart);
+__webpack_require__(223)(Chart);
+__webpack_require__(224)(Chart);
+__webpack_require__(225)(Chart);
+__webpack_require__(226)(Chart);
+__webpack_require__(227)(Chart);
+__webpack_require__(228)(Chart);
+
+__webpack_require__(229)(Chart);
+__webpack_require__(230)(Chart);
+__webpack_require__(231)(Chart);
+__webpack_require__(232)(Chart);
+__webpack_require__(233)(Chart);
+__webpack_require__(234)(Chart);
+__webpack_require__(235)(Chart);
+
+// Loading built-it plugins
+var plugins = [];
+
+plugins.push(
+	__webpack_require__(236)(Chart),
+	__webpack_require__(237)(Chart),
+	__webpack_require__(238)(Chart)
+);
+
+Chart.plugins.register(plugins);
+
+Chart.platform.initialize();
+
+module.exports = Chart;
+if (typeof window !== 'undefined') {
+	window.Chart = Chart;
+}
+
+// DEPRECATIONS
+
+/**
+ * Provided for backward compatibility, use Chart.helpers.canvas instead.
+ * @namespace Chart.canvasHelpers
+ * @deprecated since version 2.6.0
+ * @todo remove at version 3
+ * @private
+ */
+Chart.canvasHelpers = Chart.helpers.canvas;
+
+
+/***/ }),
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var convert = __webpack_require__(191);
-var string = __webpack_require__(193);
+var convert = __webpack_require__(197);
+var string = __webpack_require__(199);
 
 var Color = function (obj) {
 	if (obj instanceof Color) {
@@ -17344,7 +18415,7 @@ module.exports = Color;
 
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17565,7 +18636,7 @@ module.exports = {
 		 * @private
 		 */
 		'x-axis': function(chart, e) {
-			return indexMode(chart, e, {intersect: true});
+			return indexMode(chart, e, {intersect: false});
 		},
 
 		/**
@@ -17681,15 +18752,15 @@ module.exports = {
 
 
 /***/ }),
-/* 22 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var helpers = __webpack_require__(1);
-var basic = __webpack_require__(199);
-var dom = __webpack_require__(200);
+var basic = __webpack_require__(205);
+var dom = __webpack_require__(206);
 
 // @TODO Make possible to select another platform at build time.
 var implementation = dom._enabled ? dom : basic;
@@ -17762,7 +18833,7 @@ module.exports = helpers.extend({
 
 
 /***/ }),
-/* 23 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17840,7 +18911,7 @@ return af;
 
 
 /***/ }),
-/* 24 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -17987,7 +19058,7 @@ return ar;
 
 
 /***/ }),
-/* 25 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18051,7 +19122,7 @@ return arDz;
 
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18115,7 +19186,7 @@ return arKw;
 
 
 /***/ }),
-/* 27 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18246,7 +19317,7 @@ return arLy;
 
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18311,7 +19382,7 @@ return arMa;
 
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18421,7 +19492,7 @@ return arSa;
 
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18485,7 +19556,7 @@ return arTn;
 
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18595,7 +19666,7 @@ return az;
 
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18734,7 +19805,7 @@ return be;
 
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18829,7 +19900,7 @@ return bg;
 
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -18953,7 +20024,7 @@ return bn;
 
 
 /***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19077,7 +20148,7 @@ return bo;
 
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19190,7 +20261,7 @@ return br;
 
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19338,7 +20409,7 @@ return bs;
 
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19431,7 +20502,7 @@ return ca;
 
 
 /***/ }),
-/* 39 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19608,7 +20679,7 @@ return cs;
 
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19676,7 +20747,7 @@ return cv;
 
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19762,7 +20833,7 @@ return cy;
 
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19827,7 +20898,7 @@ return da;
 
 
 /***/ }),
-/* 43 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19910,7 +20981,7 @@ return de;
 
 
 /***/ }),
-/* 44 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -19994,7 +21065,7 @@ return deAt;
 
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20077,7 +21148,7 @@ return deCh;
 
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20182,7 +21253,7 @@ return dv;
 
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20287,7 +21358,7 @@ return el;
 
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20359,7 +21430,7 @@ return enAu;
 
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20427,7 +21498,7 @@ return enCa;
 
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20499,7 +21570,7 @@ return enGb;
 
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20571,7 +21642,7 @@ return enIe;
 
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20643,7 +21714,7 @@ return enNz;
 
 
 /***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20721,7 +21792,7 @@ return eo;
 
 
 /***/ }),
-/* 54 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20809,7 +21880,7 @@ return es;
 
 
 /***/ }),
-/* 55 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20896,7 +21967,7 @@ return esDo;
 
 
 /***/ }),
-/* 56 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -20981,7 +22052,7 @@ return et;
 
 
 /***/ }),
-/* 57 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21052,7 +22123,7 @@ return eu;
 
 
 /***/ }),
-/* 58 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21164,7 +22235,7 @@ return fa;
 
 
 /***/ }),
-/* 59 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21276,7 +22347,7 @@ return fi;
 
 
 /***/ }),
-/* 60 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21341,7 +22412,7 @@ return fo;
 
 
 /***/ }),
-/* 61 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21429,7 +22500,7 @@ return fr;
 
 
 /***/ }),
-/* 62 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21508,7 +22579,7 @@ return frCa;
 
 
 /***/ }),
-/* 63 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21591,7 +22662,7 @@ return frCh;
 
 
 /***/ }),
-/* 64 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21671,7 +22742,7 @@ return fy;
 
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21752,7 +22823,7 @@ return gd;
 
 
 /***/ }),
-/* 66 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21834,7 +22905,7 @@ return gl;
 
 
 /***/ }),
-/* 67 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -21961,7 +23032,7 @@ return gomLatn;
 
 
 /***/ }),
-/* 68 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22065,7 +23136,7 @@ return he;
 
 
 /***/ }),
-/* 69 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22194,7 +23265,7 @@ return hi;
 
 
 /***/ }),
-/* 70 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22344,7 +23415,7 @@ return hr;
 
 
 /***/ }),
-/* 71 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22458,7 +23529,7 @@ return hu;
 
 
 /***/ }),
-/* 72 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22558,7 +23629,7 @@ return hyAm;
 
 
 /***/ }),
-/* 73 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22646,7 +23717,7 @@ return id;
 
 
 /***/ }),
-/* 74 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22778,7 +23849,7 @@ return is;
 
 
 /***/ }),
-/* 75 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22853,7 +23924,7 @@ return it;
 
 
 /***/ }),
-/* 76 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -22938,7 +24009,7 @@ return ja;
 
 
 /***/ }),
-/* 77 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23026,7 +24097,7 @@ return jv;
 
 
 /***/ }),
-/* 78 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23120,7 +24191,7 @@ return ka;
 
 
 /***/ }),
-/* 79 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23212,7 +24283,7 @@ return kk;
 
 
 /***/ }),
-/* 80 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23275,7 +24346,7 @@ return km;
 
 
 /***/ }),
-/* 81 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23406,7 +24477,7 @@ return kn;
 
 
 /***/ }),
-/* 82 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23480,7 +24551,7 @@ return ko;
 
 
 /***/ }),
-/* 83 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23573,7 +24644,7 @@ return ky;
 
 
 /***/ }),
-/* 84 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23715,7 +24786,7 @@ return lb;
 
 
 /***/ }),
-/* 85 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23790,7 +24861,7 @@ return lo;
 
 
 /***/ }),
-/* 86 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -23912,7 +24983,7 @@ return lt;
 
 
 /***/ }),
-/* 87 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24014,7 +25085,7 @@ return lv;
 
 
 /***/ }),
-/* 88 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24130,7 +25201,7 @@ return me;
 
 
 /***/ }),
-/* 89 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24199,7 +25270,7 @@ return mi;
 
 
 /***/ }),
-/* 90 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24294,7 +25365,7 @@ return mk;
 
 
 /***/ }),
-/* 91 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24380,7 +25451,7 @@ return ml;
 
 
 /***/ }),
-/* 92 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24544,7 +25615,7 @@ return mr;
 
 
 /***/ }),
-/* 93 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24631,7 +25702,7 @@ return ms;
 
 
 /***/ }),
-/* 94 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24719,7 +25790,7 @@ return msMy;
 
 
 /***/ }),
-/* 95 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24820,7 +25891,7 @@ return my;
 
 
 /***/ }),
-/* 96 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -24888,7 +25959,7 @@ return nb;
 
 
 /***/ }),
-/* 97 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25016,7 +26087,7 @@ return ne;
 
 
 /***/ }),
-/* 98 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25109,7 +26180,7 @@ return nl;
 
 
 /***/ }),
-/* 99 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25202,7 +26273,7 @@ return nlBe;
 
 
 /***/ }),
-/* 100 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25267,7 +26338,7 @@ return nn;
 
 
 /***/ }),
-/* 101 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25396,7 +26467,7 @@ return paIn;
 
 
 /***/ }),
-/* 102 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25508,7 +26579,7 @@ return pl;
 
 
 /***/ }),
-/* 103 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25578,7 +26649,7 @@ return pt;
 
 
 /***/ }),
-/* 104 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25644,7 +26715,7 @@ return ptBr;
 
 
 /***/ }),
-/* 105 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25724,7 +26795,7 @@ return ro;
 
 
 /***/ }),
-/* 106 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -25912,7 +26983,7 @@ return ru;
 
 
 /***/ }),
-/* 107 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26015,7 +27086,7 @@ return sd;
 
 
 /***/ }),
-/* 108 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26081,7 +27152,7 @@ return se;
 
 
 /***/ }),
-/* 109 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26157,7 +27228,7 @@ return si;
 
 
 /***/ }),
-/* 110 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26312,7 +27383,7 @@ return sk;
 
 
 /***/ }),
-/* 111 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26479,7 +27550,7 @@ return sl;
 
 
 /***/ }),
-/* 112 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26554,7 +27625,7 @@ return sq;
 
 
 /***/ }),
-/* 113 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26669,7 +27740,7 @@ return sr;
 
 
 /***/ }),
-/* 114 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26784,7 +27855,7 @@ return srCyrl;
 
 
 /***/ }),
-/* 115 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26878,7 +27949,7 @@ return ss;
 
 
 /***/ }),
-/* 116 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -26952,7 +28023,7 @@ return sv;
 
 
 /***/ }),
-/* 117 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27016,7 +28087,7 @@ return sw;
 
 
 /***/ }),
-/* 118 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27151,7 +28222,7 @@ return ta;
 
 
 /***/ }),
-/* 119 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27245,7 +28316,7 @@ return te;
 
 
 /***/ }),
-/* 120 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27318,7 +28389,7 @@ return tet;
 
 
 /***/ }),
-/* 121 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27390,7 +28461,7 @@ return th;
 
 
 /***/ }),
-/* 122 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27457,7 +28528,7 @@ return tlPh;
 
 
 /***/ }),
-/* 123 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27582,7 +28653,7 @@ return tlh;
 
 
 /***/ }),
-/* 124 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27677,7 +28748,7 @@ return tr;
 
 
 /***/ }),
-/* 125 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27773,7 +28844,7 @@ return tzl;
 
 
 /***/ }),
-/* 126 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27836,7 +28907,7 @@ return tzm;
 
 
 /***/ }),
-/* 127 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -27899,7 +28970,7 @@ return tzmLatn;
 
 
 /***/ }),
-/* 128 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28055,7 +29126,7 @@ return uk;
 
 
 /***/ }),
-/* 129 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28159,7 +29230,7 @@ return ur;
 
 
 /***/ }),
-/* 130 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28222,7 +29293,7 @@ return uz;
 
 
 /***/ }),
-/* 131 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28285,7 +29356,7 @@ return uzLatn;
 
 
 /***/ }),
-/* 132 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28369,7 +29440,7 @@ return vi;
 
 
 /***/ }),
-/* 133 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28442,7 +29513,7 @@ return xPseudo;
 
 
 /***/ }),
-/* 134 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28507,7 +29578,7 @@ return yo;
 
 
 /***/ }),
-/* 135 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28623,7 +29694,7 @@ return zhCn;
 
 
 /***/ }),
-/* 136 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28733,7 +29804,7 @@ return zhHk;
 
 
 /***/ }),
-/* 137 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -28842,25 +29913,28 @@ return zhTw;
 
 
 /***/ }),
-/* 138 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(139);
-module.exports = __webpack_require__(247);
+__webpack_require__(141);
+module.exports = __webpack_require__(262);
 
 
 /***/ }),
-/* 139 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 141 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store__ = __webpack_require__(261);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-__webpack_require__(140);
+__webpack_require__(142);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -28868,32 +29942,37 @@ __webpack_require__(140);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', __webpack_require__(166));
-Vue.component('flash', __webpack_require__(169));
+// Global components
+Vue.component('flash', __webpack_require__(168));
+Vue.component('example', __webpack_require__(176));
+Vue.component('category-cards', __webpack_require__(179));
 
-// Livecounter
-Vue.component('category-cards', __webpack_require__(177));
+// Logbook browse views
+Vue.component('year-view', __webpack_require__(185));
+Vue.component('overview-view', __webpack_require__(250));
 
-// Charts & reports
-Vue.component('chart-month', __webpack_require__(183));
-Vue.component('chart-categories', __webpack_require__(233));
-Vue.component('table-report', __webpack_require__(235));
+// Line chart (testing)
+Vue.component('chart-selector', __webpack_require__(255));
 
-// Infoboxes
-Vue.component('box-sum-sm', __webpack_require__(238));
-Vue.component('box-avg-sm', __webpack_require__(241));
-Vue.component('box-generic-lg', __webpack_require__(244));
+// Import the global store (state management) object.
 
+Vue.use(__WEBPACK_IMPORTED_MODULE_0_vuex__["a" /* default */]);
+
+
+
+// The Vue instance.
 var app = new Vue({
-  el: '#app'
+  el: '#app',
+
+  store: new __WEBPACK_IMPORTED_MODULE_0_vuex__["a" /* default */].Store(__WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */])
 });
 
 /***/ }),
-/* 140 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-window._ = __webpack_require__(141);
+window._ = __webpack_require__(143);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -28902,9 +29981,9 @@ window._ = __webpack_require__(141);
  */
 
 try {
-  window.$ = window.jQuery = __webpack_require__(142);
-  window.Popper = __webpack_require__(143).default;
-  __webpack_require__(144);
+  window.$ = window.jQuery = __webpack_require__(144);
+  window.Popper = __webpack_require__(145).default;
+  __webpack_require__(146);
 } catch (e) {}
 
 /**
@@ -28913,7 +29992,7 @@ try {
  * and simple, leaving you to focus on building your next great project.
  */
 
-window.Vue = __webpack_require__(12);
+window.Vue = __webpack_require__(13);
 
 window.events = new Vue();
 
@@ -28927,7 +30006,7 @@ window.flash = function (message) {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = __webpack_require__(147);
+window.axios = __webpack_require__(149);
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -28961,7 +30040,7 @@ if (token) {
 // });
 
 /***/ }),
-/* 141 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -46050,10 +47129,10 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(11)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(12)(module)))
 
 /***/ }),
-/* 142 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -56313,14 +57392,14 @@ return jQuery;
 
 
 /***/ }),
-/* 143 */
+/* 145 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* WEBPACK VAR INJECTION */(function(global) {/**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.12.5
+ * @version 1.12.6
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -56342,22 +57421,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-var nativeHints = ['native code', '[object MutationObserverConstructor]'];
-
-/**
- * Determine if a function is implemented natively (as opposed to a polyfill).
- * @method
- * @memberof Popper.Utils
- * @argument {Function | undefined} fn the function to check
- * @returns {Boolean}
- */
-var isNative = (function (fn) {
-  return nativeHints.some(function (hint) {
-    return (fn || '').toString().indexOf(hint) > -1;
-  });
-});
-
-var isBrowser = typeof window !== 'undefined';
+var isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
 var longerTimeoutBrowsers = ['Edge', 'Trident', 'Firefox'];
 var timeoutDuration = 0;
 for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
@@ -56368,26 +57432,16 @@ for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
 }
 
 function microtaskDebounce(fn) {
-  var scheduled = false;
-  var i = 0;
-  var elem = document.createElement('span');
-
-  // MutationObserver provides a mechanism for scheduling microtasks, which
-  // are scheduled *before* the next task. This gives us a way to debounce
-  // a function but ensure it's called *before* the next paint.
-  var observer = new MutationObserver(function () {
-    fn();
-    scheduled = false;
-  });
-
-  observer.observe(elem, { attributes: true });
-
+  var called = false;
   return function () {
-    if (!scheduled) {
-      scheduled = true;
-      elem.setAttribute('x-index', i);
-      i = i + 1; // don't use compund (+=) because it doesn't get optimized in V8
+    if (called) {
+      return;
     }
+    called = true;
+    Promise.resolve().then(function () {
+      called = false;
+      fn();
+    });
   };
 }
 
@@ -56404,11 +57458,7 @@ function taskDebounce(fn) {
   };
 }
 
-// It's common for MutationObserver polyfills to be seen in the wild, however
-// these rely on Mutation Events which only occur when an element is connected
-// to the DOM. The algorithm used in this module does not use a connected element,
-// and so we must ensure that a *native* MutationObserver is available.
-var supportsNativeMutationObserver = isBrowser && isNative(window.MutationObserver);
+var supportsMicroTasks = isBrowser && window.Promise;
 
 /**
 * Create a debounced version of a method, that's asynchronously deferred
@@ -56419,7 +57469,7 @@ var supportsNativeMutationObserver = isBrowser && isNative(window.MutationObserv
 * @argument {Function} fn
 * @returns {Function}
 */
-var debounce = supportsNativeMutationObserver ? microtaskDebounce : taskDebounce;
+var debounce = supportsMicroTasks ? microtaskDebounce : taskDebounce;
 
 /**
  * Check if the given variable is a function
@@ -56472,8 +57522,16 @@ function getParentNode(element) {
  */
 function getScrollParent(element) {
   // Return body, `getScroll` will take care to get the correct `scrollTop` from it
-  if (!element || ['HTML', 'BODY', '#document'].indexOf(element.nodeName) !== -1) {
+  if (!element) {
     return window.document.body;
+  }
+
+  switch (element.nodeName) {
+    case 'HTML':
+    case 'BODY':
+      return element.ownerDocument.body;
+    case '#document':
+      return element.body;
   }
 
   // Firefox want us to check `-x` and `-y` variations as well
@@ -56503,6 +57561,10 @@ function getOffsetParent(element) {
   var nodeName = offsetParent && offsetParent.nodeName;
 
   if (!nodeName || nodeName === 'BODY' || nodeName === 'HTML') {
+    if (element) {
+      return element.ownerDocument.documentElement;
+    }
+
     return window.document.documentElement;
   }
 
@@ -56598,8 +57660,8 @@ function getScroll(element) {
   var nodeName = element.nodeName;
 
   if (nodeName === 'BODY' || nodeName === 'HTML') {
-    var html = window.document.documentElement;
-    var scrollingElement = window.document.scrollingElement || html;
+    var html = element.ownerDocument.documentElement;
+    var scrollingElement = element.ownerDocument.scrollingElement || html;
     return scrollingElement[upperSide];
   }
 
@@ -56848,7 +57910,7 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
 }
 
 function getViewportOffsetRectRelativeToArtbitraryNode(element) {
-  var html = window.document.documentElement;
+  var html = element.ownerDocument.documentElement;
   var relativeOffset = getOffsetRectRelativeToArbitraryNode(element, html);
   var width = Math.max(html.clientWidth, window.innerWidth || 0);
   var height = Math.max(html.clientHeight, window.innerHeight || 0);
@@ -56909,10 +57971,10 @@ function getBoundaries(popper, reference, padding, boundariesElement) {
     if (boundariesElement === 'scrollParent') {
       boundariesNode = getScrollParent(getParentNode(popper));
       if (boundariesNode.nodeName === 'BODY') {
-        boundariesNode = window.document.documentElement;
+        boundariesNode = popper.ownerDocument.documentElement;
       }
     } else if (boundariesElement === 'window') {
-      boundariesNode = window.document.documentElement;
+      boundariesNode = popper.ownerDocument.documentElement;
     } else {
       boundariesNode = boundariesElement;
     }
@@ -57153,10 +58215,11 @@ function runModifiers(modifiers, data, ends) {
   var modifiersToRun = ends === undefined ? modifiers : modifiers.slice(0, findIndex(modifiers, 'name', ends));
 
   modifiersToRun.forEach(function (modifier) {
-    if (modifier.function) {
+    if (modifier['function']) {
+      // eslint-disable-line dot-notation
       console.warn('`modifier.function` is deprecated, use `modifier.fn`!');
     }
-    var fn = modifier.function || modifier.fn;
+    var fn = modifier['function'] || modifier.fn; // eslint-disable-line dot-notation
     if (modifier.enabled && isFunction(fn)) {
       // Add properties to offsets to make them a complete clientRect object
       // we do this before each modifier to make sure the previous one doesn't
@@ -57283,9 +58346,19 @@ function destroy() {
   return this;
 }
 
+/**
+ * Get the window associated with the element
+ * @argument {Element} element
+ * @returns {Window}
+ */
+function getWindow(element) {
+  var ownerDocument = element.ownerDocument;
+  return ownerDocument ? ownerDocument.defaultView : window;
+}
+
 function attachToScrollParents(scrollParent, event, callback, scrollParents) {
   var isBody = scrollParent.nodeName === 'BODY';
-  var target = isBody ? window : scrollParent;
+  var target = isBody ? scrollParent.ownerDocument.defaultView : scrollParent;
   target.addEventListener(event, callback, { passive: true });
 
   if (!isBody) {
@@ -57303,7 +58376,7 @@ function attachToScrollParents(scrollParent, event, callback, scrollParents) {
 function setupEventListeners(reference, options, state, updateBound) {
   // Resize event listener on window
   state.updateBound = updateBound;
-  window.addEventListener('resize', state.updateBound, { passive: true });
+  getWindow(reference).addEventListener('resize', state.updateBound, { passive: true });
 
   // Scroll event listener on scroll parents
   var scrollElement = getScrollParent(reference);
@@ -57334,7 +58407,7 @@ function enableEventListeners() {
  */
 function removeEventListeners(reference, state) {
   // Remove resize event listener on window
-  window.removeEventListener('resize', state.updateBound);
+  getWindow(reference).removeEventListener('resize', state.updateBound);
 
   // Remove scroll event listener on scroll parents
   state.scrollParents.forEach(function (target) {
@@ -58636,8 +59709,8 @@ var Popper = function () {
     };
 
     // get reference and popper elements (allow jQuery wrappers)
-    this.reference = reference.jquery ? reference[0] : reference;
-    this.popper = popper.jquery ? popper[0] : popper;
+    this.reference = reference && reference.jquery ? reference[0] : reference;
+    this.popper = popper && popper.jquery ? popper[0] : popper;
 
     // Deep merge modifiers options
     this.options.modifiers = {};
@@ -58762,69 +59835,45 @@ Popper.Defaults = Defaults;
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(8)))
 
 /***/ }),
-/* 144 */
+/* 146 */
 /***/ (function(module, exports) {
 
 /*!
- * Bootstrap v4.0.0-beta (https://getbootstrap.com)
- * Copyright 2011-2017 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- */
+  * Bootstrap v4.0.0-beta.2 (https://getbootstrap.com)
+  * Copyright 2011-2017 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
+  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+  */
+var bootstrap = (function (exports,$,Popper) {
+'use strict';
 
-if (typeof jQuery === 'undefined') {
-  throw new Error('Bootstrap\'s JavaScript requires jQuery. jQuery must be included before Bootstrap\'s JavaScript.')
-}
-
-(function ($) {
-  var version = $.fn.jquery.split(' ')[0].split('.')
-  if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1) || (version[0] >= 4)) {
-    throw new Error('Bootstrap\'s JavaScript requires at least jQuery v1.9.1 but less than v4.0.0')
-  }
-})(jQuery);
-
-(function () {
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+$ = $ && $.hasOwnProperty('default') ? $['default'] : $;
+Popper = Popper && Popper.hasOwnProperty('default') ? Popper['default'] : Popper;
 
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-beta): util.js
+ * Bootstrap (v4.0.0-beta.2): util.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * --------------------------------------------------------------------------
  */
 
-var Util = function ($) {
-
+var Util = function () {
   /**
    * ------------------------------------------------------------------------
    * Private TransitionEnd Helpers
    * ------------------------------------------------------------------------
    */
-
   var transition = false;
-
   var MAX_UID = 1000000;
-
   var TransitionEndEvent = {
     WebkitTransition: 'webkitTransitionEnd',
     MozTransition: 'transitionend',
     OTransition: 'oTransitionEnd otransitionend',
-    transition: 'transitionend'
+    transition: 'transitionend' // shoutout AngusCroll (https://goo.gl/pxwQGp)
 
-    // shoutout AngusCroll (https://goo.gl/pxwQGp)
-  };function toType(obj) {
+  };
+
+  function toType(obj) {
     return {}.toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
-  }
-
-  function isElement(obj) {
-    return (obj[0] || obj).nodeType;
   }
 
   function getSpecialTransitionEndEvent() {
@@ -58835,7 +59884,8 @@ var Util = function ($) {
         if ($(event.target).is(this)) {
           return event.handleObj.handler.apply(this, arguments); // eslint-disable-line prefer-rest-params
         }
-        return undefined;
+
+        return undefined; // eslint-disable-line no-undefined
       }
     };
   }
@@ -58848,7 +59898,7 @@ var Util = function ($) {
     var el = document.createElement('bootstrap');
 
     for (var name in TransitionEndEvent) {
-      if (el.style[name] !== undefined) {
+      if (typeof el.style[name] !== 'undefined') {
         return {
           end: TransitionEndEvent[name]
         };
@@ -58862,55 +59912,51 @@ var Util = function ($) {
     var _this = this;
 
     var called = false;
-
     $(this).one(Util.TRANSITION_END, function () {
       called = true;
     });
-
     setTimeout(function () {
       if (!called) {
         Util.triggerTransitionEnd(_this);
       }
     }, duration);
-
     return this;
   }
 
   function setTransitionEndSupport() {
     transition = transitionEndTest();
-
     $.fn.emulateTransitionEnd = transitionEndEmulator;
 
     if (Util.supportsTransitionEnd()) {
       $.event.special[Util.TRANSITION_END] = getSpecialTransitionEndEvent();
     }
   }
-
   /**
    * --------------------------------------------------------------------------
    * Public Util Api
    * --------------------------------------------------------------------------
    */
 
+
   var Util = {
-
     TRANSITION_END: 'bsTransitionEnd',
-
     getUID: function getUID(prefix) {
       do {
         // eslint-disable-next-line no-bitwise
         prefix += ~~(Math.random() * MAX_UID); // "~~" acts like a faster Math.floor() here
       } while (document.getElementById(prefix));
+
       return prefix;
     },
     getSelectorFromElement: function getSelectorFromElement(element) {
       var selector = element.getAttribute('data-target');
+
       if (!selector || selector === '#') {
         selector = element.getAttribute('href') || '';
       }
 
       try {
-        var $selector = $(selector);
+        var $selector = $(document).find(selector);
         return $selector.length > 0 ? selector : null;
       } catch (error) {
         return null;
@@ -58925,64 +59971,85 @@ var Util = function ($) {
     supportsTransitionEnd: function supportsTransitionEnd() {
       return Boolean(transition);
     },
+    isElement: function isElement(obj) {
+      return (obj[0] || obj).nodeType;
+    },
     typeCheckConfig: function typeCheckConfig(componentName, config, configTypes) {
       for (var property in configTypes) {
-        if (configTypes.hasOwnProperty(property)) {
+        if (Object.prototype.hasOwnProperty.call(configTypes, property)) {
           var expectedTypes = configTypes[property];
           var value = config[property];
-          var valueType = value && isElement(value) ? 'element' : toType(value);
+          var valueType = value && Util.isElement(value) ? 'element' : toType(value);
 
           if (!new RegExp(expectedTypes).test(valueType)) {
-            throw new Error(componentName.toUpperCase() + ': ' + ('Option "' + property + '" provided type "' + valueType + '" ') + ('but expected type "' + expectedTypes + '".'));
+            throw new Error(componentName.toUpperCase() + ": " + ("Option \"" + property + "\" provided type \"" + valueType + "\" ") + ("but expected type \"" + expectedTypes + "\"."));
           }
         }
       }
     }
   };
-
   setTransitionEndSupport();
-
   return Util;
-}(jQuery);
+}($);
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+var createClass = _createClass;
+
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+  subClass.__proto__ = superClass;
+}
+
+var inheritsLoose = _inheritsLoose;
 
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-beta): alert.js
+ * Bootstrap (v4.0.0-beta.2): alert.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * --------------------------------------------------------------------------
  */
 
-var Alert = function ($) {
-
+var Alert = function () {
   /**
    * ------------------------------------------------------------------------
    * Constants
    * ------------------------------------------------------------------------
    */
-
   var NAME = 'alert';
-  var VERSION = '4.0.0-beta';
+  var VERSION = '4.0.0-beta.2';
   var DATA_KEY = 'bs.alert';
-  var EVENT_KEY = '.' + DATA_KEY;
+  var EVENT_KEY = "." + DATA_KEY;
   var DATA_API_KEY = '.data-api';
   var JQUERY_NO_CONFLICT = $.fn[NAME];
   var TRANSITION_DURATION = 150;
-
   var Selector = {
     DISMISS: '[data-dismiss="alert"]'
   };
-
   var Event = {
-    CLOSE: 'close' + EVENT_KEY,
-    CLOSED: 'closed' + EVENT_KEY,
-    CLICK_DATA_API: 'click' + EVENT_KEY + DATA_API_KEY
+    CLOSE: "close" + EVENT_KEY,
+    CLOSED: "closed" + EVENT_KEY,
+    CLICK_DATA_API: "click" + EVENT_KEY + DATA_API_KEY
   };
-
   var ClassName = {
     ALERT: 'alert',
     FADE: 'fade',
     SHOW: 'show'
-
     /**
      * ------------------------------------------------------------------------
      * Class Definition
@@ -58990,21 +60057,23 @@ var Alert = function ($) {
      */
 
   };
-  var Alert = function () {
+
+  var Alert =
+  /*#__PURE__*/
+  function () {
     function Alert(element) {
-      _classCallCheck(this, Alert);
-
       this._element = element;
-    }
+    } // getters
 
-    // getters
+
+    var _proto = Alert.prototype;
 
     // public
-
-    Alert.prototype.close = function close(element) {
+    _proto.close = function close(element) {
       element = element || this._element;
 
       var rootElement = this._getRootElement(element);
+
       var customEvent = this._triggerCloseEvent(rootElement);
 
       if (customEvent.isDefaultPrevented()) {
@@ -59014,14 +60083,13 @@ var Alert = function ($) {
       this._removeElement(rootElement);
     };
 
-    Alert.prototype.dispose = function dispose() {
+    _proto.dispose = function dispose() {
       $.removeData(this._element, DATA_KEY);
       this._element = null;
-    };
+    }; // private
 
-    // private
 
-    Alert.prototype._getRootElement = function _getRootElement(element) {
+    _proto._getRootElement = function _getRootElement(element) {
       var selector = Util.getSelectorFromElement(element);
       var parent = false;
 
@@ -59030,39 +60098,38 @@ var Alert = function ($) {
       }
 
       if (!parent) {
-        parent = $(element).closest('.' + ClassName.ALERT)[0];
+        parent = $(element).closest("." + ClassName.ALERT)[0];
       }
 
       return parent;
     };
 
-    Alert.prototype._triggerCloseEvent = function _triggerCloseEvent(element) {
+    _proto._triggerCloseEvent = function _triggerCloseEvent(element) {
       var closeEvent = $.Event(Event.CLOSE);
-
       $(element).trigger(closeEvent);
       return closeEvent;
     };
 
-    Alert.prototype._removeElement = function _removeElement(element) {
-      var _this2 = this;
+    _proto._removeElement = function _removeElement(element) {
+      var _this = this;
 
       $(element).removeClass(ClassName.SHOW);
 
       if (!Util.supportsTransitionEnd() || !$(element).hasClass(ClassName.FADE)) {
         this._destroyElement(element);
+
         return;
       }
 
       $(element).one(Util.TRANSITION_END, function (event) {
-        return _this2._destroyElement(element, event);
+        return _this._destroyElement(element, event);
       }).emulateTransitionEnd(TRANSITION_DURATION);
     };
 
-    Alert.prototype._destroyElement = function _destroyElement(element) {
+    _proto._destroyElement = function _destroyElement(element) {
       $(element).detach().trigger(Event.CLOSED).remove();
-    };
+    }; // static
 
-    // static
 
     Alert._jQueryInterface = function _jQueryInterface(config) {
       return this.each(function () {
@@ -59090,24 +60157,22 @@ var Alert = function ($) {
       };
     };
 
-    _createClass(Alert, null, [{
-      key: 'VERSION',
+    createClass(Alert, null, [{
+      key: "VERSION",
       get: function get() {
         return VERSION;
       }
     }]);
-
     return Alert;
   }();
-
   /**
    * ------------------------------------------------------------------------
    * Data Api implementation
    * ------------------------------------------------------------------------
    */
 
-  $(document).on(Event.CLICK_DATA_API, Selector.DISMISS, Alert._handleDismiss(new Alert()));
 
+  $(document).on(Event.CLICK_DATA_API, Selector.DISMISS, Alert._handleDismiss(new Alert()));
   /**
    * ------------------------------------------------------------------------
    * jQuery
@@ -59116,42 +60181,39 @@ var Alert = function ($) {
 
   $.fn[NAME] = Alert._jQueryInterface;
   $.fn[NAME].Constructor = Alert;
+
   $.fn[NAME].noConflict = function () {
     $.fn[NAME] = JQUERY_NO_CONFLICT;
     return Alert._jQueryInterface;
   };
 
   return Alert;
-}(jQuery);
+}($);
 
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-beta): button.js
+ * Bootstrap (v4.0.0-beta.2): button.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * --------------------------------------------------------------------------
  */
 
-var Button = function ($) {
-
+var Button = function () {
   /**
    * ------------------------------------------------------------------------
    * Constants
    * ------------------------------------------------------------------------
    */
-
   var NAME = 'button';
-  var VERSION = '4.0.0-beta';
+  var VERSION = '4.0.0-beta.2';
   var DATA_KEY = 'bs.button';
-  var EVENT_KEY = '.' + DATA_KEY;
+  var EVENT_KEY = "." + DATA_KEY;
   var DATA_API_KEY = '.data-api';
   var JQUERY_NO_CONFLICT = $.fn[NAME];
-
   var ClassName = {
     ACTIVE: 'active',
     BUTTON: 'btn',
     FOCUS: 'focus'
   };
-
   var Selector = {
     DATA_TOGGLE_CARROT: '[data-toggle^="button"]',
     DATA_TOGGLE: '[data-toggle="buttons"]',
@@ -59159,11 +60221,9 @@ var Button = function ($) {
     ACTIVE: '.active',
     BUTTON: '.btn'
   };
-
   var Event = {
-    CLICK_DATA_API: 'click' + EVENT_KEY + DATA_API_KEY,
-    FOCUS_BLUR_DATA_API: 'focus' + EVENT_KEY + DATA_API_KEY + ' ' + ('blur' + EVENT_KEY + DATA_API_KEY)
-
+    CLICK_DATA_API: "click" + EVENT_KEY + DATA_API_KEY,
+    FOCUS_BLUR_DATA_API: "focus" + EVENT_KEY + DATA_API_KEY + " " + ("blur" + EVENT_KEY + DATA_API_KEY)
     /**
      * ------------------------------------------------------------------------
      * Class Definition
@@ -59171,18 +60231,19 @@ var Button = function ($) {
      */
 
   };
-  var Button = function () {
+
+  var Button =
+  /*#__PURE__*/
+  function () {
     function Button(element) {
-      _classCallCheck(this, Button);
-
       this._element = element;
-    }
+    } // getters
 
-    // getters
+
+    var _proto = Button.prototype;
 
     // public
-
-    Button.prototype.toggle = function toggle() {
+    _proto.toggle = function toggle() {
       var triggerChangeEvent = true;
       var addAriaPressed = true;
       var rootElement = $(this._element).closest(Selector.DATA_TOGGLE)[0];
@@ -59207,6 +60268,7 @@ var Button = function ($) {
             if (input.hasAttribute('disabled') || rootElement.hasAttribute('disabled') || input.classList.contains('disabled') || rootElement.classList.contains('disabled')) {
               return;
             }
+
             input.checked = !$(this._element).hasClass(ClassName.ACTIVE);
             $(input).trigger('change');
           }
@@ -59225,12 +60287,11 @@ var Button = function ($) {
       }
     };
 
-    Button.prototype.dispose = function dispose() {
+    _proto.dispose = function dispose() {
       $.removeData(this._element, DATA_KEY);
       this._element = null;
-    };
+    }; // static
 
-    // static
 
     Button._jQueryInterface = function _jQueryInterface(config) {
       return this.each(function () {
@@ -59247,25 +60308,23 @@ var Button = function ($) {
       });
     };
 
-    _createClass(Button, null, [{
-      key: 'VERSION',
+    createClass(Button, null, [{
+      key: "VERSION",
       get: function get() {
         return VERSION;
       }
     }]);
-
     return Button;
   }();
-
   /**
    * ------------------------------------------------------------------------
    * Data Api implementation
    * ------------------------------------------------------------------------
    */
 
+
   $(document).on(Event.CLICK_DATA_API, Selector.DATA_TOGGLE_CARROT, function (event) {
     event.preventDefault();
-
     var button = event.target;
 
     if (!$(button).hasClass(ClassName.BUTTON)) {
@@ -59277,7 +60336,6 @@ var Button = function ($) {
     var button = $(event.target).closest(Selector.BUTTON)[0];
     $(button).toggleClass(ClassName.FOCUS, /^focus(in)?$/.test(event.type));
   });
-
   /**
    * ------------------------------------------------------------------------
    * jQuery
@@ -59286,38 +60344,39 @@ var Button = function ($) {
 
   $.fn[NAME] = Button._jQueryInterface;
   $.fn[NAME].Constructor = Button;
+
   $.fn[NAME].noConflict = function () {
     $.fn[NAME] = JQUERY_NO_CONFLICT;
     return Button._jQueryInterface;
   };
 
   return Button;
-}(jQuery);
+}($);
 
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-beta): carousel.js
+ * Bootstrap (v4.0.0-beta.2): carousel.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * --------------------------------------------------------------------------
  */
 
-var Carousel = function ($) {
-
+var Carousel = function () {
   /**
    * ------------------------------------------------------------------------
    * Constants
    * ------------------------------------------------------------------------
    */
-
   var NAME = 'carousel';
-  var VERSION = '4.0.0-beta';
+  var VERSION = '4.0.0-beta.2';
   var DATA_KEY = 'bs.carousel';
-  var EVENT_KEY = '.' + DATA_KEY;
+  var EVENT_KEY = "." + DATA_KEY;
   var DATA_API_KEY = '.data-api';
   var JQUERY_NO_CONFLICT = $.fn[NAME];
   var TRANSITION_DURATION = 600;
   var ARROW_LEFT_KEYCODE = 37; // KeyboardEvent.which value for left arrow key
+
   var ARROW_RIGHT_KEYCODE = 39; // KeyboardEvent.which value for right arrow key
+
   var TOUCHEVENT_COMPAT_WAIT = 500; // Time for mouse compat events to fire after touch
 
   var Default = {
@@ -59327,7 +60386,6 @@ var Carousel = function ($) {
     pause: 'hover',
     wrap: true
   };
-
   var DefaultType = {
     interval: '(number|boolean)',
     keyboard: 'boolean',
@@ -59335,25 +60393,22 @@ var Carousel = function ($) {
     pause: '(string|boolean)',
     wrap: 'boolean'
   };
-
   var Direction = {
     NEXT: 'next',
     PREV: 'prev',
     LEFT: 'left',
     RIGHT: 'right'
   };
-
   var Event = {
-    SLIDE: 'slide' + EVENT_KEY,
-    SLID: 'slid' + EVENT_KEY,
-    KEYDOWN: 'keydown' + EVENT_KEY,
-    MOUSEENTER: 'mouseenter' + EVENT_KEY,
-    MOUSELEAVE: 'mouseleave' + EVENT_KEY,
-    TOUCHEND: 'touchend' + EVENT_KEY,
-    LOAD_DATA_API: 'load' + EVENT_KEY + DATA_API_KEY,
-    CLICK_DATA_API: 'click' + EVENT_KEY + DATA_API_KEY
+    SLIDE: "slide" + EVENT_KEY,
+    SLID: "slid" + EVENT_KEY,
+    KEYDOWN: "keydown" + EVENT_KEY,
+    MOUSEENTER: "mouseenter" + EVENT_KEY,
+    MOUSELEAVE: "mouseleave" + EVENT_KEY,
+    TOUCHEND: "touchend" + EVENT_KEY,
+    LOAD_DATA_API: "load" + EVENT_KEY + DATA_API_KEY,
+    CLICK_DATA_API: "click" + EVENT_KEY + DATA_API_KEY
   };
-
   var ClassName = {
     CAROUSEL: 'carousel',
     ACTIVE: 'active',
@@ -59364,7 +60419,6 @@ var Carousel = function ($) {
     PREV: 'carousel-item-prev',
     ITEM: 'carousel-item'
   };
-
   var Selector = {
     ACTIVE: '.active',
     ACTIVE_ITEM: '.active.carousel-item',
@@ -59373,7 +60427,6 @@ var Carousel = function ($) {
     INDICATORS: '.carousel-indicators',
     DATA_SLIDE: '[data-slide], [data-slide-to]',
     DATA_RIDE: '[data-ride="carousel"]'
-
     /**
      * ------------------------------------------------------------------------
      * Class Definition
@@ -59381,50 +60434,49 @@ var Carousel = function ($) {
      */
 
   };
-  var Carousel = function () {
-    function Carousel(element, config) {
-      _classCallCheck(this, Carousel);
 
+  var Carousel =
+  /*#__PURE__*/
+  function () {
+    function Carousel(element, config) {
       this._items = null;
       this._interval = null;
       this._activeElement = null;
-
       this._isPaused = false;
       this._isSliding = false;
-
       this.touchTimeout = null;
-
       this._config = this._getConfig(config);
       this._element = $(element)[0];
       this._indicatorsElement = $(this._element).find(Selector.INDICATORS)[0];
 
       this._addEventListeners();
-    }
+    } // getters
 
-    // getters
+
+    var _proto = Carousel.prototype;
 
     // public
-
-    Carousel.prototype.next = function next() {
+    _proto.next = function next() {
       if (!this._isSliding) {
         this._slide(Direction.NEXT);
       }
     };
 
-    Carousel.prototype.nextWhenVisible = function nextWhenVisible() {
+    _proto.nextWhenVisible = function nextWhenVisible() {
       // Don't call next when the page isn't visible
-      if (!document.hidden) {
+      // or the carousel or its parent isn't visible
+      if (!document.hidden && $(this._element).is(':visible') && $(this._element).css('visibility') !== 'hidden') {
         this.next();
       }
     };
 
-    Carousel.prototype.prev = function prev() {
+    _proto.prev = function prev() {
       if (!this._isSliding) {
         this._slide(Direction.PREV);
       }
     };
 
-    Carousel.prototype.pause = function pause(event) {
+    _proto.pause = function pause(event) {
       if (!event) {
         this._isPaused = true;
       }
@@ -59438,7 +60490,7 @@ var Carousel = function ($) {
       this._interval = null;
     };
 
-    Carousel.prototype.cycle = function cycle(event) {
+    _proto.cycle = function cycle(event) {
       if (!event) {
         this._isPaused = false;
       }
@@ -59453,8 +60505,8 @@ var Carousel = function ($) {
       }
     };
 
-    Carousel.prototype.to = function to(index) {
-      var _this3 = this;
+    _proto.to = function to(index) {
+      var _this = this;
 
       this._activeElement = $(this._element).find(Selector.ACTIVE_ITEM)[0];
 
@@ -59466,7 +60518,7 @@ var Carousel = function ($) {
 
       if (this._isSliding) {
         $(this._element).one(Event.SLID, function () {
-          return _this3.to(index);
+          return _this.to(index);
         });
         return;
       }
@@ -59482,10 +60534,9 @@ var Carousel = function ($) {
       this._slide(direction, this._items[index]);
     };
 
-    Carousel.prototype.dispose = function dispose() {
+    _proto.dispose = function dispose() {
       $(this._element).off(EVENT_KEY);
       $.removeData(this._element, DATA_KEY);
-
       this._items = null;
       this._config = null;
       this._element = null;
@@ -59494,31 +60545,31 @@ var Carousel = function ($) {
       this._isSliding = null;
       this._activeElement = null;
       this._indicatorsElement = null;
-    };
+    }; // private
 
-    // private
 
-    Carousel.prototype._getConfig = function _getConfig(config) {
+    _proto._getConfig = function _getConfig(config) {
       config = $.extend({}, Default, config);
       Util.typeCheckConfig(NAME, config, DefaultType);
       return config;
     };
 
-    Carousel.prototype._addEventListeners = function _addEventListeners() {
-      var _this4 = this;
+    _proto._addEventListeners = function _addEventListeners() {
+      var _this2 = this;
 
       if (this._config.keyboard) {
         $(this._element).on(Event.KEYDOWN, function (event) {
-          return _this4._keydown(event);
+          return _this2._keydown(event);
         });
       }
 
       if (this._config.pause === 'hover') {
         $(this._element).on(Event.MOUSEENTER, function (event) {
-          return _this4.pause(event);
+          return _this2.pause(event);
         }).on(Event.MOUSELEAVE, function (event) {
-          return _this4.cycle(event);
+          return _this2.cycle(event);
         });
+
         if ('ontouchstart' in document.documentElement) {
           // if it's a touch-enabled device, mouseenter/leave are fired as
           // part of the mouse compatibility events on first tap - the carousel
@@ -59528,19 +60579,21 @@ var Carousel = function ($) {
           // is NOT fired) and after a timeout (to allow for mouse compatibility
           // events to fire) we explicitly restart cycling
           $(this._element).on(Event.TOUCHEND, function () {
-            _this4.pause();
-            if (_this4.touchTimeout) {
-              clearTimeout(_this4.touchTimeout);
+            _this2.pause();
+
+            if (_this2.touchTimeout) {
+              clearTimeout(_this2.touchTimeout);
             }
-            _this4.touchTimeout = setTimeout(function (event) {
-              return _this4.cycle(event);
-            }, TOUCHEVENT_COMPAT_WAIT + _this4._config.interval);
+
+            _this2.touchTimeout = setTimeout(function (event) {
+              return _this2.cycle(event);
+            }, TOUCHEVENT_COMPAT_WAIT + _this2._config.interval);
           });
         }
       }
     };
 
-    Carousel.prototype._keydown = function _keydown(event) {
+    _proto._keydown = function _keydown(event) {
       if (/input|textarea/i.test(event.target.tagName)) {
         return;
       }
@@ -59550,24 +60603,28 @@ var Carousel = function ($) {
           event.preventDefault();
           this.prev();
           break;
+
         case ARROW_RIGHT_KEYCODE:
           event.preventDefault();
           this.next();
           break;
+
         default:
           return;
       }
     };
 
-    Carousel.prototype._getItemIndex = function _getItemIndex(element) {
+    _proto._getItemIndex = function _getItemIndex(element) {
       this._items = $.makeArray($(element).parent().find(Selector.ITEM));
       return this._items.indexOf(element);
     };
 
-    Carousel.prototype._getItemByDirection = function _getItemByDirection(direction, activeElement) {
+    _proto._getItemByDirection = function _getItemByDirection(direction, activeElement) {
       var isNextDirection = direction === Direction.NEXT;
       var isPrevDirection = direction === Direction.PREV;
+
       var activeIndex = this._getItemIndex(activeElement);
+
       var lastItemIndex = this._items.length - 1;
       var isGoingToWrap = isPrevDirection && activeIndex === 0 || isNextDirection && activeIndex === lastItemIndex;
 
@@ -59577,26 +60634,25 @@ var Carousel = function ($) {
 
       var delta = direction === Direction.PREV ? -1 : 1;
       var itemIndex = (activeIndex + delta) % this._items.length;
-
       return itemIndex === -1 ? this._items[this._items.length - 1] : this._items[itemIndex];
     };
 
-    Carousel.prototype._triggerSlideEvent = function _triggerSlideEvent(relatedTarget, eventDirectionName) {
+    _proto._triggerSlideEvent = function _triggerSlideEvent(relatedTarget, eventDirectionName) {
       var targetIndex = this._getItemIndex(relatedTarget);
+
       var fromIndex = this._getItemIndex($(this._element).find(Selector.ACTIVE_ITEM)[0]);
+
       var slideEvent = $.Event(Event.SLIDE, {
         relatedTarget: relatedTarget,
         direction: eventDirectionName,
         from: fromIndex,
         to: targetIndex
       });
-
       $(this._element).trigger(slideEvent);
-
       return slideEvent;
     };
 
-    Carousel.prototype._setActiveIndicatorElement = function _setActiveIndicatorElement(element) {
+    _proto._setActiveIndicatorElement = function _setActiveIndicatorElement(element) {
       if (this._indicatorsElement) {
         $(this._indicatorsElement).find(Selector.ACTIVE).removeClass(ClassName.ACTIVE);
 
@@ -59608,18 +60664,21 @@ var Carousel = function ($) {
       }
     };
 
-    Carousel.prototype._slide = function _slide(direction, element) {
-      var _this5 = this;
+    _proto._slide = function _slide(direction, element) {
+      var _this3 = this;
 
       var activeElement = $(this._element).find(Selector.ACTIVE_ITEM)[0];
-      var activeElementIndex = this._getItemIndex(activeElement);
-      var nextElement = element || activeElement && this._getItemByDirection(direction, activeElement);
-      var nextElementIndex = this._getItemIndex(nextElement);
-      var isCycling = Boolean(this._interval);
 
-      var directionalClassName = void 0;
-      var orderClassName = void 0;
-      var eventDirectionName = void 0;
+      var activeElementIndex = this._getItemIndex(activeElement);
+
+      var nextElement = element || activeElement && this._getItemByDirection(direction, activeElement);
+
+      var nextElementIndex = this._getItemIndex(nextElement);
+
+      var isCycling = Boolean(this._interval);
+      var directionalClassName;
+      var orderClassName;
+      var eventDirectionName;
 
       if (direction === Direction.NEXT) {
         directionalClassName = ClassName.LEFT;
@@ -59637,6 +60696,7 @@ var Carousel = function ($) {
       }
 
       var slideEvent = this._triggerSlideEvent(nextElement, eventDirectionName);
+
       if (slideEvent.isDefaultPrevented()) {
         return;
       }
@@ -59662,29 +60722,21 @@ var Carousel = function ($) {
       });
 
       if (Util.supportsTransitionEnd() && $(this._element).hasClass(ClassName.SLIDE)) {
-
         $(nextElement).addClass(orderClassName);
-
         Util.reflow(nextElement);
-
         $(activeElement).addClass(directionalClassName);
         $(nextElement).addClass(directionalClassName);
-
         $(activeElement).one(Util.TRANSITION_END, function () {
-          $(nextElement).removeClass(directionalClassName + ' ' + orderClassName).addClass(ClassName.ACTIVE);
-
-          $(activeElement).removeClass(ClassName.ACTIVE + ' ' + orderClassName + ' ' + directionalClassName);
-
-          _this5._isSliding = false;
-
+          $(nextElement).removeClass(directionalClassName + " " + orderClassName).addClass(ClassName.ACTIVE);
+          $(activeElement).removeClass(ClassName.ACTIVE + " " + orderClassName + " " + directionalClassName);
+          _this3._isSliding = false;
           setTimeout(function () {
-            return $(_this5._element).trigger(slidEvent);
+            return $(_this3._element).trigger(slidEvent);
           }, 0);
         }).emulateTransitionEnd(TRANSITION_DURATION);
       } else {
         $(activeElement).removeClass(ClassName.ACTIVE);
         $(nextElement).addClass(ClassName.ACTIVE);
-
         this._isSliding = false;
         $(this._element).trigger(slidEvent);
       }
@@ -59692,16 +60744,16 @@ var Carousel = function ($) {
       if (isCycling) {
         this.cycle();
       }
-    };
+    }; // static
 
-    // static
 
     Carousel._jQueryInterface = function _jQueryInterface(config) {
       return this.each(function () {
         var data = $(this).data(DATA_KEY);
+
         var _config = $.extend({}, Default, $(this).data());
 
-        if ((typeof config === 'undefined' ? 'undefined' : _typeof(config)) === 'object') {
+        if (typeof config === 'object') {
           $.extend(_config, config);
         }
 
@@ -59715,9 +60767,10 @@ var Carousel = function ($) {
         if (typeof config === 'number') {
           data.to(config);
         } else if (typeof action === 'string') {
-          if (data[action] === undefined) {
-            throw new Error('No method named "' + action + '"');
+          if (typeof data[action] === 'undefined') {
+            throw new Error("No method named \"" + action + "\"");
           }
+
           data[action]();
         } else if (_config.interval) {
           data.pause();
@@ -59755,36 +60808,34 @@ var Carousel = function ($) {
       event.preventDefault();
     };
 
-    _createClass(Carousel, null, [{
-      key: 'VERSION',
+    createClass(Carousel, null, [{
+      key: "VERSION",
       get: function get() {
         return VERSION;
       }
     }, {
-      key: 'Default',
+      key: "Default",
       get: function get() {
         return Default;
       }
     }]);
-
     return Carousel;
   }();
-
   /**
    * ------------------------------------------------------------------------
    * Data Api implementation
    * ------------------------------------------------------------------------
    */
 
-  $(document).on(Event.CLICK_DATA_API, Selector.DATA_SLIDE, Carousel._dataApiClickHandler);
 
+  $(document).on(Event.CLICK_DATA_API, Selector.DATA_SLIDE, Carousel._dataApiClickHandler);
   $(window).on(Event.LOAD_DATA_API, function () {
     $(Selector.DATA_RIDE).each(function () {
       var $carousel = $(this);
+
       Carousel._jQueryInterface.call($carousel, $carousel.data());
     });
   });
-
   /**
    * ------------------------------------------------------------------------
    * jQuery
@@ -59793,71 +60844,63 @@ var Carousel = function ($) {
 
   $.fn[NAME] = Carousel._jQueryInterface;
   $.fn[NAME].Constructor = Carousel;
+
   $.fn[NAME].noConflict = function () {
     $.fn[NAME] = JQUERY_NO_CONFLICT;
     return Carousel._jQueryInterface;
   };
 
   return Carousel;
-}(jQuery);
+}($);
 
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-beta): collapse.js
+ * Bootstrap (v4.0.0-beta.2): collapse.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * --------------------------------------------------------------------------
  */
 
-var Collapse = function ($) {
-
+var Collapse = function () {
   /**
    * ------------------------------------------------------------------------
    * Constants
    * ------------------------------------------------------------------------
    */
-
   var NAME = 'collapse';
-  var VERSION = '4.0.0-beta';
+  var VERSION = '4.0.0-beta.2';
   var DATA_KEY = 'bs.collapse';
-  var EVENT_KEY = '.' + DATA_KEY;
+  var EVENT_KEY = "." + DATA_KEY;
   var DATA_API_KEY = '.data-api';
   var JQUERY_NO_CONFLICT = $.fn[NAME];
   var TRANSITION_DURATION = 600;
-
   var Default = {
     toggle: true,
     parent: ''
   };
-
   var DefaultType = {
     toggle: 'boolean',
-    parent: 'string'
+    parent: '(string|element)'
   };
-
   var Event = {
-    SHOW: 'show' + EVENT_KEY,
-    SHOWN: 'shown' + EVENT_KEY,
-    HIDE: 'hide' + EVENT_KEY,
-    HIDDEN: 'hidden' + EVENT_KEY,
-    CLICK_DATA_API: 'click' + EVENT_KEY + DATA_API_KEY
+    SHOW: "show" + EVENT_KEY,
+    SHOWN: "shown" + EVENT_KEY,
+    HIDE: "hide" + EVENT_KEY,
+    HIDDEN: "hidden" + EVENT_KEY,
+    CLICK_DATA_API: "click" + EVENT_KEY + DATA_API_KEY
   };
-
   var ClassName = {
     SHOW: 'show',
     COLLAPSE: 'collapse',
     COLLAPSING: 'collapsing',
     COLLAPSED: 'collapsed'
   };
-
   var Dimension = {
     WIDTH: 'width',
     HEIGHT: 'height'
   };
-
   var Selector = {
     ACTIVES: '.show, .collapsing',
     DATA_TOGGLE: '[data-toggle="collapse"]'
-
     /**
      * ------------------------------------------------------------------------
      * Class Definition
@@ -59865,18 +60908,21 @@ var Collapse = function ($) {
      */
 
   };
-  var Collapse = function () {
-    function Collapse(element, config) {
-      _classCallCheck(this, Collapse);
 
+  var Collapse =
+  /*#__PURE__*/
+  function () {
+    function Collapse(element, config) {
       this._isTransitioning = false;
       this._element = element;
       this._config = this._getConfig(config);
-      this._triggerArray = $.makeArray($('[data-toggle="collapse"][href="#' + element.id + '"],' + ('[data-toggle="collapse"][data-target="#' + element.id + '"]')));
+      this._triggerArray = $.makeArray($("[data-toggle=\"collapse\"][href=\"#" + element.id + "\"]," + ("[data-toggle=\"collapse\"][data-target=\"#" + element.id + "\"]")));
       var tabToggles = $(Selector.DATA_TOGGLE);
+
       for (var i = 0; i < tabToggles.length; i++) {
         var elem = tabToggles[i];
         var selector = Util.getSelectorFromElement(elem);
+
         if (selector !== null && $(selector).filter(element).length > 0) {
           this._triggerArray.push(elem);
         }
@@ -59891,13 +60937,13 @@ var Collapse = function ($) {
       if (this._config.toggle) {
         this.toggle();
       }
-    }
+    } // getters
 
-    // getters
+
+    var _proto = Collapse.prototype;
 
     // public
-
-    Collapse.prototype.toggle = function toggle() {
+    _proto.toggle = function toggle() {
       if ($(this._element).hasClass(ClassName.SHOW)) {
         this.hide();
       } else {
@@ -59905,18 +60951,19 @@ var Collapse = function ($) {
       }
     };
 
-    Collapse.prototype.show = function show() {
-      var _this6 = this;
+    _proto.show = function show() {
+      var _this = this;
 
       if (this._isTransitioning || $(this._element).hasClass(ClassName.SHOW)) {
         return;
       }
 
-      var actives = void 0;
-      var activesData = void 0;
+      var actives;
+      var activesData;
 
       if (this._parent) {
         actives = $.makeArray($(this._parent).children().children(Selector.ACTIVES));
+
         if (!actives.length) {
           actives = null;
         }
@@ -59924,6 +60971,7 @@ var Collapse = function ($) {
 
       if (actives) {
         activesData = $(actives).data(DATA_KEY);
+
         if (activesData && activesData._isTransitioning) {
           return;
         }
@@ -59931,12 +60979,14 @@ var Collapse = function ($) {
 
       var startEvent = $.Event(Event.SHOW);
       $(this._element).trigger(startEvent);
+
       if (startEvent.isDefaultPrevented()) {
         return;
       }
 
       if (actives) {
         Collapse._jQueryInterface.call($(actives), 'hide');
+
         if (!activesData) {
           $(actives).data(DATA_KEY, null);
         }
@@ -59945,7 +60995,6 @@ var Collapse = function ($) {
       var dimension = this._getDimension();
 
       $(this._element).removeClass(ClassName.COLLAPSE).addClass(ClassName.COLLAPSING);
-
       this._element.style[dimension] = 0;
 
       if (this._triggerArray.length) {
@@ -59955,13 +61004,12 @@ var Collapse = function ($) {
       this.setTransitioning(true);
 
       var complete = function complete() {
-        $(_this6._element).removeClass(ClassName.COLLAPSING).addClass(ClassName.COLLAPSE).addClass(ClassName.SHOW);
+        $(_this._element).removeClass(ClassName.COLLAPSING).addClass(ClassName.COLLAPSE).addClass(ClassName.SHOW);
+        _this._element.style[dimension] = '';
 
-        _this6._element.style[dimension] = '';
+        _this.setTransitioning(false);
 
-        _this6.setTransitioning(false);
-
-        $(_this6._element).trigger(Event.SHOWN);
+        $(_this._element).trigger(Event.SHOWN);
       };
 
       if (!Util.supportsTransitionEnd()) {
@@ -59970,15 +61018,13 @@ var Collapse = function ($) {
       }
 
       var capitalizedDimension = dimension[0].toUpperCase() + dimension.slice(1);
-      var scrollSize = 'scroll' + capitalizedDimension;
-
+      var scrollSize = "scroll" + capitalizedDimension;
       $(this._element).one(Util.TRANSITION_END, complete).emulateTransitionEnd(TRANSITION_DURATION);
-
-      this._element.style[dimension] = this._element[scrollSize] + 'px';
+      this._element.style[dimension] = this._element[scrollSize] + "px";
     };
 
-    Collapse.prototype.hide = function hide() {
-      var _this7 = this;
+    _proto.hide = function hide() {
+      var _this2 = this;
 
       if (this._isTransitioning || !$(this._element).hasClass(ClassName.SHOW)) {
         return;
@@ -59986,24 +61032,25 @@ var Collapse = function ($) {
 
       var startEvent = $.Event(Event.HIDE);
       $(this._element).trigger(startEvent);
+
       if (startEvent.isDefaultPrevented()) {
         return;
       }
 
       var dimension = this._getDimension();
 
-      this._element.style[dimension] = this._element.getBoundingClientRect()[dimension] + 'px';
-
+      this._element.style[dimension] = this._element.getBoundingClientRect()[dimension] + "px";
       Util.reflow(this._element);
-
       $(this._element).addClass(ClassName.COLLAPSING).removeClass(ClassName.COLLAPSE).removeClass(ClassName.SHOW);
 
       if (this._triggerArray.length) {
         for (var i = 0; i < this._triggerArray.length; i++) {
           var trigger = this._triggerArray[i];
           var selector = Util.getSelectorFromElement(trigger);
+
           if (selector !== null) {
             var $elem = $(selector);
+
             if (!$elem.hasClass(ClassName.SHOW)) {
               $(trigger).addClass(ClassName.COLLAPSED).attr('aria-expanded', false);
             }
@@ -60014,8 +61061,9 @@ var Collapse = function ($) {
       this.setTransitioning(true);
 
       var complete = function complete() {
-        _this7.setTransitioning(false);
-        $(_this7._element).removeClass(ClassName.COLLAPSING).addClass(ClassName.COLLAPSE).trigger(Event.HIDDEN);
+        _this2.setTransitioning(false);
+
+        $(_this2._element).removeClass(ClassName.COLLAPSING).addClass(ClassName.COLLAPSE).trigger(Event.HIDDEN);
       };
 
       this._element.style[dimension] = '';
@@ -60028,48 +61076,56 @@ var Collapse = function ($) {
       $(this._element).one(Util.TRANSITION_END, complete).emulateTransitionEnd(TRANSITION_DURATION);
     };
 
-    Collapse.prototype.setTransitioning = function setTransitioning(isTransitioning) {
+    _proto.setTransitioning = function setTransitioning(isTransitioning) {
       this._isTransitioning = isTransitioning;
     };
 
-    Collapse.prototype.dispose = function dispose() {
+    _proto.dispose = function dispose() {
       $.removeData(this._element, DATA_KEY);
-
       this._config = null;
       this._parent = null;
       this._element = null;
       this._triggerArray = null;
       this._isTransitioning = null;
-    };
+    }; // private
 
-    // private
 
-    Collapse.prototype._getConfig = function _getConfig(config) {
+    _proto._getConfig = function _getConfig(config) {
       config = $.extend({}, Default, config);
       config.toggle = Boolean(config.toggle); // coerce string values
+
       Util.typeCheckConfig(NAME, config, DefaultType);
       return config;
     };
 
-    Collapse.prototype._getDimension = function _getDimension() {
+    _proto._getDimension = function _getDimension() {
       var hasWidth = $(this._element).hasClass(Dimension.WIDTH);
       return hasWidth ? Dimension.WIDTH : Dimension.HEIGHT;
     };
 
-    Collapse.prototype._getParent = function _getParent() {
-      var _this8 = this;
+    _proto._getParent = function _getParent() {
+      var _this3 = this;
 
-      var parent = $(this._config.parent)[0];
-      var selector = '[data-toggle="collapse"][data-parent="' + this._config.parent + '"]';
+      var parent = null;
 
+      if (Util.isElement(this._config.parent)) {
+        parent = this._config.parent; // it's a jQuery object
+
+        if (typeof this._config.parent.jquery !== 'undefined') {
+          parent = this._config.parent[0];
+        }
+      } else {
+        parent = $(this._config.parent)[0];
+      }
+
+      var selector = "[data-toggle=\"collapse\"][data-parent=\"" + this._config.parent + "\"]";
       $(parent).find(selector).each(function (i, element) {
-        _this8._addAriaAndCollapsedClass(Collapse._getTargetFromElement(element), [element]);
+        _this3._addAriaAndCollapsedClass(Collapse._getTargetFromElement(element), [element]);
       });
-
       return parent;
     };
 
-    Collapse.prototype._addAriaAndCollapsedClass = function _addAriaAndCollapsedClass(element, triggerArray) {
+    _proto._addAriaAndCollapsedClass = function _addAriaAndCollapsedClass(element, triggerArray) {
       if (element) {
         var isOpen = $(element).hasClass(ClassName.SHOW);
 
@@ -60077,9 +61133,8 @@ var Collapse = function ($) {
           $(triggerArray).toggleClass(ClassName.COLLAPSED, !isOpen).attr('aria-expanded', isOpen);
         }
       }
-    };
+    }; // static
 
-    // static
 
     Collapse._getTargetFromElement = function _getTargetFromElement(element) {
       var selector = Util.getSelectorFromElement(element);
@@ -60090,7 +61145,8 @@ var Collapse = function ($) {
       return this.each(function () {
         var $this = $(this);
         var data = $this.data(DATA_KEY);
-        var _config = $.extend({}, Default, $this.data(), (typeof config === 'undefined' ? 'undefined' : _typeof(config)) === 'object' && config);
+
+        var _config = $.extend({}, Default, $this.data(), typeof config === 'object' && config);
 
         if (!data && _config.toggle && /show|hide/.test(config)) {
           _config.toggle = false;
@@ -60102,37 +61158,38 @@ var Collapse = function ($) {
         }
 
         if (typeof config === 'string') {
-          if (data[config] === undefined) {
-            throw new Error('No method named "' + config + '"');
+          if (typeof data[config] === 'undefined') {
+            throw new Error("No method named \"" + config + "\"");
           }
+
           data[config]();
         }
       });
     };
 
-    _createClass(Collapse, null, [{
-      key: 'VERSION',
+    createClass(Collapse, null, [{
+      key: "VERSION",
       get: function get() {
         return VERSION;
       }
     }, {
-      key: 'Default',
+      key: "Default",
       get: function get() {
         return Default;
       }
     }]);
-
     return Collapse;
   }();
-
   /**
    * ------------------------------------------------------------------------
    * Data Api implementation
    * ------------------------------------------------------------------------
    */
 
+
   $(document).on(Event.CLICK_DATA_API, Selector.DATA_TOGGLE, function (event) {
-    if (!/input|textarea/i.test(event.target.tagName)) {
+    // preventDefault only for <a> elements (which change the URL) not inside the collapsible element
+    if (event.currentTarget.tagName === 'A') {
       event.preventDefault();
     }
 
@@ -60142,10 +61199,10 @@ var Collapse = function ($) {
       var $target = $(this);
       var data = $target.data(DATA_KEY);
       var config = data ? 'toggle' : $trigger.data();
+
       Collapse._jQueryInterface.call($target, config);
     });
   });
-
   /**
    * ------------------------------------------------------------------------
    * jQuery
@@ -60154,25 +61211,23 @@ var Collapse = function ($) {
 
   $.fn[NAME] = Collapse._jQueryInterface;
   $.fn[NAME].Constructor = Collapse;
+
   $.fn[NAME].noConflict = function () {
     $.fn[NAME] = JQUERY_NO_CONFLICT;
     return Collapse._jQueryInterface;
   };
 
   return Collapse;
-}(jQuery);
-
-/* global Popper */
+}($);
 
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-beta): dropdown.js
+ * Bootstrap (v4.0.0-beta.2): dropdown.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * --------------------------------------------------------------------------
  */
 
-var Dropdown = function ($) {
-
+var Dropdown = function () {
   /**
    * Check for Popper dependency
    * Popper - https://popper.js.org
@@ -60180,38 +61235,42 @@ var Dropdown = function ($) {
   if (typeof Popper === 'undefined') {
     throw new Error('Bootstrap dropdown require Popper.js (https://popper.js.org)');
   }
-
   /**
    * ------------------------------------------------------------------------
    * Constants
    * ------------------------------------------------------------------------
    */
 
+
   var NAME = 'dropdown';
-  var VERSION = '4.0.0-beta';
+  var VERSION = '4.0.0-beta.2';
   var DATA_KEY = 'bs.dropdown';
-  var EVENT_KEY = '.' + DATA_KEY;
+  var EVENT_KEY = "." + DATA_KEY;
   var DATA_API_KEY = '.data-api';
   var JQUERY_NO_CONFLICT = $.fn[NAME];
   var ESCAPE_KEYCODE = 27; // KeyboardEvent.which value for Escape (Esc) key
+
   var SPACE_KEYCODE = 32; // KeyboardEvent.which value for space key
+
   var TAB_KEYCODE = 9; // KeyboardEvent.which value for tab key
+
   var ARROW_UP_KEYCODE = 38; // KeyboardEvent.which value for up arrow key
+
   var ARROW_DOWN_KEYCODE = 40; // KeyboardEvent.which value for down arrow key
+
   var RIGHT_MOUSE_BUTTON_WHICH = 3; // MouseEvent.which value for the right button (assuming a right-handed mouse)
-  var REGEXP_KEYDOWN = new RegExp(ARROW_UP_KEYCODE + '|' + ARROW_DOWN_KEYCODE + '|' + ESCAPE_KEYCODE);
 
+  var REGEXP_KEYDOWN = new RegExp(ARROW_UP_KEYCODE + "|" + ARROW_DOWN_KEYCODE + "|" + ESCAPE_KEYCODE);
   var Event = {
-    HIDE: 'hide' + EVENT_KEY,
-    HIDDEN: 'hidden' + EVENT_KEY,
-    SHOW: 'show' + EVENT_KEY,
-    SHOWN: 'shown' + EVENT_KEY,
-    CLICK: 'click' + EVENT_KEY,
-    CLICK_DATA_API: 'click' + EVENT_KEY + DATA_API_KEY,
-    KEYDOWN_DATA_API: 'keydown' + EVENT_KEY + DATA_API_KEY,
-    KEYUP_DATA_API: 'keyup' + EVENT_KEY + DATA_API_KEY
+    HIDE: "hide" + EVENT_KEY,
+    HIDDEN: "hidden" + EVENT_KEY,
+    SHOW: "show" + EVENT_KEY,
+    SHOWN: "shown" + EVENT_KEY,
+    CLICK: "click" + EVENT_KEY,
+    CLICK_DATA_API: "click" + EVENT_KEY + DATA_API_KEY,
+    KEYDOWN_DATA_API: "keydown" + EVENT_KEY + DATA_API_KEY,
+    KEYUP_DATA_API: "keyup" + EVENT_KEY + DATA_API_KEY
   };
-
   var ClassName = {
     DISABLED: 'disabled',
     SHOW: 'show',
@@ -60219,7 +61278,6 @@ var Dropdown = function ($) {
     MENURIGHT: 'dropdown-menu-right',
     MENULEFT: 'dropdown-menu-left'
   };
-
   var Selector = {
     DATA_TOGGLE: '[data-toggle="dropdown"]',
     FORM_CHILD: '.dropdown form',
@@ -60227,25 +61285,19 @@ var Dropdown = function ($) {
     NAVBAR_NAV: '.navbar-nav',
     VISIBLE_ITEMS: '.dropdown-menu .dropdown-item:not(.disabled)'
   };
-
   var AttachmentMap = {
     TOP: 'top-start',
     TOPEND: 'top-end',
     BOTTOM: 'bottom-start',
     BOTTOMEND: 'bottom-end'
   };
-
   var Default = {
-    placement: AttachmentMap.BOTTOM,
     offset: 0,
     flip: true
   };
-
   var DefaultType = {
-    placement: 'string',
-    offset: '(number|string)',
+    offset: '(number|string|function)',
     flip: 'boolean'
-
     /**
      * ------------------------------------------------------------------------
      * Class Definition
@@ -60253,10 +61305,11 @@ var Dropdown = function ($) {
      */
 
   };
-  var Dropdown = function () {
-    function Dropdown(element, config) {
-      _classCallCheck(this, Dropdown);
 
+  var Dropdown =
+  /*#__PURE__*/
+  function () {
+    function Dropdown(element, config) {
       this._element = element;
       this._popper = null;
       this._config = this._getConfig(config);
@@ -60264,18 +61317,19 @@ var Dropdown = function ($) {
       this._inNavbar = this._detectNavbar();
 
       this._addEventListeners();
-    }
+    } // getters
 
-    // getters
+
+    var _proto = Dropdown.prototype;
 
     // public
-
-    Dropdown.prototype.toggle = function toggle() {
+    _proto.toggle = function toggle() {
       if (this._element.disabled || $(this._element).hasClass(ClassName.DISABLED)) {
         return;
       }
 
       var parent = Dropdown._getParentFromElement(this._element);
+
       var isActive = $(this._menu).hasClass(ClassName.SHOW);
 
       Dropdown._clearMenus();
@@ -60288,135 +61342,147 @@ var Dropdown = function ($) {
         relatedTarget: this._element
       };
       var showEvent = $.Event(Event.SHOW, relatedTarget);
-
       $(parent).trigger(showEvent);
 
       if (showEvent.isDefaultPrevented()) {
         return;
       }
 
-      var element = this._element;
-      // for dropup with alignment we use the parent as popper container
+      var element = this._element; // for dropup with alignment we use the parent as popper container
+
       if ($(parent).hasClass(ClassName.DROPUP)) {
         if ($(this._menu).hasClass(ClassName.MENULEFT) || $(this._menu).hasClass(ClassName.MENURIGHT)) {
           element = parent;
         }
       }
-      this._popper = new Popper(element, this._menu, this._getPopperConfig());
 
-      // if this is a touch-enabled device we add extra
+      this._popper = new Popper(element, this._menu, this._getPopperConfig()); // if this is a touch-enabled device we add extra
       // empty mouseover listeners to the body's immediate children;
       // only needed because of broken event delegation on iOS
       // https://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
+
       if ('ontouchstart' in document.documentElement && !$(parent).closest(Selector.NAVBAR_NAV).length) {
         $('body').children().on('mouseover', null, $.noop);
       }
 
       this._element.focus();
+
       this._element.setAttribute('aria-expanded', true);
 
       $(this._menu).toggleClass(ClassName.SHOW);
       $(parent).toggleClass(ClassName.SHOW).trigger($.Event(Event.SHOWN, relatedTarget));
     };
 
-    Dropdown.prototype.dispose = function dispose() {
+    _proto.dispose = function dispose() {
       $.removeData(this._element, DATA_KEY);
       $(this._element).off(EVENT_KEY);
       this._element = null;
       this._menu = null;
+
       if (this._popper !== null) {
         this._popper.destroy();
       }
+
       this._popper = null;
     };
 
-    Dropdown.prototype.update = function update() {
+    _proto.update = function update() {
       this._inNavbar = this._detectNavbar();
+
       if (this._popper !== null) {
         this._popper.scheduleUpdate();
       }
-    };
+    }; // private
 
-    // private
 
-    Dropdown.prototype._addEventListeners = function _addEventListeners() {
-      var _this9 = this;
+    _proto._addEventListeners = function _addEventListeners() {
+      var _this = this;
 
       $(this._element).on(Event.CLICK, function (event) {
         event.preventDefault();
         event.stopPropagation();
-        _this9.toggle();
+
+        _this.toggle();
       });
     };
 
-    Dropdown.prototype._getConfig = function _getConfig(config) {
-      var elementData = $(this._element).data();
-      if (elementData.placement !== undefined) {
-        elementData.placement = AttachmentMap[elementData.placement.toUpperCase()];
-      }
-
+    _proto._getConfig = function _getConfig(config) {
       config = $.extend({}, this.constructor.Default, $(this._element).data(), config);
-
       Util.typeCheckConfig(NAME, config, this.constructor.DefaultType);
-
       return config;
     };
 
-    Dropdown.prototype._getMenuElement = function _getMenuElement() {
+    _proto._getMenuElement = function _getMenuElement() {
       if (!this._menu) {
         var parent = Dropdown._getParentFromElement(this._element);
+
         this._menu = $(parent).find(Selector.MENU)[0];
       }
+
       return this._menu;
     };
 
-    Dropdown.prototype._getPlacement = function _getPlacement() {
+    _proto._getPlacement = function _getPlacement() {
       var $parentDropdown = $(this._element).parent();
-      var placement = this._config.placement;
+      var placement = AttachmentMap.BOTTOM; // Handle dropup
 
-      // Handle dropup
-      if ($parentDropdown.hasClass(ClassName.DROPUP) || this._config.placement === AttachmentMap.TOP) {
+      if ($parentDropdown.hasClass(ClassName.DROPUP)) {
         placement = AttachmentMap.TOP;
+
         if ($(this._menu).hasClass(ClassName.MENURIGHT)) {
           placement = AttachmentMap.TOPEND;
         }
       } else if ($(this._menu).hasClass(ClassName.MENURIGHT)) {
         placement = AttachmentMap.BOTTOMEND;
       }
+
       return placement;
     };
 
-    Dropdown.prototype._detectNavbar = function _detectNavbar() {
+    _proto._detectNavbar = function _detectNavbar() {
       return $(this._element).closest('.navbar').length > 0;
     };
 
-    Dropdown.prototype._getPopperConfig = function _getPopperConfig() {
+    _proto._getPopperConfig = function _getPopperConfig() {
+      var _this2 = this;
+
+      var offsetConf = {};
+
+      if (typeof this._config.offset === 'function') {
+        offsetConf.fn = function (data) {
+          data.offsets = $.extend({}, data.offsets, _this2._config.offset(data.offsets) || {});
+          return data;
+        };
+      } else {
+        offsetConf.offset = this._config.offset;
+      }
+
       var popperConfig = {
         placement: this._getPlacement(),
         modifiers: {
-          offset: {
-            offset: this._config.offset
-          },
+          offset: offsetConf,
           flip: {
             enabled: this._config.flip
           }
-        }
+        } // Disable Popper.js for Dropdown in Navbar
 
-        // Disable Popper.js for Dropdown in Navbar
-      };if (this._inNavbar) {
+      };
+
+      if (this._inNavbar) {
         popperConfig.modifiers.applyStyle = {
           enabled: !this._inNavbar
         };
       }
-      return popperConfig;
-    };
 
-    // static
+      return popperConfig;
+    }; // static
+
 
     Dropdown._jQueryInterface = function _jQueryInterface(config) {
       return this.each(function () {
         var data = $(this).data(DATA_KEY);
-        var _config = (typeof config === 'undefined' ? 'undefined' : _typeof(config)) === 'object' ? config : null;
+
+        var _config = typeof config === 'object' ? config : null;
 
         if (!data) {
           data = new Dropdown(this, _config);
@@ -60424,9 +61490,10 @@ var Dropdown = function ($) {
         }
 
         if (typeof config === 'string') {
-          if (data[config] === undefined) {
-            throw new Error('No method named "' + config + '"');
+          if (typeof data[config] === 'undefined') {
+            throw new Error("No method named \"" + config + "\"");
           }
+
           data[config]();
         }
       });
@@ -60438,8 +61505,10 @@ var Dropdown = function ($) {
       }
 
       var toggles = $.makeArray($(Selector.DATA_TOGGLE));
+
       for (var i = 0; i < toggles.length; i++) {
         var parent = Dropdown._getParentFromElement(toggles[i]);
+
         var context = $(toggles[i]).data(DATA_KEY);
         var relatedTarget = {
           relatedTarget: toggles[i]
@@ -60450,6 +61519,7 @@ var Dropdown = function ($) {
         }
 
         var dropdownMenu = context._menu;
+
         if (!$(parent).hasClass(ClassName.SHOW)) {
           continue;
         }
@@ -60460,25 +61530,25 @@ var Dropdown = function ($) {
 
         var hideEvent = $.Event(Event.HIDE, relatedTarget);
         $(parent).trigger(hideEvent);
+
         if (hideEvent.isDefaultPrevented()) {
           continue;
-        }
-
-        // if this is a touch-enabled device we remove the extra
+        } // if this is a touch-enabled device we remove the extra
         // empty mouseover listeners we added for iOS support
+
+
         if ('ontouchstart' in document.documentElement) {
           $('body').children().off('mouseover', null, $.noop);
         }
 
         toggles[i].setAttribute('aria-expanded', 'false');
-
         $(dropdownMenu).removeClass(ClassName.SHOW);
         $(parent).removeClass(ClassName.SHOW).trigger($.Event(Event.HIDDEN, relatedTarget));
       }
     };
 
     Dropdown._getParentFromElement = function _getParentFromElement(element) {
-      var parent = void 0;
+      var parent;
       var selector = Util.getSelectorFromElement(element);
 
       if (selector) {
@@ -60501,10 +61571,10 @@ var Dropdown = function ($) {
       }
 
       var parent = Dropdown._getParentFromElement(this);
+
       var isActive = $(parent).hasClass(ClassName.SHOW);
 
       if (!isActive && (event.which !== ESCAPE_KEYCODE || event.which !== SPACE_KEYCODE) || isActive && (event.which === ESCAPE_KEYCODE || event.which === SPACE_KEYCODE)) {
-
         if (event.which === ESCAPE_KEYCODE) {
           var toggle = $(parent).find(Selector.DATA_TOGGLE)[0];
           $(toggle).trigger('focus');
@@ -60539,40 +61609,39 @@ var Dropdown = function ($) {
       items[index].focus();
     };
 
-    _createClass(Dropdown, null, [{
-      key: 'VERSION',
+    createClass(Dropdown, null, [{
+      key: "VERSION",
       get: function get() {
         return VERSION;
       }
     }, {
-      key: 'Default',
+      key: "Default",
       get: function get() {
         return Default;
       }
     }, {
-      key: 'DefaultType',
+      key: "DefaultType",
       get: function get() {
         return DefaultType;
       }
     }]);
-
     return Dropdown;
   }();
-
   /**
    * ------------------------------------------------------------------------
    * Data Api implementation
    * ------------------------------------------------------------------------
    */
 
-  $(document).on(Event.KEYDOWN_DATA_API, Selector.DATA_TOGGLE, Dropdown._dataApiKeydownHandler).on(Event.KEYDOWN_DATA_API, Selector.MENU, Dropdown._dataApiKeydownHandler).on(Event.CLICK_DATA_API + ' ' + Event.KEYUP_DATA_API, Dropdown._clearMenus).on(Event.CLICK_DATA_API, Selector.DATA_TOGGLE, function (event) {
+
+  $(document).on(Event.KEYDOWN_DATA_API, Selector.DATA_TOGGLE, Dropdown._dataApiKeydownHandler).on(Event.KEYDOWN_DATA_API, Selector.MENU, Dropdown._dataApiKeydownHandler).on(Event.CLICK_DATA_API + " " + Event.KEYUP_DATA_API, Dropdown._clearMenus).on(Event.CLICK_DATA_API, Selector.DATA_TOGGLE, function (event) {
     event.preventDefault();
     event.stopPropagation();
+
     Dropdown._jQueryInterface.call($(this), 'toggle');
   }).on(Event.CLICK_DATA_API, Selector.FORM_CHILD, function (e) {
     e.stopPropagation();
   });
-
   /**
    * ------------------------------------------------------------------------
    * jQuery
@@ -60581,33 +61650,32 @@ var Dropdown = function ($) {
 
   $.fn[NAME] = Dropdown._jQueryInterface;
   $.fn[NAME].Constructor = Dropdown;
+
   $.fn[NAME].noConflict = function () {
     $.fn[NAME] = JQUERY_NO_CONFLICT;
     return Dropdown._jQueryInterface;
   };
 
   return Dropdown;
-}(jQuery);
+}($, Popper);
 
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-beta): modal.js
+ * Bootstrap (v4.0.0-beta.2): modal.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * --------------------------------------------------------------------------
  */
 
-var Modal = function ($) {
-
+var Modal = function () {
   /**
    * ------------------------------------------------------------------------
    * Constants
    * ------------------------------------------------------------------------
    */
-
   var NAME = 'modal';
-  var VERSION = '4.0.0-beta';
+  var VERSION = '4.0.0-beta.2';
   var DATA_KEY = 'bs.modal';
-  var EVENT_KEY = '.' + DATA_KEY;
+  var EVENT_KEY = "." + DATA_KEY;
   var DATA_API_KEY = '.data-api';
   var JQUERY_NO_CONFLICT = $.fn[NAME];
   var TRANSITION_DURATION = 300;
@@ -60620,28 +61688,25 @@ var Modal = function ($) {
     focus: true,
     show: true
   };
-
   var DefaultType = {
     backdrop: '(boolean|string)',
     keyboard: 'boolean',
     focus: 'boolean',
     show: 'boolean'
   };
-
   var Event = {
-    HIDE: 'hide' + EVENT_KEY,
-    HIDDEN: 'hidden' + EVENT_KEY,
-    SHOW: 'show' + EVENT_KEY,
-    SHOWN: 'shown' + EVENT_KEY,
-    FOCUSIN: 'focusin' + EVENT_KEY,
-    RESIZE: 'resize' + EVENT_KEY,
-    CLICK_DISMISS: 'click.dismiss' + EVENT_KEY,
-    KEYDOWN_DISMISS: 'keydown.dismiss' + EVENT_KEY,
-    MOUSEUP_DISMISS: 'mouseup.dismiss' + EVENT_KEY,
-    MOUSEDOWN_DISMISS: 'mousedown.dismiss' + EVENT_KEY,
-    CLICK_DATA_API: 'click' + EVENT_KEY + DATA_API_KEY
+    HIDE: "hide" + EVENT_KEY,
+    HIDDEN: "hidden" + EVENT_KEY,
+    SHOW: "show" + EVENT_KEY,
+    SHOWN: "shown" + EVENT_KEY,
+    FOCUSIN: "focusin" + EVENT_KEY,
+    RESIZE: "resize" + EVENT_KEY,
+    CLICK_DISMISS: "click.dismiss" + EVENT_KEY,
+    KEYDOWN_DISMISS: "keydown.dismiss" + EVENT_KEY,
+    MOUSEUP_DISMISS: "mouseup.dismiss" + EVENT_KEY,
+    MOUSEDOWN_DISMISS: "mousedown.dismiss" + EVENT_KEY,
+    CLICK_DATA_API: "click" + EVENT_KEY + DATA_API_KEY
   };
-
   var ClassName = {
     SCROLLBAR_MEASURER: 'modal-scrollbar-measure',
     BACKDROP: 'modal-backdrop',
@@ -60649,14 +61714,13 @@ var Modal = function ($) {
     FADE: 'fade',
     SHOW: 'show'
   };
-
   var Selector = {
     DIALOG: '.modal-dialog',
     DATA_TOGGLE: '[data-toggle="modal"]',
     DATA_DISMISS: '[data-dismiss="modal"]',
     FIXED_CONTENT: '.fixed-top, .fixed-bottom, .is-fixed, .sticky-top',
+    STICKY_CONTENT: '.sticky-top',
     NAVBAR_TOGGLER: '.navbar-toggler'
-
     /**
      * ------------------------------------------------------------------------
      * Class Definition
@@ -60664,10 +61728,11 @@ var Modal = function ($) {
      */
 
   };
-  var Modal = function () {
-    function Modal(element, config) {
-      _classCallCheck(this, Modal);
 
+  var Modal =
+  /*#__PURE__*/
+  function () {
+    function Modal(element, config) {
       this._config = this._getConfig(config);
       this._element = element;
       this._dialog = $(element).find(Selector.DIALOG)[0];
@@ -60677,20 +61742,20 @@ var Modal = function ($) {
       this._ignoreBackdropClick = false;
       this._originalBodyPadding = 0;
       this._scrollbarWidth = 0;
-    }
+    } // getters
 
-    // getters
+
+    var _proto = Modal.prototype;
 
     // public
-
-    Modal.prototype.toggle = function toggle(relatedTarget) {
+    _proto.toggle = function toggle(relatedTarget) {
       return this._isShown ? this.hide() : this.show(relatedTarget);
     };
 
-    Modal.prototype.show = function show(relatedTarget) {
-      var _this10 = this;
+    _proto.show = function show(relatedTarget) {
+      var _this = this;
 
-      if (this._isTransitioning) {
+      if (this._isTransitioning || this._isShown) {
         return;
       }
 
@@ -60701,7 +61766,6 @@ var Modal = function ($) {
       var showEvent = $.Event(Event.SHOW, {
         relatedTarget: relatedTarget
       });
-
       $(this._element).trigger(showEvent);
 
       if (this._isShown || showEvent.isDefaultPrevented()) {
@@ -60711,32 +61775,35 @@ var Modal = function ($) {
       this._isShown = true;
 
       this._checkScrollbar();
+
       this._setScrollbar();
+
+      this._adjustDialog();
 
       $(document.body).addClass(ClassName.OPEN);
 
       this._setEscapeEvent();
+
       this._setResizeEvent();
 
       $(this._element).on(Event.CLICK_DISMISS, Selector.DATA_DISMISS, function (event) {
-        return _this10.hide(event);
+        return _this.hide(event);
       });
-
       $(this._dialog).on(Event.MOUSEDOWN_DISMISS, function () {
-        $(_this10._element).one(Event.MOUSEUP_DISMISS, function (event) {
-          if ($(event.target).is(_this10._element)) {
-            _this10._ignoreBackdropClick = true;
+        $(_this._element).one(Event.MOUSEUP_DISMISS, function (event) {
+          if ($(event.target).is(_this._element)) {
+            _this._ignoreBackdropClick = true;
           }
         });
       });
 
       this._showBackdrop(function () {
-        return _this10._showElement(relatedTarget);
+        return _this._showElement(relatedTarget);
       });
     };
 
-    Modal.prototype.hide = function hide(event) {
-      var _this11 = this;
+    _proto.hide = function hide(event) {
+      var _this2 = this;
 
       if (event) {
         event.preventDefault();
@@ -60746,14 +61813,7 @@ var Modal = function ($) {
         return;
       }
 
-      var transition = Util.supportsTransitionEnd() && $(this._element).hasClass(ClassName.FADE);
-
-      if (transition) {
-        this._isTransitioning = true;
-      }
-
       var hideEvent = $.Event(Event.HIDE);
-
       $(this._element).trigger(hideEvent);
 
       if (!this._isShown || hideEvent.isDefaultPrevented()) {
@@ -60761,32 +61821,33 @@ var Modal = function ($) {
       }
 
       this._isShown = false;
+      var transition = Util.supportsTransitionEnd() && $(this._element).hasClass(ClassName.FADE);
+
+      if (transition) {
+        this._isTransitioning = true;
+      }
 
       this._setEscapeEvent();
+
       this._setResizeEvent();
 
       $(document).off(Event.FOCUSIN);
-
       $(this._element).removeClass(ClassName.SHOW);
-
       $(this._element).off(Event.CLICK_DISMISS);
       $(this._dialog).off(Event.MOUSEDOWN_DISMISS);
 
       if (transition) {
-
         $(this._element).one(Util.TRANSITION_END, function (event) {
-          return _this11._hideModal(event);
+          return _this2._hideModal(event);
         }).emulateTransitionEnd(TRANSITION_DURATION);
       } else {
         this._hideModal();
       }
     };
 
-    Modal.prototype.dispose = function dispose() {
+    _proto.dispose = function dispose() {
       $.removeData(this._element, DATA_KEY);
-
       $(window, document, this._element, this._backdrop).off(EVENT_KEY);
-
       this._config = null;
       this._element = null;
       this._dialog = null;
@@ -60797,20 +61858,19 @@ var Modal = function ($) {
       this._scrollbarWidth = null;
     };
 
-    Modal.prototype.handleUpdate = function handleUpdate() {
+    _proto.handleUpdate = function handleUpdate() {
       this._adjustDialog();
-    };
+    }; // private
 
-    // private
 
-    Modal.prototype._getConfig = function _getConfig(config) {
+    _proto._getConfig = function _getConfig(config) {
       config = $.extend({}, Default, config);
       Util.typeCheckConfig(NAME, config, DefaultType);
       return config;
     };
 
-    Modal.prototype._showElement = function _showElement(relatedTarget) {
-      var _this12 = this;
+    _proto._showElement = function _showElement(relatedTarget) {
+      var _this3 = this;
 
       var transition = Util.supportsTransitionEnd() && $(this._element).hasClass(ClassName.FADE);
 
@@ -60820,7 +61880,9 @@ var Modal = function ($) {
       }
 
       this._element.style.display = 'block';
+
       this._element.removeAttribute('aria-hidden');
+
       this._element.scrollTop = 0;
 
       if (transition) {
@@ -60838,11 +61900,12 @@ var Modal = function ($) {
       });
 
       var transitionComplete = function transitionComplete() {
-        if (_this12._config.focus) {
-          _this12._element.focus();
+        if (_this3._config.focus) {
+          _this3._element.focus();
         }
-        _this12._isTransitioning = false;
-        $(_this12._element).trigger(shownEvent);
+
+        _this3._isTransitioning = false;
+        $(_this3._element).trigger(shownEvent);
       };
 
       if (transition) {
@@ -60852,25 +61915,26 @@ var Modal = function ($) {
       }
     };
 
-    Modal.prototype._enforceFocus = function _enforceFocus() {
-      var _this13 = this;
+    _proto._enforceFocus = function _enforceFocus() {
+      var _this4 = this;
 
       $(document).off(Event.FOCUSIN) // guard against infinite focus loop
       .on(Event.FOCUSIN, function (event) {
-        if (document !== event.target && _this13._element !== event.target && !$(_this13._element).has(event.target).length) {
-          _this13._element.focus();
+        if (document !== event.target && _this4._element !== event.target && !$(_this4._element).has(event.target).length) {
+          _this4._element.focus();
         }
       });
     };
 
-    Modal.prototype._setEscapeEvent = function _setEscapeEvent() {
-      var _this14 = this;
+    _proto._setEscapeEvent = function _setEscapeEvent() {
+      var _this5 = this;
 
       if (this._isShown && this._config.keyboard) {
         $(this._element).on(Event.KEYDOWN_DISMISS, function (event) {
           if (event.which === ESCAPE_KEYCODE) {
             event.preventDefault();
-            _this14.hide();
+
+            _this5.hide();
           }
         });
       } else if (!this._isShown) {
@@ -60878,47 +61942,52 @@ var Modal = function ($) {
       }
     };
 
-    Modal.prototype._setResizeEvent = function _setResizeEvent() {
-      var _this15 = this;
+    _proto._setResizeEvent = function _setResizeEvent() {
+      var _this6 = this;
 
       if (this._isShown) {
         $(window).on(Event.RESIZE, function (event) {
-          return _this15.handleUpdate(event);
+          return _this6.handleUpdate(event);
         });
       } else {
         $(window).off(Event.RESIZE);
       }
     };
 
-    Modal.prototype._hideModal = function _hideModal() {
-      var _this16 = this;
+    _proto._hideModal = function _hideModal() {
+      var _this7 = this;
 
       this._element.style.display = 'none';
+
       this._element.setAttribute('aria-hidden', true);
+
       this._isTransitioning = false;
+
       this._showBackdrop(function () {
         $(document.body).removeClass(ClassName.OPEN);
-        _this16._resetAdjustments();
-        _this16._resetScrollbar();
-        $(_this16._element).trigger(Event.HIDDEN);
+
+        _this7._resetAdjustments();
+
+        _this7._resetScrollbar();
+
+        $(_this7._element).trigger(Event.HIDDEN);
       });
     };
 
-    Modal.prototype._removeBackdrop = function _removeBackdrop() {
+    _proto._removeBackdrop = function _removeBackdrop() {
       if (this._backdrop) {
         $(this._backdrop).remove();
         this._backdrop = null;
       }
     };
 
-    Modal.prototype._showBackdrop = function _showBackdrop(callback) {
-      var _this17 = this;
+    _proto._showBackdrop = function _showBackdrop(callback) {
+      var _this8 = this;
 
       var animate = $(this._element).hasClass(ClassName.FADE) ? ClassName.FADE : '';
 
       if (this._isShown && this._config.backdrop) {
         var doAnimate = Util.supportsTransitionEnd() && animate;
-
         this._backdrop = document.createElement('div');
         this._backdrop.className = ClassName.BACKDROP;
 
@@ -60927,19 +61996,20 @@ var Modal = function ($) {
         }
 
         $(this._backdrop).appendTo(document.body);
-
         $(this._element).on(Event.CLICK_DISMISS, function (event) {
-          if (_this17._ignoreBackdropClick) {
-            _this17._ignoreBackdropClick = false;
+          if (_this8._ignoreBackdropClick) {
+            _this8._ignoreBackdropClick = false;
             return;
           }
+
           if (event.target !== event.currentTarget) {
             return;
           }
-          if (_this17._config.backdrop === 'static') {
-            _this17._element.focus();
+
+          if (_this8._config.backdrop === 'static') {
+            _this8._element.focus();
           } else {
-            _this17.hide();
+            _this8.hide();
           }
         });
 
@@ -60963,7 +62033,8 @@ var Modal = function ($) {
         $(this._backdrop).removeClass(ClassName.SHOW);
 
         var callbackRemove = function callbackRemove() {
-          _this17._removeBackdrop();
+          _this8._removeBackdrop();
+
           if (callback) {
             callback();
           }
@@ -60977,88 +62048,92 @@ var Modal = function ($) {
       } else if (callback) {
         callback();
       }
-    };
-
-    // ----------------------------------------------------------------------
+    }; // ----------------------------------------------------------------------
     // the following methods are used to handle overflowing modals
     // todo (fat): these should probably be refactored out of modal.js
     // ----------------------------------------------------------------------
 
-    Modal.prototype._adjustDialog = function _adjustDialog() {
+
+    _proto._adjustDialog = function _adjustDialog() {
       var isModalOverflowing = this._element.scrollHeight > document.documentElement.clientHeight;
 
       if (!this._isBodyOverflowing && isModalOverflowing) {
-        this._element.style.paddingLeft = this._scrollbarWidth + 'px';
+        this._element.style.paddingLeft = this._scrollbarWidth + "px";
       }
 
       if (this._isBodyOverflowing && !isModalOverflowing) {
-        this._element.style.paddingRight = this._scrollbarWidth + 'px';
+        this._element.style.paddingRight = this._scrollbarWidth + "px";
       }
     };
 
-    Modal.prototype._resetAdjustments = function _resetAdjustments() {
+    _proto._resetAdjustments = function _resetAdjustments() {
       this._element.style.paddingLeft = '';
       this._element.style.paddingRight = '';
     };
 
-    Modal.prototype._checkScrollbar = function _checkScrollbar() {
-      this._isBodyOverflowing = document.body.clientWidth < window.innerWidth;
+    _proto._checkScrollbar = function _checkScrollbar() {
+      var rect = document.body.getBoundingClientRect();
+      this._isBodyOverflowing = rect.left + rect.right < window.innerWidth;
       this._scrollbarWidth = this._getScrollbarWidth();
     };
 
-    Modal.prototype._setScrollbar = function _setScrollbar() {
-      var _this18 = this;
+    _proto._setScrollbar = function _setScrollbar() {
+      var _this9 = this;
 
       if (this._isBodyOverflowing) {
         // Note: DOMNode.style.paddingRight returns the actual value or '' if not set
         //   while $(DOMNode).css('padding-right') returns the calculated value or 0 if not set
-
         // Adjust fixed content padding
         $(Selector.FIXED_CONTENT).each(function (index, element) {
           var actualPadding = $(element)[0].style.paddingRight;
           var calculatedPadding = $(element).css('padding-right');
-          $(element).data('padding-right', actualPadding).css('padding-right', parseFloat(calculatedPadding) + _this18._scrollbarWidth + 'px');
-        });
+          $(element).data('padding-right', actualPadding).css('padding-right', parseFloat(calculatedPadding) + _this9._scrollbarWidth + "px");
+        }); // Adjust sticky content margin
 
-        // Adjust navbar-toggler margin
+        $(Selector.STICKY_CONTENT).each(function (index, element) {
+          var actualMargin = $(element)[0].style.marginRight;
+          var calculatedMargin = $(element).css('margin-right');
+          $(element).data('margin-right', actualMargin).css('margin-right', parseFloat(calculatedMargin) - _this9._scrollbarWidth + "px");
+        }); // Adjust navbar-toggler margin
+
         $(Selector.NAVBAR_TOGGLER).each(function (index, element) {
           var actualMargin = $(element)[0].style.marginRight;
           var calculatedMargin = $(element).css('margin-right');
-          $(element).data('margin-right', actualMargin).css('margin-right', parseFloat(calculatedMargin) + _this18._scrollbarWidth + 'px');
-        });
+          $(element).data('margin-right', actualMargin).css('margin-right', parseFloat(calculatedMargin) + _this9._scrollbarWidth + "px");
+        }); // Adjust body padding
 
-        // Adjust body padding
         var actualPadding = document.body.style.paddingRight;
         var calculatedPadding = $('body').css('padding-right');
-        $('body').data('padding-right', actualPadding).css('padding-right', parseFloat(calculatedPadding) + this._scrollbarWidth + 'px');
+        $('body').data('padding-right', actualPadding).css('padding-right', parseFloat(calculatedPadding) + this._scrollbarWidth + "px");
       }
     };
 
-    Modal.prototype._resetScrollbar = function _resetScrollbar() {
+    _proto._resetScrollbar = function _resetScrollbar() {
       // Restore fixed content padding
       $(Selector.FIXED_CONTENT).each(function (index, element) {
         var padding = $(element).data('padding-right');
+
         if (typeof padding !== 'undefined') {
           $(element).css('padding-right', padding).removeData('padding-right');
         }
-      });
+      }); // Restore sticky content and navbar-toggler margin
 
-      // Restore navbar-toggler margin
-      $(Selector.NAVBAR_TOGGLER).each(function (index, element) {
+      $(Selector.STICKY_CONTENT + ", " + Selector.NAVBAR_TOGGLER).each(function (index, element) {
         var margin = $(element).data('margin-right');
+
         if (typeof margin !== 'undefined') {
           $(element).css('margin-right', margin).removeData('margin-right');
         }
-      });
+      }); // Restore body padding
 
-      // Restore body padding
       var padding = $('body').data('padding-right');
+
       if (typeof padding !== 'undefined') {
         $('body').css('padding-right', padding).removeData('padding-right');
       }
     };
 
-    Modal.prototype._getScrollbarWidth = function _getScrollbarWidth() {
+    _proto._getScrollbarWidth = function _getScrollbarWidth() {
       // thx d.walsh
       var scrollDiv = document.createElement('div');
       scrollDiv.className = ClassName.SCROLLBAR_MEASURER;
@@ -61066,14 +62141,14 @@ var Modal = function ($) {
       var scrollbarWidth = scrollDiv.getBoundingClientRect().width - scrollDiv.clientWidth;
       document.body.removeChild(scrollDiv);
       return scrollbarWidth;
-    };
+    }; // static
 
-    // static
 
     Modal._jQueryInterface = function _jQueryInterface(config, relatedTarget) {
       return this.each(function () {
         var data = $(this).data(DATA_KEY);
-        var _config = $.extend({}, Modal.Default, $(this).data(), (typeof config === 'undefined' ? 'undefined' : _typeof(config)) === 'object' && config);
+
+        var _config = $.extend({}, Modal.Default, $(this).data(), typeof config === 'object' && config);
 
         if (!data) {
           data = new Modal(this, _config);
@@ -61081,9 +62156,10 @@ var Modal = function ($) {
         }
 
         if (typeof config === 'string') {
-          if (data[config] === undefined) {
-            throw new Error('No method named "' + config + '"');
+          if (typeof data[config] === 'undefined') {
+            throw new Error("No method named \"" + config + "\"");
           }
+
           data[config](relatedTarget);
         } else if (_config.show) {
           data.show(relatedTarget);
@@ -61091,31 +62167,30 @@ var Modal = function ($) {
       });
     };
 
-    _createClass(Modal, null, [{
-      key: 'VERSION',
+    createClass(Modal, null, [{
+      key: "VERSION",
       get: function get() {
         return VERSION;
       }
     }, {
-      key: 'Default',
+      key: "Default",
       get: function get() {
         return Default;
       }
     }]);
-
     return Modal;
   }();
-
   /**
    * ------------------------------------------------------------------------
    * Data Api implementation
    * ------------------------------------------------------------------------
    */
 
-  $(document).on(Event.CLICK_DATA_API, Selector.DATA_TOGGLE, function (event) {
-    var _this19 = this;
 
-    var target = void 0;
+  $(document).on(Event.CLICK_DATA_API, Selector.DATA_TOGGLE, function (event) {
+    var _this10 = this;
+
+    var target;
     var selector = Util.getSelectorFromElement(this);
 
     if (selector) {
@@ -61135,15 +62210,14 @@ var Modal = function ($) {
       }
 
       $target.one(Event.HIDDEN, function () {
-        if ($(_this19).is(':visible')) {
-          _this19.focus();
+        if ($(_this10).is(':visible')) {
+          _this10.focus();
         }
       });
     });
 
     Modal._jQueryInterface.call($(target), config, this);
   });
-
   /**
    * ------------------------------------------------------------------------
    * jQuery
@@ -61152,75 +62226,108 @@ var Modal = function ($) {
 
   $.fn[NAME] = Modal._jQueryInterface;
   $.fn[NAME].Constructor = Modal;
+
   $.fn[NAME].noConflict = function () {
     $.fn[NAME] = JQUERY_NO_CONFLICT;
     return Modal._jQueryInterface;
   };
 
   return Modal;
-}(jQuery);
+}($);
 
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-beta): scrollspy.js
+ * Bootstrap (v4.0.0-beta.2): tooltip.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * --------------------------------------------------------------------------
  */
 
-var ScrollSpy = function ($) {
-
+var Tooltip = function () {
+  /**
+   * Check for Popper dependency
+   * Popper - https://popper.js.org
+   */
+  if (typeof Popper === 'undefined') {
+    throw new Error('Bootstrap tooltips require Popper.js (https://popper.js.org)');
+  }
   /**
    * ------------------------------------------------------------------------
    * Constants
    * ------------------------------------------------------------------------
    */
 
-  var NAME = 'scrollspy';
-  var VERSION = '4.0.0-beta';
-  var DATA_KEY = 'bs.scrollspy';
-  var EVENT_KEY = '.' + DATA_KEY;
-  var DATA_API_KEY = '.data-api';
+
+  var NAME = 'tooltip';
+  var VERSION = '4.0.0-beta.2';
+  var DATA_KEY = 'bs.tooltip';
+  var EVENT_KEY = "." + DATA_KEY;
   var JQUERY_NO_CONFLICT = $.fn[NAME];
-
-  var Default = {
-    offset: 10,
-    method: 'auto',
-    target: ''
-  };
-
+  var TRANSITION_DURATION = 150;
+  var CLASS_PREFIX = 'bs-tooltip';
+  var BSCLS_PREFIX_REGEX = new RegExp("(^|\\s)" + CLASS_PREFIX + "\\S+", 'g');
   var DefaultType = {
-    offset: 'number',
-    method: 'string',
-    target: '(string|element)'
+    animation: 'boolean',
+    template: 'string',
+    title: '(string|element|function)',
+    trigger: 'string',
+    delay: '(number|object)',
+    html: 'boolean',
+    selector: '(string|boolean)',
+    placement: '(string|function)',
+    offset: '(number|string)',
+    container: '(string|element|boolean)',
+    fallbackPlacement: '(string|array)'
   };
-
+  var AttachmentMap = {
+    AUTO: 'auto',
+    TOP: 'top',
+    RIGHT: 'right',
+    BOTTOM: 'bottom',
+    LEFT: 'left'
+  };
+  var Default = {
+    animation: true,
+    template: '<div class="tooltip" role="tooltip">' + '<div class="arrow"></div>' + '<div class="tooltip-inner"></div></div>',
+    trigger: 'hover focus',
+    title: '',
+    delay: 0,
+    html: false,
+    selector: false,
+    placement: 'top',
+    offset: 0,
+    container: false,
+    fallbackPlacement: 'flip'
+  };
+  var HoverState = {
+    SHOW: 'show',
+    OUT: 'out'
+  };
   var Event = {
-    ACTIVATE: 'activate' + EVENT_KEY,
-    SCROLL: 'scroll' + EVENT_KEY,
-    LOAD_DATA_API: 'load' + EVENT_KEY + DATA_API_KEY
+    HIDE: "hide" + EVENT_KEY,
+    HIDDEN: "hidden" + EVENT_KEY,
+    SHOW: "show" + EVENT_KEY,
+    SHOWN: "shown" + EVENT_KEY,
+    INSERTED: "inserted" + EVENT_KEY,
+    CLICK: "click" + EVENT_KEY,
+    FOCUSIN: "focusin" + EVENT_KEY,
+    FOCUSOUT: "focusout" + EVENT_KEY,
+    MOUSEENTER: "mouseenter" + EVENT_KEY,
+    MOUSELEAVE: "mouseleave" + EVENT_KEY
   };
-
   var ClassName = {
-    DROPDOWN_ITEM: 'dropdown-item',
-    DROPDOWN_MENU: 'dropdown-menu',
-    ACTIVE: 'active'
+    FADE: 'fade',
+    SHOW: 'show'
   };
-
   var Selector = {
-    DATA_SPY: '[data-spy="scroll"]',
-    ACTIVE: '.active',
-    NAV_LIST_GROUP: '.nav, .list-group',
-    NAV_LINKS: '.nav-link',
-    LIST_ITEMS: '.list-group-item',
-    DROPDOWN: '.dropdown',
-    DROPDOWN_ITEMS: '.dropdown-item',
-    DROPDOWN_TOGGLE: '.dropdown-toggle'
+    TOOLTIP: '.tooltip',
+    TOOLTIP_INNER: '.tooltip-inner',
+    ARROW: '.arrow'
   };
-
-  var OffsetMethod = {
-    OFFSET: 'offset',
-    POSITION: 'position'
-
+  var Trigger = {
+    HOVER: 'hover',
+    FOCUS: 'focus',
+    CLICK: 'click',
+    MANUAL: 'manual'
     /**
      * ------------------------------------------------------------------------
      * Class Definition
@@ -61228,51 +62335,852 @@ var ScrollSpy = function ($) {
      */
 
   };
-  var ScrollSpy = function () {
-    function ScrollSpy(element, config) {
-      var _this20 = this;
 
-      _classCallCheck(this, ScrollSpy);
+  var Tooltip =
+  /*#__PURE__*/
+  function () {
+    function Tooltip(element, config) {
+      // private
+      this._isEnabled = true;
+      this._timeout = 0;
+      this._hoverState = '';
+      this._activeTrigger = {};
+      this._popper = null; // protected
+
+      this.element = element;
+      this.config = this._getConfig(config);
+      this.tip = null;
+
+      this._setListeners();
+    } // getters
+
+
+    var _proto = Tooltip.prototype;
+
+    // public
+    _proto.enable = function enable() {
+      this._isEnabled = true;
+    };
+
+    _proto.disable = function disable() {
+      this._isEnabled = false;
+    };
+
+    _proto.toggleEnabled = function toggleEnabled() {
+      this._isEnabled = !this._isEnabled;
+    };
+
+    _proto.toggle = function toggle(event) {
+      if (!this._isEnabled) {
+        return;
+      }
+
+      if (event) {
+        var dataKey = this.constructor.DATA_KEY;
+        var context = $(event.currentTarget).data(dataKey);
+
+        if (!context) {
+          context = new this.constructor(event.currentTarget, this._getDelegateConfig());
+          $(event.currentTarget).data(dataKey, context);
+        }
+
+        context._activeTrigger.click = !context._activeTrigger.click;
+
+        if (context._isWithActiveTrigger()) {
+          context._enter(null, context);
+        } else {
+          context._leave(null, context);
+        }
+      } else {
+        if ($(this.getTipElement()).hasClass(ClassName.SHOW)) {
+          this._leave(null, this);
+
+          return;
+        }
+
+        this._enter(null, this);
+      }
+    };
+
+    _proto.dispose = function dispose() {
+      clearTimeout(this._timeout);
+      $.removeData(this.element, this.constructor.DATA_KEY);
+      $(this.element).off(this.constructor.EVENT_KEY);
+      $(this.element).closest('.modal').off('hide.bs.modal');
+
+      if (this.tip) {
+        $(this.tip).remove();
+      }
+
+      this._isEnabled = null;
+      this._timeout = null;
+      this._hoverState = null;
+      this._activeTrigger = null;
+
+      if (this._popper !== null) {
+        this._popper.destroy();
+      }
+
+      this._popper = null;
+      this.element = null;
+      this.config = null;
+      this.tip = null;
+    };
+
+    _proto.show = function show() {
+      var _this = this;
+
+      if ($(this.element).css('display') === 'none') {
+        throw new Error('Please use show on visible elements');
+      }
+
+      var showEvent = $.Event(this.constructor.Event.SHOW);
+
+      if (this.isWithContent() && this._isEnabled) {
+        $(this.element).trigger(showEvent);
+        var isInTheDom = $.contains(this.element.ownerDocument.documentElement, this.element);
+
+        if (showEvent.isDefaultPrevented() || !isInTheDom) {
+          return;
+        }
+
+        var tip = this.getTipElement();
+        var tipId = Util.getUID(this.constructor.NAME);
+        tip.setAttribute('id', tipId);
+        this.element.setAttribute('aria-describedby', tipId);
+        this.setContent();
+
+        if (this.config.animation) {
+          $(tip).addClass(ClassName.FADE);
+        }
+
+        var placement = typeof this.config.placement === 'function' ? this.config.placement.call(this, tip, this.element) : this.config.placement;
+
+        var attachment = this._getAttachment(placement);
+
+        this.addAttachmentClass(attachment);
+        var container = this.config.container === false ? document.body : $(this.config.container);
+        $(tip).data(this.constructor.DATA_KEY, this);
+
+        if (!$.contains(this.element.ownerDocument.documentElement, this.tip)) {
+          $(tip).appendTo(container);
+        }
+
+        $(this.element).trigger(this.constructor.Event.INSERTED);
+        this._popper = new Popper(this.element, tip, {
+          placement: attachment,
+          modifiers: {
+            offset: {
+              offset: this.config.offset
+            },
+            flip: {
+              behavior: this.config.fallbackPlacement
+            },
+            arrow: {
+              element: Selector.ARROW
+            }
+          },
+          onCreate: function onCreate(data) {
+            if (data.originalPlacement !== data.placement) {
+              _this._handlePopperPlacementChange(data);
+            }
+          },
+          onUpdate: function onUpdate(data) {
+            _this._handlePopperPlacementChange(data);
+          }
+        });
+        $(tip).addClass(ClassName.SHOW); // if this is a touch-enabled device we add extra
+        // empty mouseover listeners to the body's immediate children;
+        // only needed because of broken event delegation on iOS
+        // https://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
+
+        if ('ontouchstart' in document.documentElement) {
+          $('body').children().on('mouseover', null, $.noop);
+        }
+
+        var complete = function complete() {
+          if (_this.config.animation) {
+            _this._fixTransition();
+          }
+
+          var prevHoverState = _this._hoverState;
+          _this._hoverState = null;
+          $(_this.element).trigger(_this.constructor.Event.SHOWN);
+
+          if (prevHoverState === HoverState.OUT) {
+            _this._leave(null, _this);
+          }
+        };
+
+        if (Util.supportsTransitionEnd() && $(this.tip).hasClass(ClassName.FADE)) {
+          $(this.tip).one(Util.TRANSITION_END, complete).emulateTransitionEnd(Tooltip._TRANSITION_DURATION);
+        } else {
+          complete();
+        }
+      }
+    };
+
+    _proto.hide = function hide(callback) {
+      var _this2 = this;
+
+      var tip = this.getTipElement();
+      var hideEvent = $.Event(this.constructor.Event.HIDE);
+
+      var complete = function complete() {
+        if (_this2._hoverState !== HoverState.SHOW && tip.parentNode) {
+          tip.parentNode.removeChild(tip);
+        }
+
+        _this2._cleanTipClass();
+
+        _this2.element.removeAttribute('aria-describedby');
+
+        $(_this2.element).trigger(_this2.constructor.Event.HIDDEN);
+
+        if (_this2._popper !== null) {
+          _this2._popper.destroy();
+        }
+
+        if (callback) {
+          callback();
+        }
+      };
+
+      $(this.element).trigger(hideEvent);
+
+      if (hideEvent.isDefaultPrevented()) {
+        return;
+      }
+
+      $(tip).removeClass(ClassName.SHOW); // if this is a touch-enabled device we remove the extra
+      // empty mouseover listeners we added for iOS support
+
+      if ('ontouchstart' in document.documentElement) {
+        $('body').children().off('mouseover', null, $.noop);
+      }
+
+      this._activeTrigger[Trigger.CLICK] = false;
+      this._activeTrigger[Trigger.FOCUS] = false;
+      this._activeTrigger[Trigger.HOVER] = false;
+
+      if (Util.supportsTransitionEnd() && $(this.tip).hasClass(ClassName.FADE)) {
+        $(tip).one(Util.TRANSITION_END, complete).emulateTransitionEnd(TRANSITION_DURATION);
+      } else {
+        complete();
+      }
+
+      this._hoverState = '';
+    };
+
+    _proto.update = function update() {
+      if (this._popper !== null) {
+        this._popper.scheduleUpdate();
+      }
+    }; // protected
+
+
+    _proto.isWithContent = function isWithContent() {
+      return Boolean(this.getTitle());
+    };
+
+    _proto.addAttachmentClass = function addAttachmentClass(attachment) {
+      $(this.getTipElement()).addClass(CLASS_PREFIX + "-" + attachment);
+    };
+
+    _proto.getTipElement = function getTipElement() {
+      this.tip = this.tip || $(this.config.template)[0];
+      return this.tip;
+    };
+
+    _proto.setContent = function setContent() {
+      var $tip = $(this.getTipElement());
+      this.setElementContent($tip.find(Selector.TOOLTIP_INNER), this.getTitle());
+      $tip.removeClass(ClassName.FADE + " " + ClassName.SHOW);
+    };
+
+    _proto.setElementContent = function setElementContent($element, content) {
+      var html = this.config.html;
+
+      if (typeof content === 'object' && (content.nodeType || content.jquery)) {
+        // content is a DOM node or a jQuery
+        if (html) {
+          if (!$(content).parent().is($element)) {
+            $element.empty().append(content);
+          }
+        } else {
+          $element.text($(content).text());
+        }
+      } else {
+        $element[html ? 'html' : 'text'](content);
+      }
+    };
+
+    _proto.getTitle = function getTitle() {
+      var title = this.element.getAttribute('data-original-title');
+
+      if (!title) {
+        title = typeof this.config.title === 'function' ? this.config.title.call(this.element) : this.config.title;
+      }
+
+      return title;
+    }; // private
+
+
+    _proto._getAttachment = function _getAttachment(placement) {
+      return AttachmentMap[placement.toUpperCase()];
+    };
+
+    _proto._setListeners = function _setListeners() {
+      var _this3 = this;
+
+      var triggers = this.config.trigger.split(' ');
+      triggers.forEach(function (trigger) {
+        if (trigger === 'click') {
+          $(_this3.element).on(_this3.constructor.Event.CLICK, _this3.config.selector, function (event) {
+            return _this3.toggle(event);
+          });
+        } else if (trigger !== Trigger.MANUAL) {
+          var eventIn = trigger === Trigger.HOVER ? _this3.constructor.Event.MOUSEENTER : _this3.constructor.Event.FOCUSIN;
+          var eventOut = trigger === Trigger.HOVER ? _this3.constructor.Event.MOUSELEAVE : _this3.constructor.Event.FOCUSOUT;
+          $(_this3.element).on(eventIn, _this3.config.selector, function (event) {
+            return _this3._enter(event);
+          }).on(eventOut, _this3.config.selector, function (event) {
+            return _this3._leave(event);
+          });
+        }
+
+        $(_this3.element).closest('.modal').on('hide.bs.modal', function () {
+          return _this3.hide();
+        });
+      });
+
+      if (this.config.selector) {
+        this.config = $.extend({}, this.config, {
+          trigger: 'manual',
+          selector: ''
+        });
+      } else {
+        this._fixTitle();
+      }
+    };
+
+    _proto._fixTitle = function _fixTitle() {
+      var titleType = typeof this.element.getAttribute('data-original-title');
+
+      if (this.element.getAttribute('title') || titleType !== 'string') {
+        this.element.setAttribute('data-original-title', this.element.getAttribute('title') || '');
+        this.element.setAttribute('title', '');
+      }
+    };
+
+    _proto._enter = function _enter(event, context) {
+      var dataKey = this.constructor.DATA_KEY;
+      context = context || $(event.currentTarget).data(dataKey);
+
+      if (!context) {
+        context = new this.constructor(event.currentTarget, this._getDelegateConfig());
+        $(event.currentTarget).data(dataKey, context);
+      }
+
+      if (event) {
+        context._activeTrigger[event.type === 'focusin' ? Trigger.FOCUS : Trigger.HOVER] = true;
+      }
+
+      if ($(context.getTipElement()).hasClass(ClassName.SHOW) || context._hoverState === HoverState.SHOW) {
+        context._hoverState = HoverState.SHOW;
+        return;
+      }
+
+      clearTimeout(context._timeout);
+      context._hoverState = HoverState.SHOW;
+
+      if (!context.config.delay || !context.config.delay.show) {
+        context.show();
+        return;
+      }
+
+      context._timeout = setTimeout(function () {
+        if (context._hoverState === HoverState.SHOW) {
+          context.show();
+        }
+      }, context.config.delay.show);
+    };
+
+    _proto._leave = function _leave(event, context) {
+      var dataKey = this.constructor.DATA_KEY;
+      context = context || $(event.currentTarget).data(dataKey);
+
+      if (!context) {
+        context = new this.constructor(event.currentTarget, this._getDelegateConfig());
+        $(event.currentTarget).data(dataKey, context);
+      }
+
+      if (event) {
+        context._activeTrigger[event.type === 'focusout' ? Trigger.FOCUS : Trigger.HOVER] = false;
+      }
+
+      if (context._isWithActiveTrigger()) {
+        return;
+      }
+
+      clearTimeout(context._timeout);
+      context._hoverState = HoverState.OUT;
+
+      if (!context.config.delay || !context.config.delay.hide) {
+        context.hide();
+        return;
+      }
+
+      context._timeout = setTimeout(function () {
+        if (context._hoverState === HoverState.OUT) {
+          context.hide();
+        }
+      }, context.config.delay.hide);
+    };
+
+    _proto._isWithActiveTrigger = function _isWithActiveTrigger() {
+      for (var trigger in this._activeTrigger) {
+        if (this._activeTrigger[trigger]) {
+          return true;
+        }
+      }
+
+      return false;
+    };
+
+    _proto._getConfig = function _getConfig(config) {
+      config = $.extend({}, this.constructor.Default, $(this.element).data(), config);
+
+      if (typeof config.delay === 'number') {
+        config.delay = {
+          show: config.delay,
+          hide: config.delay
+        };
+      }
+
+      if (typeof config.title === 'number') {
+        config.title = config.title.toString();
+      }
+
+      if (typeof config.content === 'number') {
+        config.content = config.content.toString();
+      }
+
+      Util.typeCheckConfig(NAME, config, this.constructor.DefaultType);
+      return config;
+    };
+
+    _proto._getDelegateConfig = function _getDelegateConfig() {
+      var config = {};
+
+      if (this.config) {
+        for (var key in this.config) {
+          if (this.constructor.Default[key] !== this.config[key]) {
+            config[key] = this.config[key];
+          }
+        }
+      }
+
+      return config;
+    };
+
+    _proto._cleanTipClass = function _cleanTipClass() {
+      var $tip = $(this.getTipElement());
+      var tabClass = $tip.attr('class').match(BSCLS_PREFIX_REGEX);
+
+      if (tabClass !== null && tabClass.length > 0) {
+        $tip.removeClass(tabClass.join(''));
+      }
+    };
+
+    _proto._handlePopperPlacementChange = function _handlePopperPlacementChange(data) {
+      this._cleanTipClass();
+
+      this.addAttachmentClass(this._getAttachment(data.placement));
+    };
+
+    _proto._fixTransition = function _fixTransition() {
+      var tip = this.getTipElement();
+      var initConfigAnimation = this.config.animation;
+
+      if (tip.getAttribute('x-placement') !== null) {
+        return;
+      }
+
+      $(tip).removeClass(ClassName.FADE);
+      this.config.animation = false;
+      this.hide();
+      this.show();
+      this.config.animation = initConfigAnimation;
+    }; // static
+
+
+    Tooltip._jQueryInterface = function _jQueryInterface(config) {
+      return this.each(function () {
+        var data = $(this).data(DATA_KEY);
+
+        var _config = typeof config === 'object' && config;
+
+        if (!data && /dispose|hide/.test(config)) {
+          return;
+        }
+
+        if (!data) {
+          data = new Tooltip(this, _config);
+          $(this).data(DATA_KEY, data);
+        }
+
+        if (typeof config === 'string') {
+          if (typeof data[config] === 'undefined') {
+            throw new Error("No method named \"" + config + "\"");
+          }
+
+          data[config]();
+        }
+      });
+    };
+
+    createClass(Tooltip, null, [{
+      key: "VERSION",
+      get: function get() {
+        return VERSION;
+      }
+    }, {
+      key: "Default",
+      get: function get() {
+        return Default;
+      }
+    }, {
+      key: "NAME",
+      get: function get() {
+        return NAME;
+      }
+    }, {
+      key: "DATA_KEY",
+      get: function get() {
+        return DATA_KEY;
+      }
+    }, {
+      key: "Event",
+      get: function get() {
+        return Event;
+      }
+    }, {
+      key: "EVENT_KEY",
+      get: function get() {
+        return EVENT_KEY;
+      }
+    }, {
+      key: "DefaultType",
+      get: function get() {
+        return DefaultType;
+      }
+    }]);
+    return Tooltip;
+  }();
+  /**
+   * ------------------------------------------------------------------------
+   * jQuery
+   * ------------------------------------------------------------------------
+   */
+
+
+  $.fn[NAME] = Tooltip._jQueryInterface;
+  $.fn[NAME].Constructor = Tooltip;
+
+  $.fn[NAME].noConflict = function () {
+    $.fn[NAME] = JQUERY_NO_CONFLICT;
+    return Tooltip._jQueryInterface;
+  };
+
+  return Tooltip;
+}($, Popper);
+
+/**
+ * --------------------------------------------------------------------------
+ * Bootstrap (v4.0.0-beta.2): popover.js
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * --------------------------------------------------------------------------
+ */
+
+var Popover = function () {
+  /**
+   * ------------------------------------------------------------------------
+   * Constants
+   * ------------------------------------------------------------------------
+   */
+  var NAME = 'popover';
+  var VERSION = '4.0.0-beta.2';
+  var DATA_KEY = 'bs.popover';
+  var EVENT_KEY = "." + DATA_KEY;
+  var JQUERY_NO_CONFLICT = $.fn[NAME];
+  var CLASS_PREFIX = 'bs-popover';
+  var BSCLS_PREFIX_REGEX = new RegExp("(^|\\s)" + CLASS_PREFIX + "\\S+", 'g');
+  var Default = $.extend({}, Tooltip.Default, {
+    placement: 'right',
+    trigger: 'click',
+    content: '',
+    template: '<div class="popover" role="tooltip">' + '<div class="arrow"></div>' + '<h3 class="popover-header"></h3>' + '<div class="popover-body"></div></div>'
+  });
+  var DefaultType = $.extend({}, Tooltip.DefaultType, {
+    content: '(string|element|function)'
+  });
+  var ClassName = {
+    FADE: 'fade',
+    SHOW: 'show'
+  };
+  var Selector = {
+    TITLE: '.popover-header',
+    CONTENT: '.popover-body'
+  };
+  var Event = {
+    HIDE: "hide" + EVENT_KEY,
+    HIDDEN: "hidden" + EVENT_KEY,
+    SHOW: "show" + EVENT_KEY,
+    SHOWN: "shown" + EVENT_KEY,
+    INSERTED: "inserted" + EVENT_KEY,
+    CLICK: "click" + EVENT_KEY,
+    FOCUSIN: "focusin" + EVENT_KEY,
+    FOCUSOUT: "focusout" + EVENT_KEY,
+    MOUSEENTER: "mouseenter" + EVENT_KEY,
+    MOUSELEAVE: "mouseleave" + EVENT_KEY
+    /**
+     * ------------------------------------------------------------------------
+     * Class Definition
+     * ------------------------------------------------------------------------
+     */
+
+  };
+
+  var Popover =
+  /*#__PURE__*/
+  function (_Tooltip) {
+    inheritsLoose(Popover, _Tooltip);
+
+    function Popover() {
+      return _Tooltip.apply(this, arguments) || this;
+    }
+
+    var _proto = Popover.prototype;
+
+    // overrides
+    _proto.isWithContent = function isWithContent() {
+      return this.getTitle() || this._getContent();
+    };
+
+    _proto.addAttachmentClass = function addAttachmentClass(attachment) {
+      $(this.getTipElement()).addClass(CLASS_PREFIX + "-" + attachment);
+    };
+
+    _proto.getTipElement = function getTipElement() {
+      this.tip = this.tip || $(this.config.template)[0];
+      return this.tip;
+    };
+
+    _proto.setContent = function setContent() {
+      var $tip = $(this.getTipElement()); // we use append for html objects to maintain js events
+
+      this.setElementContent($tip.find(Selector.TITLE), this.getTitle());
+      this.setElementContent($tip.find(Selector.CONTENT), this._getContent());
+      $tip.removeClass(ClassName.FADE + " " + ClassName.SHOW);
+    }; // private
+
+
+    _proto._getContent = function _getContent() {
+      return this.element.getAttribute('data-content') || (typeof this.config.content === 'function' ? this.config.content.call(this.element) : this.config.content);
+    };
+
+    _proto._cleanTipClass = function _cleanTipClass() {
+      var $tip = $(this.getTipElement());
+      var tabClass = $tip.attr('class').match(BSCLS_PREFIX_REGEX);
+
+      if (tabClass !== null && tabClass.length > 0) {
+        $tip.removeClass(tabClass.join(''));
+      }
+    }; // static
+
+
+    Popover._jQueryInterface = function _jQueryInterface(config) {
+      return this.each(function () {
+        var data = $(this).data(DATA_KEY);
+
+        var _config = typeof config === 'object' ? config : null;
+
+        if (!data && /destroy|hide/.test(config)) {
+          return;
+        }
+
+        if (!data) {
+          data = new Popover(this, _config);
+          $(this).data(DATA_KEY, data);
+        }
+
+        if (typeof config === 'string') {
+          if (typeof data[config] === 'undefined') {
+            throw new Error("No method named \"" + config + "\"");
+          }
+
+          data[config]();
+        }
+      });
+    };
+
+    createClass(Popover, null, [{
+      key: "VERSION",
+      // getters
+      get: function get() {
+        return VERSION;
+      }
+    }, {
+      key: "Default",
+      get: function get() {
+        return Default;
+      }
+    }, {
+      key: "NAME",
+      get: function get() {
+        return NAME;
+      }
+    }, {
+      key: "DATA_KEY",
+      get: function get() {
+        return DATA_KEY;
+      }
+    }, {
+      key: "Event",
+      get: function get() {
+        return Event;
+      }
+    }, {
+      key: "EVENT_KEY",
+      get: function get() {
+        return EVENT_KEY;
+      }
+    }, {
+      key: "DefaultType",
+      get: function get() {
+        return DefaultType;
+      }
+    }]);
+    return Popover;
+  }(Tooltip);
+  /**
+   * ------------------------------------------------------------------------
+   * jQuery
+   * ------------------------------------------------------------------------
+   */
+
+
+  $.fn[NAME] = Popover._jQueryInterface;
+  $.fn[NAME].Constructor = Popover;
+
+  $.fn[NAME].noConflict = function () {
+    $.fn[NAME] = JQUERY_NO_CONFLICT;
+    return Popover._jQueryInterface;
+  };
+
+  return Popover;
+}($);
+
+/**
+ * --------------------------------------------------------------------------
+ * Bootstrap (v4.0.0-beta.2): scrollspy.js
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * --------------------------------------------------------------------------
+ */
+
+var ScrollSpy = function () {
+  /**
+   * ------------------------------------------------------------------------
+   * Constants
+   * ------------------------------------------------------------------------
+   */
+  var NAME = 'scrollspy';
+  var VERSION = '4.0.0-beta.2';
+  var DATA_KEY = 'bs.scrollspy';
+  var EVENT_KEY = "." + DATA_KEY;
+  var DATA_API_KEY = '.data-api';
+  var JQUERY_NO_CONFLICT = $.fn[NAME];
+  var Default = {
+    offset: 10,
+    method: 'auto',
+    target: ''
+  };
+  var DefaultType = {
+    offset: 'number',
+    method: 'string',
+    target: '(string|element)'
+  };
+  var Event = {
+    ACTIVATE: "activate" + EVENT_KEY,
+    SCROLL: "scroll" + EVENT_KEY,
+    LOAD_DATA_API: "load" + EVENT_KEY + DATA_API_KEY
+  };
+  var ClassName = {
+    DROPDOWN_ITEM: 'dropdown-item',
+    DROPDOWN_MENU: 'dropdown-menu',
+    ACTIVE: 'active'
+  };
+  var Selector = {
+    DATA_SPY: '[data-spy="scroll"]',
+    ACTIVE: '.active',
+    NAV_LIST_GROUP: '.nav, .list-group',
+    NAV_LINKS: '.nav-link',
+    NAV_ITEMS: '.nav-item',
+    LIST_ITEMS: '.list-group-item',
+    DROPDOWN: '.dropdown',
+    DROPDOWN_ITEMS: '.dropdown-item',
+    DROPDOWN_TOGGLE: '.dropdown-toggle'
+  };
+  var OffsetMethod = {
+    OFFSET: 'offset',
+    POSITION: 'position'
+    /**
+     * ------------------------------------------------------------------------
+     * Class Definition
+     * ------------------------------------------------------------------------
+     */
+
+  };
+
+  var ScrollSpy =
+  /*#__PURE__*/
+  function () {
+    function ScrollSpy(element, config) {
+      var _this = this;
 
       this._element = element;
       this._scrollElement = element.tagName === 'BODY' ? window : element;
       this._config = this._getConfig(config);
-      this._selector = this._config.target + ' ' + Selector.NAV_LINKS + ',' + (this._config.target + ' ' + Selector.LIST_ITEMS + ',') + (this._config.target + ' ' + Selector.DROPDOWN_ITEMS);
+      this._selector = this._config.target + " " + Selector.NAV_LINKS + "," + (this._config.target + " " + Selector.LIST_ITEMS + ",") + (this._config.target + " " + Selector.DROPDOWN_ITEMS);
       this._offsets = [];
       this._targets = [];
       this._activeTarget = null;
       this._scrollHeight = 0;
-
       $(this._scrollElement).on(Event.SCROLL, function (event) {
-        return _this20._process(event);
+        return _this._process(event);
       });
-
       this.refresh();
-      this._process();
-    }
 
-    // getters
+      this._process();
+    } // getters
+
+
+    var _proto = ScrollSpy.prototype;
 
     // public
-
-    ScrollSpy.prototype.refresh = function refresh() {
-      var _this21 = this;
+    _proto.refresh = function refresh() {
+      var _this2 = this;
 
       var autoMethod = this._scrollElement !== this._scrollElement.window ? OffsetMethod.POSITION : OffsetMethod.OFFSET;
-
       var offsetMethod = this._config.method === 'auto' ? autoMethod : this._config.method;
-
       var offsetBase = offsetMethod === OffsetMethod.POSITION ? this._getScrollTop() : 0;
-
       this._offsets = [];
       this._targets = [];
-
       this._scrollHeight = this._getScrollHeight();
-
       var targets = $.makeArray($(this._selector));
-
       targets.map(function (element) {
-        var target = void 0;
+        var target;
         var targetSelector = Util.getSelectorFromElement(element);
 
         if (targetSelector) {
@@ -61281,26 +63189,28 @@ var ScrollSpy = function ($) {
 
         if (target) {
           var targetBCR = target.getBoundingClientRect();
+
           if (targetBCR.width || targetBCR.height) {
             // todo (fat): remove sketch reliance on jQuery position/offset
             return [$(target)[offsetMethod]().top + offsetBase, targetSelector];
           }
         }
+
         return null;
       }).filter(function (item) {
         return item;
       }).sort(function (a, b) {
         return a[0] - b[0];
       }).forEach(function (item) {
-        _this21._offsets.push(item[0]);
-        _this21._targets.push(item[1]);
+        _this2._offsets.push(item[0]);
+
+        _this2._targets.push(item[1]);
       });
     };
 
-    ScrollSpy.prototype.dispose = function dispose() {
+    _proto.dispose = function dispose() {
       $.removeData(this._element, DATA_KEY);
       $(this._scrollElement).off(EVENT_KEY);
-
       this._element = null;
       this._scrollElement = null;
       this._config = null;
@@ -61309,42 +63219,44 @@ var ScrollSpy = function ($) {
       this._targets = null;
       this._activeTarget = null;
       this._scrollHeight = null;
-    };
+    }; // private
 
-    // private
 
-    ScrollSpy.prototype._getConfig = function _getConfig(config) {
+    _proto._getConfig = function _getConfig(config) {
       config = $.extend({}, Default, config);
 
       if (typeof config.target !== 'string') {
         var id = $(config.target).attr('id');
+
         if (!id) {
           id = Util.getUID(NAME);
           $(config.target).attr('id', id);
         }
-        config.target = '#' + id;
+
+        config.target = "#" + id;
       }
 
       Util.typeCheckConfig(NAME, config, DefaultType);
-
       return config;
     };
 
-    ScrollSpy.prototype._getScrollTop = function _getScrollTop() {
+    _proto._getScrollTop = function _getScrollTop() {
       return this._scrollElement === window ? this._scrollElement.pageYOffset : this._scrollElement.scrollTop;
     };
 
-    ScrollSpy.prototype._getScrollHeight = function _getScrollHeight() {
+    _proto._getScrollHeight = function _getScrollHeight() {
       return this._scrollElement.scrollHeight || Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
     };
 
-    ScrollSpy.prototype._getOffsetHeight = function _getOffsetHeight() {
+    _proto._getOffsetHeight = function _getOffsetHeight() {
       return this._scrollElement === window ? window.innerHeight : this._scrollElement.getBoundingClientRect().height;
     };
 
-    ScrollSpy.prototype._process = function _process() {
+    _proto._process = function _process() {
       var scrollTop = this._getScrollTop() + this._config.offset;
+
       var scrollHeight = this._getScrollHeight();
+
       var maxScroll = this._config.offset + scrollHeight - this._getOffsetHeight();
 
       if (this._scrollHeight !== scrollHeight) {
@@ -61357,17 +63269,20 @@ var ScrollSpy = function ($) {
         if (this._activeTarget !== target) {
           this._activate(target);
         }
+
         return;
       }
 
       if (this._activeTarget && scrollTop < this._offsets[0] && this._offsets[0] > 0) {
         this._activeTarget = null;
+
         this._clear();
+
         return;
       }
 
       for (var i = this._offsets.length; i--;) {
-        var isActiveTarget = this._activeTarget !== this._targets[i] && scrollTop >= this._offsets[i] && (this._offsets[i + 1] === undefined || scrollTop < this._offsets[i + 1]);
+        var isActiveTarget = this._activeTarget !== this._targets[i] && scrollTop >= this._offsets[i] && (typeof this._offsets[i + 1] === 'undefined' || scrollTop < this._offsets[i + 1]);
 
         if (isActiveTarget) {
           this._activate(this._targets[i]);
@@ -61375,16 +63290,17 @@ var ScrollSpy = function ($) {
       }
     };
 
-    ScrollSpy.prototype._activate = function _activate(target) {
+    _proto._activate = function _activate(target) {
       this._activeTarget = target;
 
       this._clear();
 
-      var queries = this._selector.split(',');
-      queries = queries.map(function (selector) {
-        return selector + '[data-target="' + target + '"],' + (selector + '[href="' + target + '"]');
-      });
+      var queries = this._selector.split(','); // eslint-disable-next-line arrow-body-style
 
+
+      queries = queries.map(function (selector) {
+        return selector + "[data-target=\"" + target + "\"]," + (selector + "[href=\"" + target + "\"]");
+      });
       var $link = $(queries.join(','));
 
       if ($link.hasClass(ClassName.DROPDOWN_ITEM)) {
@@ -61392,10 +63308,12 @@ var ScrollSpy = function ($) {
         $link.addClass(ClassName.ACTIVE);
       } else {
         // Set triggered link as active
-        $link.addClass(ClassName.ACTIVE);
-        // Set triggered links parents as active
+        $link.addClass(ClassName.ACTIVE); // Set triggered links parents as active
         // With both <ul> and <nav> markup a parent is the previous sibling of any nav ancestor
-        $link.parents(Selector.NAV_LIST_GROUP).prev(Selector.NAV_LINKS + ', ' + Selector.LIST_ITEMS).addClass(ClassName.ACTIVE);
+
+        $link.parents(Selector.NAV_LIST_GROUP).prev(Selector.NAV_LINKS + ", " + Selector.LIST_ITEMS).addClass(ClassName.ACTIVE); // Handle special case when .nav-link is inside .nav-item
+
+        $link.parents(Selector.NAV_LIST_GROUP).prev(Selector.NAV_ITEMS).children(Selector.NAV_LINKS).addClass(ClassName.ACTIVE);
       }
 
       $(this._scrollElement).trigger(Event.ACTIVATE, {
@@ -61403,16 +63321,16 @@ var ScrollSpy = function ($) {
       });
     };
 
-    ScrollSpy.prototype._clear = function _clear() {
+    _proto._clear = function _clear() {
       $(this._selector).filter(Selector.ACTIVE).removeClass(ClassName.ACTIVE);
-    };
+    }; // static
 
-    // static
 
     ScrollSpy._jQueryInterface = function _jQueryInterface(config) {
       return this.each(function () {
         var data = $(this).data(DATA_KEY);
-        var _config = (typeof config === 'undefined' ? 'undefined' : _typeof(config)) === 'object' && config;
+
+        var _config = typeof config === 'object' && config;
 
         if (!data) {
           data = new ScrollSpy(this, _config);
@@ -61420,44 +63338,44 @@ var ScrollSpy = function ($) {
         }
 
         if (typeof config === 'string') {
-          if (data[config] === undefined) {
-            throw new Error('No method named "' + config + '"');
+          if (typeof data[config] === 'undefined') {
+            throw new Error("No method named \"" + config + "\"");
           }
+
           data[config]();
         }
       });
     };
 
-    _createClass(ScrollSpy, null, [{
-      key: 'VERSION',
+    createClass(ScrollSpy, null, [{
+      key: "VERSION",
       get: function get() {
         return VERSION;
       }
     }, {
-      key: 'Default',
+      key: "Default",
       get: function get() {
         return Default;
       }
     }]);
-
     return ScrollSpy;
   }();
-
   /**
    * ------------------------------------------------------------------------
    * Data Api implementation
    * ------------------------------------------------------------------------
    */
 
+
   $(window).on(Event.LOAD_DATA_API, function () {
     var scrollSpys = $.makeArray($(Selector.DATA_SPY));
 
     for (var i = scrollSpys.length; i--;) {
       var $spy = $(scrollSpys[i]);
+
       ScrollSpy._jQueryInterface.call($spy, $spy.data());
     }
   });
-
   /**
    * ------------------------------------------------------------------------
    * jQuery
@@ -61466,45 +63384,42 @@ var ScrollSpy = function ($) {
 
   $.fn[NAME] = ScrollSpy._jQueryInterface;
   $.fn[NAME].Constructor = ScrollSpy;
+
   $.fn[NAME].noConflict = function () {
     $.fn[NAME] = JQUERY_NO_CONFLICT;
     return ScrollSpy._jQueryInterface;
   };
 
   return ScrollSpy;
-}(jQuery);
+}($);
 
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-beta): tab.js
+ * Bootstrap (v4.0.0-beta.2): tab.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * --------------------------------------------------------------------------
  */
 
-var Tab = function ($) {
-
+var Tab = function () {
   /**
    * ------------------------------------------------------------------------
    * Constants
    * ------------------------------------------------------------------------
    */
-
   var NAME = 'tab';
-  var VERSION = '4.0.0-beta';
+  var VERSION = '4.0.0-beta.2';
   var DATA_KEY = 'bs.tab';
-  var EVENT_KEY = '.' + DATA_KEY;
+  var EVENT_KEY = "." + DATA_KEY;
   var DATA_API_KEY = '.data-api';
   var JQUERY_NO_CONFLICT = $.fn[NAME];
   var TRANSITION_DURATION = 150;
-
   var Event = {
-    HIDE: 'hide' + EVENT_KEY,
-    HIDDEN: 'hidden' + EVENT_KEY,
-    SHOW: 'show' + EVENT_KEY,
-    SHOWN: 'shown' + EVENT_KEY,
-    CLICK_DATA_API: 'click' + EVENT_KEY + DATA_API_KEY
+    HIDE: "hide" + EVENT_KEY,
+    HIDDEN: "hidden" + EVENT_KEY,
+    SHOW: "show" + EVENT_KEY,
+    SHOWN: "shown" + EVENT_KEY,
+    CLICK_DATA_API: "click" + EVENT_KEY + DATA_API_KEY
   };
-
   var ClassName = {
     DROPDOWN_MENU: 'dropdown-menu',
     ACTIVE: 'active',
@@ -61512,15 +63427,14 @@ var Tab = function ($) {
     FADE: 'fade',
     SHOW: 'show'
   };
-
   var Selector = {
     DROPDOWN: '.dropdown',
     NAV_LIST_GROUP: '.nav, .list-group',
     ACTIVE: '.active',
+    ACTIVE_UL: '> li > .active',
     DATA_TOGGLE: '[data-toggle="tab"], [data-toggle="pill"], [data-toggle="list"]',
     DROPDOWN_TOGGLE: '.dropdown-toggle',
     DROPDOWN_ACTIVE_CHILD: '> .dropdown-menu .active'
-
     /**
      * ------------------------------------------------------------------------
      * Class Definition
@@ -61528,38 +63442,39 @@ var Tab = function ($) {
      */
 
   };
-  var Tab = function () {
+
+  var Tab =
+  /*#__PURE__*/
+  function () {
     function Tab(element) {
-      _classCallCheck(this, Tab);
-
       this._element = element;
-    }
+    } // getters
 
-    // getters
+
+    var _proto = Tab.prototype;
 
     // public
-
-    Tab.prototype.show = function show() {
-      var _this22 = this;
+    _proto.show = function show() {
+      var _this = this;
 
       if (this._element.parentNode && this._element.parentNode.nodeType === Node.ELEMENT_NODE && $(this._element).hasClass(ClassName.ACTIVE) || $(this._element).hasClass(ClassName.DISABLED)) {
         return;
       }
 
-      var target = void 0;
-      var previous = void 0;
+      var target;
+      var previous;
       var listElement = $(this._element).closest(Selector.NAV_LIST_GROUP)[0];
       var selector = Util.getSelectorFromElement(this._element);
 
       if (listElement) {
-        previous = $.makeArray($(listElement).find(Selector.ACTIVE));
+        var itemSelector = listElement.nodeName === 'UL' ? Selector.ACTIVE_UL : Selector.ACTIVE;
+        previous = $.makeArray($(listElement).find(itemSelector));
         previous = previous[previous.length - 1];
       }
 
       var hideEvent = $.Event(Event.HIDE, {
         relatedTarget: this._element
       });
-
       var showEvent = $.Event(Event.SHOW, {
         relatedTarget: previous
       });
@@ -61582,15 +63497,13 @@ var Tab = function ($) {
 
       var complete = function complete() {
         var hiddenEvent = $.Event(Event.HIDDEN, {
-          relatedTarget: _this22._element
+          relatedTarget: _this._element
         });
-
         var shownEvent = $.Event(Event.SHOWN, {
           relatedTarget: previous
         });
-
         $(previous).trigger(hiddenEvent);
-        $(_this22._element).trigger(shownEvent);
+        $(_this._element).trigger(shownEvent);
       };
 
       if (target) {
@@ -61600,21 +63513,28 @@ var Tab = function ($) {
       }
     };
 
-    Tab.prototype.dispose = function dispose() {
+    _proto.dispose = function dispose() {
       $.removeData(this._element, DATA_KEY);
       this._element = null;
-    };
+    }; // private
 
-    // private
 
-    Tab.prototype._activate = function _activate(element, container, callback) {
-      var _this23 = this;
+    _proto._activate = function _activate(element, container, callback) {
+      var _this2 = this;
 
-      var active = $(container).find(Selector.ACTIVE)[0];
+      var activeElements;
+
+      if (container.nodeName === 'UL') {
+        activeElements = $(container).find(Selector.ACTIVE_UL);
+      } else {
+        activeElements = $(container).children(Selector.ACTIVE);
+      }
+
+      var active = activeElements[0];
       var isTransitioning = callback && Util.supportsTransitionEnd() && active && $(active).hasClass(ClassName.FADE);
 
       var complete = function complete() {
-        return _this23._transitionComplete(element, active, isTransitioning, callback);
+        return _this2._transitionComplete(element, active, isTransitioning, callback);
       };
 
       if (active && isTransitioning) {
@@ -61628,21 +63548,25 @@ var Tab = function ($) {
       }
     };
 
-    Tab.prototype._transitionComplete = function _transitionComplete(element, active, isTransitioning, callback) {
+    _proto._transitionComplete = function _transitionComplete(element, active, isTransitioning, callback) {
       if (active) {
         $(active).removeClass(ClassName.ACTIVE);
-
         var dropdownChild = $(active.parentNode).find(Selector.DROPDOWN_ACTIVE_CHILD)[0];
 
         if (dropdownChild) {
           $(dropdownChild).removeClass(ClassName.ACTIVE);
         }
 
-        active.setAttribute('aria-expanded', false);
+        if (active.getAttribute('role') === 'tab') {
+          active.setAttribute('aria-selected', false);
+        }
       }
 
       $(element).addClass(ClassName.ACTIVE);
-      element.setAttribute('aria-expanded', true);
+
+      if (element.getAttribute('role') === 'tab') {
+        element.setAttribute('aria-selected', true);
+      }
 
       if (isTransitioning) {
         Util.reflow(element);
@@ -61652,8 +63576,8 @@ var Tab = function ($) {
       }
 
       if (element.parentNode && $(element.parentNode).hasClass(ClassName.DROPDOWN_MENU)) {
-
         var dropdownElement = $(element).closest(Selector.DROPDOWN)[0];
+
         if (dropdownElement) {
           $(dropdownElement).find(Selector.DROPDOWN_TOGGLE).addClass(ClassName.ACTIVE);
         }
@@ -61664,9 +63588,8 @@ var Tab = function ($) {
       if (callback) {
         callback();
       }
-    };
+    }; // static
 
-    // static
 
     Tab._jQueryInterface = function _jQueryInterface(config) {
       return this.each(function () {
@@ -61679,35 +63602,35 @@ var Tab = function ($) {
         }
 
         if (typeof config === 'string') {
-          if (data[config] === undefined) {
-            throw new Error('No method named "' + config + '"');
+          if (typeof data[config] === 'undefined') {
+            throw new Error("No method named \"" + config + "\"");
           }
+
           data[config]();
         }
       });
     };
 
-    _createClass(Tab, null, [{
-      key: 'VERSION',
+    createClass(Tab, null, [{
+      key: "VERSION",
       get: function get() {
         return VERSION;
       }
     }]);
-
     return Tab;
   }();
-
   /**
    * ------------------------------------------------------------------------
    * Data Api implementation
    * ------------------------------------------------------------------------
    */
 
+
   $(document).on(Event.CLICK_DATA_API, Selector.DATA_TOGGLE, function (event) {
     event.preventDefault();
+
     Tab._jQueryInterface.call($(this), 'show');
   });
-
   /**
    * ------------------------------------------------------------------------
    * jQuery
@@ -61716,889 +63639,59 @@ var Tab = function ($) {
 
   $.fn[NAME] = Tab._jQueryInterface;
   $.fn[NAME].Constructor = Tab;
+
   $.fn[NAME].noConflict = function () {
     $.fn[NAME] = JQUERY_NO_CONFLICT;
     return Tab._jQueryInterface;
   };
 
   return Tab;
-}(jQuery);
-
-/* global Popper */
+}($);
 
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-beta): tooltip.js
+ * Bootstrap (v4.0.0-alpha.6): index.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * --------------------------------------------------------------------------
  */
 
-var Tooltip = function ($) {
-
-  /**
-   * Check for Popper dependency
-   * Popper - https://popper.js.org
-   */
-  if (typeof Popper === 'undefined') {
-    throw new Error('Bootstrap tooltips require Popper.js (https://popper.js.org)');
+(function () {
+  if (typeof $ === 'undefined') {
+    throw new Error('Bootstrap\'s JavaScript requires jQuery. jQuery must be included before Bootstrap\'s JavaScript.');
   }
 
-  /**
-   * ------------------------------------------------------------------------
-   * Constants
-   * ------------------------------------------------------------------------
-   */
+  var version = $.fn.jquery.split(' ')[0].split('.');
+  var minMajor = 1;
+  var ltMajor = 2;
+  var minMinor = 9;
+  var minPatch = 1;
+  var maxMajor = 4;
+
+  if (version[0] < ltMajor && version[1] < minMinor || version[0] === minMajor && version[1] === minMinor && version[2] < minPatch || version[0] >= maxMajor) {
+    throw new Error('Bootstrap\'s JavaScript requires at least jQuery v1.9.1 but less than v4.0.0');
+  }
+})($);
+
+exports.Util = Util;
+exports.Alert = Alert;
+exports.Button = Button;
+exports.Carousel = Carousel;
+exports.Collapse = Collapse;
+exports.Dropdown = Dropdown;
+exports.Modal = Modal;
+exports.Popover = Popover;
+exports.Scrollspy = ScrollSpy;
+exports.Tab = Tab;
+exports.Tooltip = Tooltip;
+
+return exports;
+
+}({},$,Popper));
+//# sourceMappingURL=bootstrap.js.map
 
-  var NAME = 'tooltip';
-  var VERSION = '4.0.0-beta';
-  var DATA_KEY = 'bs.tooltip';
-  var EVENT_KEY = '.' + DATA_KEY;
-  var JQUERY_NO_CONFLICT = $.fn[NAME];
-  var TRANSITION_DURATION = 150;
-  var CLASS_PREFIX = 'bs-tooltip';
-  var BSCLS_PREFIX_REGEX = new RegExp('(^|\\s)' + CLASS_PREFIX + '\\S+', 'g');
-
-  var DefaultType = {
-    animation: 'boolean',
-    template: 'string',
-    title: '(string|element|function)',
-    trigger: 'string',
-    delay: '(number|object)',
-    html: 'boolean',
-    selector: '(string|boolean)',
-    placement: '(string|function)',
-    offset: '(number|string)',
-    container: '(string|element|boolean)',
-    fallbackPlacement: '(string|array)'
-  };
-
-  var AttachmentMap = {
-    AUTO: 'auto',
-    TOP: 'top',
-    RIGHT: 'right',
-    BOTTOM: 'bottom',
-    LEFT: 'left'
-  };
-
-  var Default = {
-    animation: true,
-    template: '<div class="tooltip" role="tooltip">' + '<div class="arrow"></div>' + '<div class="tooltip-inner"></div></div>',
-    trigger: 'hover focus',
-    title: '',
-    delay: 0,
-    html: false,
-    selector: false,
-    placement: 'top',
-    offset: 0,
-    container: false,
-    fallbackPlacement: 'flip'
-  };
-
-  var HoverState = {
-    SHOW: 'show',
-    OUT: 'out'
-  };
-
-  var Event = {
-    HIDE: 'hide' + EVENT_KEY,
-    HIDDEN: 'hidden' + EVENT_KEY,
-    SHOW: 'show' + EVENT_KEY,
-    SHOWN: 'shown' + EVENT_KEY,
-    INSERTED: 'inserted' + EVENT_KEY,
-    CLICK: 'click' + EVENT_KEY,
-    FOCUSIN: 'focusin' + EVENT_KEY,
-    FOCUSOUT: 'focusout' + EVENT_KEY,
-    MOUSEENTER: 'mouseenter' + EVENT_KEY,
-    MOUSELEAVE: 'mouseleave' + EVENT_KEY
-  };
-
-  var ClassName = {
-    FADE: 'fade',
-    SHOW: 'show'
-  };
-
-  var Selector = {
-    TOOLTIP: '.tooltip',
-    TOOLTIP_INNER: '.tooltip-inner',
-    ARROW: '.arrow'
-  };
-
-  var Trigger = {
-    HOVER: 'hover',
-    FOCUS: 'focus',
-    CLICK: 'click',
-    MANUAL: 'manual'
-
-    /**
-     * ------------------------------------------------------------------------
-     * Class Definition
-     * ------------------------------------------------------------------------
-     */
-
-  };
-  var Tooltip = function () {
-    function Tooltip(element, config) {
-      _classCallCheck(this, Tooltip);
-
-      // private
-      this._isEnabled = true;
-      this._timeout = 0;
-      this._hoverState = '';
-      this._activeTrigger = {};
-      this._popper = null;
-
-      // protected
-      this.element = element;
-      this.config = this._getConfig(config);
-      this.tip = null;
-
-      this._setListeners();
-    }
-
-    // getters
-
-    // public
-
-    Tooltip.prototype.enable = function enable() {
-      this._isEnabled = true;
-    };
-
-    Tooltip.prototype.disable = function disable() {
-      this._isEnabled = false;
-    };
-
-    Tooltip.prototype.toggleEnabled = function toggleEnabled() {
-      this._isEnabled = !this._isEnabled;
-    };
-
-    Tooltip.prototype.toggle = function toggle(event) {
-      if (event) {
-        var dataKey = this.constructor.DATA_KEY;
-        var context = $(event.currentTarget).data(dataKey);
-
-        if (!context) {
-          context = new this.constructor(event.currentTarget, this._getDelegateConfig());
-          $(event.currentTarget).data(dataKey, context);
-        }
-
-        context._activeTrigger.click = !context._activeTrigger.click;
-
-        if (context._isWithActiveTrigger()) {
-          context._enter(null, context);
-        } else {
-          context._leave(null, context);
-        }
-      } else {
-
-        if ($(this.getTipElement()).hasClass(ClassName.SHOW)) {
-          this._leave(null, this);
-          return;
-        }
-
-        this._enter(null, this);
-      }
-    };
-
-    Tooltip.prototype.dispose = function dispose() {
-      clearTimeout(this._timeout);
-
-      $.removeData(this.element, this.constructor.DATA_KEY);
-
-      $(this.element).off(this.constructor.EVENT_KEY);
-      $(this.element).closest('.modal').off('hide.bs.modal');
-
-      if (this.tip) {
-        $(this.tip).remove();
-      }
-
-      this._isEnabled = null;
-      this._timeout = null;
-      this._hoverState = null;
-      this._activeTrigger = null;
-      if (this._popper !== null) {
-        this._popper.destroy();
-      }
-      this._popper = null;
-
-      this.element = null;
-      this.config = null;
-      this.tip = null;
-    };
-
-    Tooltip.prototype.show = function show() {
-      var _this24 = this;
-
-      if ($(this.element).css('display') === 'none') {
-        throw new Error('Please use show on visible elements');
-      }
-
-      var showEvent = $.Event(this.constructor.Event.SHOW);
-      if (this.isWithContent() && this._isEnabled) {
-        $(this.element).trigger(showEvent);
-
-        var isInTheDom = $.contains(this.element.ownerDocument.documentElement, this.element);
-
-        if (showEvent.isDefaultPrevented() || !isInTheDom) {
-          return;
-        }
-
-        var tip = this.getTipElement();
-        var tipId = Util.getUID(this.constructor.NAME);
-
-        tip.setAttribute('id', tipId);
-        this.element.setAttribute('aria-describedby', tipId);
-
-        this.setContent();
-
-        if (this.config.animation) {
-          $(tip).addClass(ClassName.FADE);
-        }
-
-        var placement = typeof this.config.placement === 'function' ? this.config.placement.call(this, tip, this.element) : this.config.placement;
-
-        var attachment = this._getAttachment(placement);
-        this.addAttachmentClass(attachment);
-
-        var container = this.config.container === false ? document.body : $(this.config.container);
-
-        $(tip).data(this.constructor.DATA_KEY, this);
-
-        if (!$.contains(this.element.ownerDocument.documentElement, this.tip)) {
-          $(tip).appendTo(container);
-        }
-
-        $(this.element).trigger(this.constructor.Event.INSERTED);
-
-        this._popper = new Popper(this.element, tip, {
-          placement: attachment,
-          modifiers: {
-            offset: {
-              offset: this.config.offset
-            },
-            flip: {
-              behavior: this.config.fallbackPlacement
-            },
-            arrow: {
-              element: Selector.ARROW
-            }
-          },
-          onCreate: function onCreate(data) {
-            if (data.originalPlacement !== data.placement) {
-              _this24._handlePopperPlacementChange(data);
-            }
-          },
-          onUpdate: function onUpdate(data) {
-            _this24._handlePopperPlacementChange(data);
-          }
-        });
-
-        $(tip).addClass(ClassName.SHOW);
-
-        // if this is a touch-enabled device we add extra
-        // empty mouseover listeners to the body's immediate children;
-        // only needed because of broken event delegation on iOS
-        // https://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
-        if ('ontouchstart' in document.documentElement) {
-          $('body').children().on('mouseover', null, $.noop);
-        }
-
-        var complete = function complete() {
-          if (_this24.config.animation) {
-            _this24._fixTransition();
-          }
-          var prevHoverState = _this24._hoverState;
-          _this24._hoverState = null;
-
-          $(_this24.element).trigger(_this24.constructor.Event.SHOWN);
-
-          if (prevHoverState === HoverState.OUT) {
-            _this24._leave(null, _this24);
-          }
-        };
-
-        if (Util.supportsTransitionEnd() && $(this.tip).hasClass(ClassName.FADE)) {
-          $(this.tip).one(Util.TRANSITION_END, complete).emulateTransitionEnd(Tooltip._TRANSITION_DURATION);
-        } else {
-          complete();
-        }
-      }
-    };
-
-    Tooltip.prototype.hide = function hide(callback) {
-      var _this25 = this;
-
-      var tip = this.getTipElement();
-      var hideEvent = $.Event(this.constructor.Event.HIDE);
-      var complete = function complete() {
-        if (_this25._hoverState !== HoverState.SHOW && tip.parentNode) {
-          tip.parentNode.removeChild(tip);
-        }
-
-        _this25._cleanTipClass();
-        _this25.element.removeAttribute('aria-describedby');
-        $(_this25.element).trigger(_this25.constructor.Event.HIDDEN);
-        if (_this25._popper !== null) {
-          _this25._popper.destroy();
-        }
-
-        if (callback) {
-          callback();
-        }
-      };
-
-      $(this.element).trigger(hideEvent);
-
-      if (hideEvent.isDefaultPrevented()) {
-        return;
-      }
-
-      $(tip).removeClass(ClassName.SHOW);
-
-      // if this is a touch-enabled device we remove the extra
-      // empty mouseover listeners we added for iOS support
-      if ('ontouchstart' in document.documentElement) {
-        $('body').children().off('mouseover', null, $.noop);
-      }
-
-      this._activeTrigger[Trigger.CLICK] = false;
-      this._activeTrigger[Trigger.FOCUS] = false;
-      this._activeTrigger[Trigger.HOVER] = false;
-
-      if (Util.supportsTransitionEnd() && $(this.tip).hasClass(ClassName.FADE)) {
-
-        $(tip).one(Util.TRANSITION_END, complete).emulateTransitionEnd(TRANSITION_DURATION);
-      } else {
-        complete();
-      }
-
-      this._hoverState = '';
-    };
-
-    Tooltip.prototype.update = function update() {
-      if (this._popper !== null) {
-        this._popper.scheduleUpdate();
-      }
-    };
-
-    // protected
-
-    Tooltip.prototype.isWithContent = function isWithContent() {
-      return Boolean(this.getTitle());
-    };
-
-    Tooltip.prototype.addAttachmentClass = function addAttachmentClass(attachment) {
-      $(this.getTipElement()).addClass(CLASS_PREFIX + '-' + attachment);
-    };
-
-    Tooltip.prototype.getTipElement = function getTipElement() {
-      return this.tip = this.tip || $(this.config.template)[0];
-    };
-
-    Tooltip.prototype.setContent = function setContent() {
-      var $tip = $(this.getTipElement());
-      this.setElementContent($tip.find(Selector.TOOLTIP_INNER), this.getTitle());
-      $tip.removeClass(ClassName.FADE + ' ' + ClassName.SHOW);
-    };
-
-    Tooltip.prototype.setElementContent = function setElementContent($element, content) {
-      var html = this.config.html;
-      if ((typeof content === 'undefined' ? 'undefined' : _typeof(content)) === 'object' && (content.nodeType || content.jquery)) {
-        // content is a DOM node or a jQuery
-        if (html) {
-          if (!$(content).parent().is($element)) {
-            $element.empty().append(content);
-          }
-        } else {
-          $element.text($(content).text());
-        }
-      } else {
-        $element[html ? 'html' : 'text'](content);
-      }
-    };
-
-    Tooltip.prototype.getTitle = function getTitle() {
-      var title = this.element.getAttribute('data-original-title');
-
-      if (!title) {
-        title = typeof this.config.title === 'function' ? this.config.title.call(this.element) : this.config.title;
-      }
-
-      return title;
-    };
-
-    // private
-
-    Tooltip.prototype._getAttachment = function _getAttachment(placement) {
-      return AttachmentMap[placement.toUpperCase()];
-    };
-
-    Tooltip.prototype._setListeners = function _setListeners() {
-      var _this26 = this;
-
-      var triggers = this.config.trigger.split(' ');
-
-      triggers.forEach(function (trigger) {
-        if (trigger === 'click') {
-          $(_this26.element).on(_this26.constructor.Event.CLICK, _this26.config.selector, function (event) {
-            return _this26.toggle(event);
-          });
-        } else if (trigger !== Trigger.MANUAL) {
-          var eventIn = trigger === Trigger.HOVER ? _this26.constructor.Event.MOUSEENTER : _this26.constructor.Event.FOCUSIN;
-          var eventOut = trigger === Trigger.HOVER ? _this26.constructor.Event.MOUSELEAVE : _this26.constructor.Event.FOCUSOUT;
-
-          $(_this26.element).on(eventIn, _this26.config.selector, function (event) {
-            return _this26._enter(event);
-          }).on(eventOut, _this26.config.selector, function (event) {
-            return _this26._leave(event);
-          });
-        }
-
-        $(_this26.element).closest('.modal').on('hide.bs.modal', function () {
-          return _this26.hide();
-        });
-      });
-
-      if (this.config.selector) {
-        this.config = $.extend({}, this.config, {
-          trigger: 'manual',
-          selector: ''
-        });
-      } else {
-        this._fixTitle();
-      }
-    };
-
-    Tooltip.prototype._fixTitle = function _fixTitle() {
-      var titleType = _typeof(this.element.getAttribute('data-original-title'));
-      if (this.element.getAttribute('title') || titleType !== 'string') {
-        this.element.setAttribute('data-original-title', this.element.getAttribute('title') || '');
-        this.element.setAttribute('title', '');
-      }
-    };
-
-    Tooltip.prototype._enter = function _enter(event, context) {
-      var dataKey = this.constructor.DATA_KEY;
-
-      context = context || $(event.currentTarget).data(dataKey);
-
-      if (!context) {
-        context = new this.constructor(event.currentTarget, this._getDelegateConfig());
-        $(event.currentTarget).data(dataKey, context);
-      }
-
-      if (event) {
-        context._activeTrigger[event.type === 'focusin' ? Trigger.FOCUS : Trigger.HOVER] = true;
-      }
-
-      if ($(context.getTipElement()).hasClass(ClassName.SHOW) || context._hoverState === HoverState.SHOW) {
-        context._hoverState = HoverState.SHOW;
-        return;
-      }
-
-      clearTimeout(context._timeout);
-
-      context._hoverState = HoverState.SHOW;
-
-      if (!context.config.delay || !context.config.delay.show) {
-        context.show();
-        return;
-      }
-
-      context._timeout = setTimeout(function () {
-        if (context._hoverState === HoverState.SHOW) {
-          context.show();
-        }
-      }, context.config.delay.show);
-    };
-
-    Tooltip.prototype._leave = function _leave(event, context) {
-      var dataKey = this.constructor.DATA_KEY;
-
-      context = context || $(event.currentTarget).data(dataKey);
-
-      if (!context) {
-        context = new this.constructor(event.currentTarget, this._getDelegateConfig());
-        $(event.currentTarget).data(dataKey, context);
-      }
-
-      if (event) {
-        context._activeTrigger[event.type === 'focusout' ? Trigger.FOCUS : Trigger.HOVER] = false;
-      }
-
-      if (context._isWithActiveTrigger()) {
-        return;
-      }
-
-      clearTimeout(context._timeout);
-
-      context._hoverState = HoverState.OUT;
-
-      if (!context.config.delay || !context.config.delay.hide) {
-        context.hide();
-        return;
-      }
-
-      context._timeout = setTimeout(function () {
-        if (context._hoverState === HoverState.OUT) {
-          context.hide();
-        }
-      }, context.config.delay.hide);
-    };
-
-    Tooltip.prototype._isWithActiveTrigger = function _isWithActiveTrigger() {
-      for (var trigger in this._activeTrigger) {
-        if (this._activeTrigger[trigger]) {
-          return true;
-        }
-      }
-
-      return false;
-    };
-
-    Tooltip.prototype._getConfig = function _getConfig(config) {
-      config = $.extend({}, this.constructor.Default, $(this.element).data(), config);
-
-      if (config.delay && typeof config.delay === 'number') {
-        config.delay = {
-          show: config.delay,
-          hide: config.delay
-        };
-      }
-
-      if (config.title && typeof config.title === 'number') {
-        config.title = config.title.toString();
-      }
-
-      if (config.content && typeof config.content === 'number') {
-        config.content = config.content.toString();
-      }
-
-      Util.typeCheckConfig(NAME, config, this.constructor.DefaultType);
-
-      return config;
-    };
-
-    Tooltip.prototype._getDelegateConfig = function _getDelegateConfig() {
-      var config = {};
-
-      if (this.config) {
-        for (var key in this.config) {
-          if (this.constructor.Default[key] !== this.config[key]) {
-            config[key] = this.config[key];
-          }
-        }
-      }
-
-      return config;
-    };
-
-    Tooltip.prototype._cleanTipClass = function _cleanTipClass() {
-      var $tip = $(this.getTipElement());
-      var tabClass = $tip.attr('class').match(BSCLS_PREFIX_REGEX);
-      if (tabClass !== null && tabClass.length > 0) {
-        $tip.removeClass(tabClass.join(''));
-      }
-    };
-
-    Tooltip.prototype._handlePopperPlacementChange = function _handlePopperPlacementChange(data) {
-      this._cleanTipClass();
-      this.addAttachmentClass(this._getAttachment(data.placement));
-    };
-
-    Tooltip.prototype._fixTransition = function _fixTransition() {
-      var tip = this.getTipElement();
-      var initConfigAnimation = this.config.animation;
-      if (tip.getAttribute('x-placement') !== null) {
-        return;
-      }
-      $(tip).removeClass(ClassName.FADE);
-      this.config.animation = false;
-      this.hide();
-      this.show();
-      this.config.animation = initConfigAnimation;
-    };
-
-    // static
-
-    Tooltip._jQueryInterface = function _jQueryInterface(config) {
-      return this.each(function () {
-        var data = $(this).data(DATA_KEY);
-        var _config = (typeof config === 'undefined' ? 'undefined' : _typeof(config)) === 'object' && config;
-
-        if (!data && /dispose|hide/.test(config)) {
-          return;
-        }
-
-        if (!data) {
-          data = new Tooltip(this, _config);
-          $(this).data(DATA_KEY, data);
-        }
-
-        if (typeof config === 'string') {
-          if (data[config] === undefined) {
-            throw new Error('No method named "' + config + '"');
-          }
-          data[config]();
-        }
-      });
-    };
-
-    _createClass(Tooltip, null, [{
-      key: 'VERSION',
-      get: function get() {
-        return VERSION;
-      }
-    }, {
-      key: 'Default',
-      get: function get() {
-        return Default;
-      }
-    }, {
-      key: 'NAME',
-      get: function get() {
-        return NAME;
-      }
-    }, {
-      key: 'DATA_KEY',
-      get: function get() {
-        return DATA_KEY;
-      }
-    }, {
-      key: 'Event',
-      get: function get() {
-        return Event;
-      }
-    }, {
-      key: 'EVENT_KEY',
-      get: function get() {
-        return EVENT_KEY;
-      }
-    }, {
-      key: 'DefaultType',
-      get: function get() {
-        return DefaultType;
-      }
-    }]);
-
-    return Tooltip;
-  }();
-
-  /**
-   * ------------------------------------------------------------------------
-   * jQuery
-   * ------------------------------------------------------------------------
-   */
-
-  $.fn[NAME] = Tooltip._jQueryInterface;
-  $.fn[NAME].Constructor = Tooltip;
-  $.fn[NAME].noConflict = function () {
-    $.fn[NAME] = JQUERY_NO_CONFLICT;
-    return Tooltip._jQueryInterface;
-  };
-
-  return Tooltip;
-}(jQuery);
-
-/**
- * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-beta): popover.js
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * --------------------------------------------------------------------------
- */
-
-var Popover = function ($) {
-
-  /**
-   * ------------------------------------------------------------------------
-   * Constants
-   * ------------------------------------------------------------------------
-   */
-
-  var NAME = 'popover';
-  var VERSION = '4.0.0-beta';
-  var DATA_KEY = 'bs.popover';
-  var EVENT_KEY = '.' + DATA_KEY;
-  var JQUERY_NO_CONFLICT = $.fn[NAME];
-  var CLASS_PREFIX = 'bs-popover';
-  var BSCLS_PREFIX_REGEX = new RegExp('(^|\\s)' + CLASS_PREFIX + '\\S+', 'g');
-
-  var Default = $.extend({}, Tooltip.Default, {
-    placement: 'right',
-    trigger: 'click',
-    content: '',
-    template: '<div class="popover" role="tooltip">' + '<div class="arrow"></div>' + '<h3 class="popover-header"></h3>' + '<div class="popover-body"></div></div>'
-  });
-
-  var DefaultType = $.extend({}, Tooltip.DefaultType, {
-    content: '(string|element|function)'
-  });
-
-  var ClassName = {
-    FADE: 'fade',
-    SHOW: 'show'
-  };
-
-  var Selector = {
-    TITLE: '.popover-header',
-    CONTENT: '.popover-body'
-  };
-
-  var Event = {
-    HIDE: 'hide' + EVENT_KEY,
-    HIDDEN: 'hidden' + EVENT_KEY,
-    SHOW: 'show' + EVENT_KEY,
-    SHOWN: 'shown' + EVENT_KEY,
-    INSERTED: 'inserted' + EVENT_KEY,
-    CLICK: 'click' + EVENT_KEY,
-    FOCUSIN: 'focusin' + EVENT_KEY,
-    FOCUSOUT: 'focusout' + EVENT_KEY,
-    MOUSEENTER: 'mouseenter' + EVENT_KEY,
-    MOUSELEAVE: 'mouseleave' + EVENT_KEY
-
-    /**
-     * ------------------------------------------------------------------------
-     * Class Definition
-     * ------------------------------------------------------------------------
-     */
-
-  };
-  var Popover = function (_Tooltip) {
-    _inherits(Popover, _Tooltip);
-
-    function Popover() {
-      _classCallCheck(this, Popover);
-
-      return _possibleConstructorReturn(this, _Tooltip.apply(this, arguments));
-    }
-
-    // overrides
-
-    Popover.prototype.isWithContent = function isWithContent() {
-      return this.getTitle() || this._getContent();
-    };
-
-    Popover.prototype.addAttachmentClass = function addAttachmentClass(attachment) {
-      $(this.getTipElement()).addClass(CLASS_PREFIX + '-' + attachment);
-    };
-
-    Popover.prototype.getTipElement = function getTipElement() {
-      return this.tip = this.tip || $(this.config.template)[0];
-    };
-
-    Popover.prototype.setContent = function setContent() {
-      var $tip = $(this.getTipElement());
-
-      // we use append for html objects to maintain js events
-      this.setElementContent($tip.find(Selector.TITLE), this.getTitle());
-      this.setElementContent($tip.find(Selector.CONTENT), this._getContent());
-
-      $tip.removeClass(ClassName.FADE + ' ' + ClassName.SHOW);
-    };
-
-    // private
-
-    Popover.prototype._getContent = function _getContent() {
-      return this.element.getAttribute('data-content') || (typeof this.config.content === 'function' ? this.config.content.call(this.element) : this.config.content);
-    };
-
-    Popover.prototype._cleanTipClass = function _cleanTipClass() {
-      var $tip = $(this.getTipElement());
-      var tabClass = $tip.attr('class').match(BSCLS_PREFIX_REGEX);
-      if (tabClass !== null && tabClass.length > 0) {
-        $tip.removeClass(tabClass.join(''));
-      }
-    };
-
-    // static
-
-    Popover._jQueryInterface = function _jQueryInterface(config) {
-      return this.each(function () {
-        var data = $(this).data(DATA_KEY);
-        var _config = (typeof config === 'undefined' ? 'undefined' : _typeof(config)) === 'object' ? config : null;
-
-        if (!data && /destroy|hide/.test(config)) {
-          return;
-        }
-
-        if (!data) {
-          data = new Popover(this, _config);
-          $(this).data(DATA_KEY, data);
-        }
-
-        if (typeof config === 'string') {
-          if (data[config] === undefined) {
-            throw new Error('No method named "' + config + '"');
-          }
-          data[config]();
-        }
-      });
-    };
-
-    _createClass(Popover, null, [{
-      key: 'VERSION',
-
-
-      // getters
-
-      get: function get() {
-        return VERSION;
-      }
-    }, {
-      key: 'Default',
-      get: function get() {
-        return Default;
-      }
-    }, {
-      key: 'NAME',
-      get: function get() {
-        return NAME;
-      }
-    }, {
-      key: 'DATA_KEY',
-      get: function get() {
-        return DATA_KEY;
-      }
-    }, {
-      key: 'Event',
-      get: function get() {
-        return Event;
-      }
-    }, {
-      key: 'EVENT_KEY',
-      get: function get() {
-        return EVENT_KEY;
-      }
-    }, {
-      key: 'DefaultType',
-      get: function get() {
-        return DefaultType;
-      }
-    }]);
-
-    return Popover;
-  }(Tooltip);
-
-  /**
-   * ------------------------------------------------------------------------
-   * jQuery
-   * ------------------------------------------------------------------------
-   */
-
-  $.fn[NAME] = Popover._jQueryInterface;
-  $.fn[NAME].Constructor = Popover;
-  $.fn[NAME].noConflict = function () {
-    $.fn[NAME] = JQUERY_NO_CONFLICT;
-    return Popover._jQueryInterface;
-  };
-
-  return Popover;
-}(jQuery);
-
-
-})();
 
 /***/ }),
-/* 145 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -62651,13 +63744,13 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(146);
+__webpack_require__(148);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 146 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -62847,25 +63940,25 @@ exports.clearImmediate = clearImmediate;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(13)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(14)))
 
 /***/ }),
-/* 147 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(148);
+module.exports = __webpack_require__(150);
 
 /***/ }),
-/* 148 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(3);
-var bind = __webpack_require__(14);
-var Axios = __webpack_require__(150);
-var defaults = __webpack_require__(10);
+var utils = __webpack_require__(4);
+var bind = __webpack_require__(15);
+var Axios = __webpack_require__(152);
+var defaults = __webpack_require__(11);
 
 /**
  * Create an instance of Axios
@@ -62898,15 +63991,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(18);
-axios.CancelToken = __webpack_require__(164);
-axios.isCancel = __webpack_require__(17);
+axios.Cancel = __webpack_require__(19);
+axios.CancelToken = __webpack_require__(166);
+axios.isCancel = __webpack_require__(18);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(165);
+axios.spread = __webpack_require__(167);
 
 module.exports = axios;
 
@@ -62915,7 +64008,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 149 */
+/* 151 */
 /***/ (function(module, exports) {
 
 /*!
@@ -62942,18 +64035,18 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 150 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var defaults = __webpack_require__(10);
-var utils = __webpack_require__(3);
-var InterceptorManager = __webpack_require__(159);
-var dispatchRequest = __webpack_require__(160);
-var isAbsoluteURL = __webpack_require__(162);
-var combineURLs = __webpack_require__(163);
+var defaults = __webpack_require__(11);
+var utils = __webpack_require__(4);
+var InterceptorManager = __webpack_require__(161);
+var dispatchRequest = __webpack_require__(162);
+var isAbsoluteURL = __webpack_require__(164);
+var combineURLs = __webpack_require__(165);
 
 /**
  * Create a new instance of Axios
@@ -63035,13 +64128,13 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 151 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(3);
+var utils = __webpack_require__(4);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -63054,13 +64147,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 152 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(16);
+var createError = __webpack_require__(17);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -63087,7 +64180,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 153 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63115,13 +64208,13 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 154 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(3);
+var utils = __webpack_require__(4);
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -63190,13 +64283,13 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 155 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(3);
+var utils = __webpack_require__(4);
 
 /**
  * Parse headers into an object
@@ -63234,13 +64327,13 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 156 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(3);
+var utils = __webpack_require__(4);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -63309,7 +64402,7 @@ module.exports = (
 
 
 /***/ }),
-/* 157 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63352,13 +64445,13 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 158 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(3);
+var utils = __webpack_require__(4);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -63412,13 +64505,13 @@ module.exports = (
 
 
 /***/ }),
-/* 159 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(3);
+var utils = __webpack_require__(4);
 
 function InterceptorManager() {
   this.handlers = [];
@@ -63471,16 +64564,16 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 160 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(3);
-var transformData = __webpack_require__(161);
-var isCancel = __webpack_require__(17);
-var defaults = __webpack_require__(10);
+var utils = __webpack_require__(4);
+var transformData = __webpack_require__(163);
+var isCancel = __webpack_require__(18);
+var defaults = __webpack_require__(11);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -63557,13 +64650,13 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 161 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(3);
+var utils = __webpack_require__(4);
 
 /**
  * Transform the data for a request or a response
@@ -63584,7 +64677,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 162 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63605,7 +64698,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 163 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63626,13 +64719,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 164 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(18);
+var Cancel = __webpack_require__(19);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -63690,7 +64783,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 165 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63724,139 +64817,19 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 166 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(5)
-/* script */
-var __vue_script__ = __webpack_require__(167)
-/* template */
-var __vue_template__ = __webpack_require__(168)
-/* template functional */
-  var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources\\assets\\js\\components\\Example.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-37a15cb6", Component.options)
-  } else {
-    hotAPI.reload("data-v-37a15cb6", Component.options)
-' + '  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 167 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        console.log('Component mounted.');
-    }
-});
-
-/***/ }),
 /* 168 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-md-8 col-md-offset-2" }, [
-          _c("div", { staticClass: "panel panel-default" }, [
-            _c("div", { staticClass: "panel-heading" }, [
-              _vm._v("Example Component")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "panel-body" }, [
-              _vm._v(
-                "\n                    I'm an example component!\n                "
-              )
-            ])
-          ])
-        ])
-      ])
-    ])
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-37a15cb6", module.exports)
-  }
-}
-
-/***/ }),
-/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(170)
+  __webpack_require__(169)
 }
-var normalizeComponent = __webpack_require__(5)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(175)
+var __vue_script__ = __webpack_require__(174)
 /* template */
-var __vue_template__ = __webpack_require__(176)
+var __vue_template__ = __webpack_require__(175)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -63873,7 +64846,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\flash.vue"
+Component.options.__file = "resources/assets/js/components/flash.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
 
 /* hot reload */
@@ -63896,17 +64869,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 170 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(171);
+var content = __webpack_require__(170);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(173)("fa6b0a2c", content, false);
+var update = __webpack_require__(172)("fa6b0a2c", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -63922,21 +64895,21 @@ if(false) {
 }
 
 /***/ }),
-/* 171 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(172)(undefined);
+exports = module.exports = __webpack_require__(171)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "\n.alert-flash {\r\n    position: absolute;\r\n    right: 25px;\r\n    bottom: 25px;\n}\r\n", ""]);
+exports.push([module.i, "\n.alert-flash {\n    position: absolute;\n    right: 25px;\n    bottom: 25px;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 172 */
+/* 171 */
 /***/ (function(module, exports) {
 
 /*
@@ -64018,7 +64991,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 173 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -64037,7 +65010,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(174)
+var listToStyles = __webpack_require__(173)
 
 /*
 type StyleObject = {
@@ -64239,7 +65212,7 @@ function applyToTag (styleElement, obj) {
 
 
 /***/ }),
-/* 174 */
+/* 173 */
 /***/ (function(module, exports) {
 
 /**
@@ -64272,7 +65245,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 175 */
+/* 174 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -64324,7 +65297,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 176 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -64354,15 +65327,15 @@ if (false) {
 }
 
 /***/ }),
-/* 177 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(5)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(178)
+var __vue_script__ = __webpack_require__(177)
 /* template */
-var __vue_template__ = __webpack_require__(182)
+var __vue_template__ = __webpack_require__(178)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -64379,7 +65352,128 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\livecounter\\category-cards.vue"
+Component.options.__file = "resources/assets/js/components/Example.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-37a15cb6", Component.options)
+  } else {
+    hotAPI.reload("data-v-37a15cb6", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 177 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['rawDatasets']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['groupedBy']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])({
+        datasets: 'totalVisits'
+    })),
+
+    mounted: function mounted() {
+        var currentYear = new Date().getFullYear();
+        this.fetchDatasets(currentYear);
+    },
+
+
+    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])(['addDataset']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapMutations */])(['clearDatasets']), {
+        fetchDatasets: function fetchDatasets(year) {
+            this.clearDatasets();
+
+            this.addDataset(year);
+            this.addDataset(year - 1);
+        }
+    })
+});
+
+/***/ }),
+/* 178 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "col" }, [
+    _c("div", { staticClass: "card" }, [
+      _c("p", [_vm._v("Example Component")]),
+      _vm._v(" "),
+      _c("div", [
+        _vm._v("\n            " + _vm._s(_vm.rawDatasets) + "\n        ")
+      ])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-37a15cb6", module.exports)
+  }
+}
+
+/***/ }),
+/* 179 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(180)
+/* template */
+var __vue_template__ = __webpack_require__(184)
+/* template functional */
+  var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/livecounter/category-cards.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
 
 /* hot reload */
@@ -64402,12 +65496,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 178 */
+/* 180 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__category_card_vue__ = __webpack_require__(179);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__category_card_vue__ = __webpack_require__(181);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__category_card_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__category_card_vue__);
 //
 //
@@ -64510,15 +65604,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 179 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(5)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(180)
+var __vue_script__ = __webpack_require__(182)
 /* template */
-var __vue_template__ = __webpack_require__(181)
+var __vue_template__ = __webpack_require__(183)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -64535,7 +65629,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\livecounter\\category-card.vue"
+Component.options.__file = "resources/assets/js/components/livecounter/category-card.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
 
 /* hot reload */
@@ -64558,7 +65652,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 180 */
+/* 182 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -64599,7 +65693,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 181 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -64657,7 +65751,7 @@ if (false) {
 }
 
 /***/ }),
-/* 182 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -64731,13 +65825,13 @@ if (false) {
 }
 
 /***/ }),
-/* 183 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(5)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(184)
+var __vue_script__ = __webpack_require__(186)
 /* template */
 var __vue_template__ = null
 /* template functional */
@@ -64756,7 +65850,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\charts\\chart-month.vue"
+Component.options.__file = "resources/assets/js/pages/Year.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
 
 /* hot reload */
@@ -64766,9 +65860,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-1e1f94e8", Component.options)
+    hotAPI.createRecord("data-v-173bde9c", Component.options)
   } else {
-    hotAPI.reload("data-v-1e1f94e8", Component.options)
+    hotAPI.reload("data-v-173bde9c", Component.options)
 ' + '  }
   module.hot.dispose(function (data) {
     disposed = true
@@ -64779,12 +65873,274 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 184 */
+/* 186 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Graph__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_charts_SelectorYear_vue__ = __webpack_require__(187);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_charts_SelectorYear_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_charts_SelectorYear_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_charts_ChartMonth_vue__ = __webpack_require__(190);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_charts_ChartMonth_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_charts_ChartMonth_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_charts_ChartCategories_vue__ = __webpack_require__(239);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_charts_ChartCategories_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_charts_ChartCategories_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_TableReport_vue__ = __webpack_require__(241);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_TableReport_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_TableReport_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_infoboxes_BoxSumSm_vue__ = __webpack_require__(244);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_infoboxes_BoxSumSm_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_infoboxes_BoxSumSm_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_infoboxes_BoxAvgSm_vue__ = __webpack_require__(247);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_infoboxes_BoxAvgSm_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_infoboxes_BoxAvgSm_vue__);
+
+
+
+
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    components: {
+        SelectorYear: __WEBPACK_IMPORTED_MODULE_0__components_charts_SelectorYear_vue___default.a,
+        ChartMonth: __WEBPACK_IMPORTED_MODULE_1__components_charts_ChartMonth_vue___default.a,
+        ChartCategories: __WEBPACK_IMPORTED_MODULE_2__components_charts_ChartCategories_vue___default.a,
+        TableReport: __WEBPACK_IMPORTED_MODULE_3__components_TableReport_vue___default.a,
+        BoxSumSm: __WEBPACK_IMPORTED_MODULE_4__components_infoboxes_BoxSumSm_vue___default.a,
+        BoxAvgSm: __WEBPACK_IMPORTED_MODULE_5__components_infoboxes_BoxAvgSm_vue___default.a
+    },
+
+    data: function data() {
+        return {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: []
+        };
+    },
+
+
+    methods: {
+        refreshDatasets: function refreshDatasets(year) {
+            this.resetDatasets();
+
+            this.fetch(year);
+            this.fetch(year - 1);
+        },
+        resetDatasets: function resetDatasets() {
+            this.datasets = [];
+        },
+        fetch: function fetch(year) {
+            var _this = this;
+
+            axios.get('/api/visits/' + year).then(function (response) {
+                return _this.addDataset(response.data);
+            });
+        },
+        addDataset: function addDataset(data) {
+            var dataset = this.prepareDataset(data);
+            this.datasets.push(dataset);
+        },
+        prepareDataset: function prepareDataset(response) {
+            return {
+                label: response.data.label,
+                data: response.data.visits
+            };
+        }
+    }
+});
+
+/***/ }),
+/* 187 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(188)
+/* template */
+var __vue_template__ = __webpack_require__(189)
+/* template functional */
+  var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/charts/SelectorYear.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-64fdf231", Component.options)
+  } else {
+    hotAPI.reload("data-v-64fdf231", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 188 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['yearsAvailable'],
+
+    data: function data() {
+        return {
+            currentYear: null
+        };
+    }
+});
+
+/***/ }),
+/* 189 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "card" }, [
+    _c("div", { staticClass: "card-body" }, [
+      _c("h3", [_vm._v("User statistics: 2017")]),
+      _vm._v(" "),
+      _c("p", { staticClass: "card-text" }, [
+        _vm._v(
+          "\n            Use the dropdown menu to load the statistics for a different year.\n        "
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-row align-items-center" }, [
+        _c("div", { staticClass: "col-auto" }, [
+          _vm.yearsAvailable
+            ? _c(
+                "select",
+                { staticClass: "custom-select", attrs: { name: "years" } },
+                _vm._l(_vm.yearsAvailable, function(year) {
+                  return _c("option", { key: year, attrs: { value: "year" } }, [
+                    _vm._v(_vm._s(year))
+                  ])
+                })
+              )
+            : _c("select", { staticClass: "custom-select" }, [
+                _c("option", { staticClass: "disabled" }, [
+                  _vm._v("No data available")
+                ])
+              ])
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-64fdf231", module.exports)
+  }
+}
+
+/***/ }),
+/* 190 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(191)
+/* template */
+var __vue_template__ = null
+/* template functional */
+  var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/charts/ChartMonth.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-b3470212", Component.options)
+  } else {
+    hotAPI.reload("data-v-b3470212", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 191 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Graph__ = __webpack_require__(20);
 
 
 
@@ -64828,91 +66184,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 }));
 
 /***/ }),
-/* 185 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * @namespace Chart
- */
-var Chart = __webpack_require__(186)();
-
-Chart.helpers = __webpack_require__(1);
-
-// @todo dispatch these helpers into appropriated helpers/helpers.* file and write unit tests!
-__webpack_require__(190)(Chart);
-
-Chart.defaults = __webpack_require__(2);
-Chart.Element = __webpack_require__(4);
-Chart.elements = __webpack_require__(6);
-Chart.Interaction = __webpack_require__(21);
-Chart.platform = __webpack_require__(22);
-
-__webpack_require__(201)(Chart);
-__webpack_require__(202)(Chart);
-__webpack_require__(203)(Chart);
-__webpack_require__(204)(Chart);
-__webpack_require__(205)(Chart);
-__webpack_require__(206)(Chart);
-__webpack_require__(207)(Chart);
-__webpack_require__(208)(Chart);
-
-__webpack_require__(209)(Chart);
-__webpack_require__(210)(Chart);
-__webpack_require__(211)(Chart);
-__webpack_require__(212)(Chart);
-__webpack_require__(213)(Chart);
-__webpack_require__(214)(Chart);
-
-// Controllers must be loaded after elements
-// See Chart.core.datasetController.dataElementType
-__webpack_require__(216)(Chart);
-__webpack_require__(217)(Chart);
-__webpack_require__(218)(Chart);
-__webpack_require__(219)(Chart);
-__webpack_require__(220)(Chart);
-__webpack_require__(221)(Chart);
-__webpack_require__(222)(Chart);
-
-__webpack_require__(223)(Chart);
-__webpack_require__(224)(Chart);
-__webpack_require__(225)(Chart);
-__webpack_require__(226)(Chart);
-__webpack_require__(227)(Chart);
-__webpack_require__(228)(Chart);
-__webpack_require__(229)(Chart);
-
-// Loading built-it plugins
-var plugins = [];
-
-plugins.push(
-	__webpack_require__(230)(Chart),
-	__webpack_require__(231)(Chart),
-	__webpack_require__(232)(Chart)
-);
-
-Chart.plugins.register(plugins);
-
-Chart.platform.initialize();
-
-module.exports = Chart;
-if (typeof window !== 'undefined') {
-	window.Chart = Chart;
-}
-
-// DEPRECATIONS
-
-/**
- * Provided for backward compatibility, use Chart.helpers.canvas instead.
- * @namespace Chart.canvasHelpers
- * @deprecated since version 2.6.0
- * @todo remove at version 3
- * @private
- */
-Chart.canvasHelpers = Chart.helpers.canvas;
-
-
-/***/ }),
-/* 186 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64968,13 +66240,13 @@ module.exports = function() {
 
 
 /***/ }),
-/* 187 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var helpers = __webpack_require__(9);
+var helpers = __webpack_require__(10);
 
 /**
  * Easing functions adapted from Robert Penner's easing equations.
@@ -65225,13 +66497,13 @@ helpers.easingEffects = effects;
 
 
 /***/ }),
-/* 188 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var helpers = __webpack_require__(9);
+var helpers = __webpack_require__(10);
 
 /**
  * @namespace Chart.helpers.canvas
@@ -65278,7 +66550,7 @@ var exports = module.exports = {
 	drawPoint: function(ctx, style, radius, x, y) {
 		var type, edgeLength, xOffset, yOffset, height, size;
 
-		if (typeof style === 'object') {
+		if (style && typeof style === 'object') {
 			type = style.toString();
 			if (type === '[object HTMLImageElement]' || type === '[object HTMLCanvasElement]') {
 				ctx.drawImage(style, x - style.width / 2, y - style.height / 2, style.width, style.height);
@@ -65446,13 +66718,13 @@ helpers.drawRoundedRectangle = function(ctx) {
 
 
 /***/ }),
-/* 189 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var helpers = __webpack_require__(9);
+var helpers = __webpack_require__(10);
 
 /**
  * @alias Chart.helpers.options
@@ -65549,7 +66821,7 @@ module.exports = {
 
 
 /***/ }),
-/* 190 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65557,23 +66829,13 @@ module.exports = {
 /* global document: false */
 
 
-var color = __webpack_require__(20);
+var color = __webpack_require__(22);
 var defaults = __webpack_require__(2);
 var helpers = __webpack_require__(1);
 
 module.exports = function(Chart) {
 
 	// -- Basic js utility methods
-
-	helpers.extend = function(base) {
-		var setFn = function(value, key) {
-			base[key] = value;
-		};
-		for (var i = 1, ilen = arguments.length; i < ilen; i++) {
-			helpers.each(arguments[i], setFn);
-		}
-		return base;
-	};
 
 	helpers.configMerge = function(/* objects ... */) {
 		return helpers.merge(helpers.clone(arguments[0]), [].slice.call(arguments, 1), {
@@ -65680,29 +66942,7 @@ module.exports = function(Chart) {
 			}
 		}
 	};
-	helpers.inherits = function(extensions) {
-		// Basic javascript inheritance based on the model created in Backbone.js
-		var me = this;
-		var ChartElement = (extensions && extensions.hasOwnProperty('constructor')) ? extensions.constructor : function() {
-			return me.apply(this, arguments);
-		};
 
-		var Surrogate = function() {
-			this.constructor = ChartElement;
-		};
-		Surrogate.prototype = me.prototype;
-		ChartElement.prototype = new Surrogate();
-
-		ChartElement.extend = helpers.inherits;
-
-		if (extensions) {
-			helpers.extend(ChartElement.prototype, extensions);
-		}
-
-		ChartElement.__super__ = me.prototype;
-
-		return ChartElement;
-	};
 	// -- Math methods
 	helpers.isNumber = function(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
@@ -66191,10 +67431,10 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 191 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(192);
+var conversions = __webpack_require__(198);
 
 var convert = function() {
    return new Converter();
@@ -66288,7 +67528,7 @@ Converter.prototype.getValues = function(space) {
 module.exports = convert;
 
 /***/ }),
-/* 192 */
+/* 198 */
 /***/ (function(module, exports) {
 
 /* MIT license */
@@ -66992,11 +68232,11 @@ for (var key in cssKeywords) {
 
 
 /***/ }),
-/* 193 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var colorNames = __webpack_require__(194);
+var colorNames = __webpack_require__(200);
 
 module.exports = {
    getRgba: getRgba,
@@ -67219,7 +68459,7 @@ for (var name in colorNames) {
 
 
 /***/ }),
-/* 194 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67378,14 +68618,14 @@ module.exports = {
 
 
 /***/ }),
-/* 195 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -67492,14 +68732,14 @@ module.exports = Element.extend({
 
 
 /***/ }),
-/* 196 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 var globalDefaults = defaults.global;
@@ -67590,14 +68830,14 @@ module.exports = Element.extend({
 
 
 /***/ }),
-/* 197 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 var defaultColor = defaults.global.defaultColor;
@@ -67703,14 +68943,14 @@ module.exports = Element.extend({
 
 
 /***/ }),
-/* 198 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(5);
 
 defaults._set('global', {
 	elements: {
@@ -67927,7 +69167,7 @@ module.exports = Element.extend({
 
 
 /***/ }),
-/* 199 */
+/* 205 */
 /***/ (function(module, exports) {
 
 /**
@@ -67948,7 +69188,7 @@ module.exports = {
 
 
 /***/ }),
-/* 200 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68190,6 +69430,13 @@ function watchForRender(node, handler) {
 		addEventListener(node, type, proxy);
 	});
 
+	// #4737: Chrome might skip the CSS animation when the CSS_RENDER_MONITOR class
+	// is removed then added back immediately (same animation frame?). Accessing the
+	// `offsetParent` property will force a reflow and re-evaluate the CSS animation.
+	// https://gist.github.com/paulirish/5d52fb081b3570c81e3a#box-metrics
+	// https://github.com/chartjs/Chart.js/issues/4737
+	expando.reflow = !!node.offsetParent;
+
 	node.classList.add(CSS_RENDER_MONITOR);
 }
 
@@ -68405,14 +69652,14 @@ helpers.removeEvent = removeEventListener;
 
 
 /***/ }),
-/* 201 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -68735,6 +69982,27 @@ module.exports = function(Chart) {
 	 * @param {Object} options - The plugin options.
 	 */
 	/**
+  	 * @method IPlugin#beforeTooltipDraw
+	 * @desc Called before drawing the `tooltip`. If any plugin returns `false`,
+	 * the tooltip drawing is cancelled until another `render` is triggered.
+	 * @param {Chart} chart - The chart instance.
+	 * @param {Object} args - The call arguments.
+	 * @param {Object} args.tooltip - The tooltip.
+	 * @param {Number} args.easingValue - The current animation value, between 0.0 and 1.0.
+	 * @param {Object} options - The plugin options.
+	 * @returns {Boolean} `false` to cancel the chart tooltip drawing.
+  	 */
+	/**
+ 	 * @method IPlugin#afterTooltipDraw
+  	 * @desc Called after drawing the `tooltip`. Note that this hook will not
+ 	 * be called if the tooltip drawing has been previously cancelled.
+ 	 * @param {Chart} chart - The chart instance.
+ 	 * @param {Object} args - The call arguments.
+ 	 * @param {Object} args.tooltip - The tooltip.
+	 * @param {Number} args.easingValue - The current animation value, between 0.0 and 1.0.
+ 	 * @param {Object} options - The plugin options.
+ 	 */
+	/**
 	 * @method IPlugin#beforeEvent
  	 * @desc Called before processing the specified `event`. If any plugin returns `false`,
 	 * the event will be discarded.
@@ -68786,7 +70054,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 202 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68794,7 +70062,7 @@ module.exports = function(Chart) {
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -68965,7 +70233,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 203 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68973,8 +70241,8 @@ module.exports = function(Chart) {
 
 var defaults = __webpack_require__(2);
 var helpers = __webpack_require__(1);
-var Interaction = __webpack_require__(21);
-var platform = __webpack_require__(22);
+var Interaction = __webpack_require__(23);
+var platform = __webpack_require__(24);
 
 module.exports = function(Chart) {
 	var plugins = Chart.plugins;
@@ -69342,6 +70610,14 @@ module.exports = function(Chart) {
 
 			me.updateDatasets();
 
+			// Need to reset tooltip in case it is displayed with elements that are removed
+			// after update.
+			me.tooltip.initialize();
+
+			// Last active contains items that were previously in the tooltip.
+			// When we reset the tooltip, we need to clear it
+			me.lastActive = [];
+
 			// Do this before render so that any plugins that need final scale updates can use it
 			plugins.notify(me, 'afterUpdate');
 
@@ -69499,9 +70775,7 @@ module.exports = function(Chart) {
 			}
 
 			me.drawDatasets(easingValue);
-
-			// Finally draw the tooltip
-			me.tooltip.draw();
+			me._drawTooltip(easingValue);
 
 			plugins.notify(me, 'afterDraw', [easingValue]);
 		},
@@ -69564,6 +70838,28 @@ module.exports = function(Chart) {
 			meta.controller.draw(easingValue);
 
 			plugins.notify(me, 'afterDatasetDraw', [args]);
+		},
+
+		/**
+		 * Draws tooltip unless a plugin returns `false` to the `beforeTooltipDraw`
+		 * hook, in which case, plugins will not be called on `afterTooltipDraw`.
+		 * @private
+		 */
+		_drawTooltip: function(easingValue) {
+			var me = this;
+			var tooltip = me.tooltip;
+			var args = {
+				tooltip: tooltip,
+				easingValue: easingValue
+			};
+
+			if (plugins.notify(me, 'beforeTooltipDraw', [args]) === false) {
+				return;
+			}
+
+			tooltip.draw();
+
+			plugins.notify(me, 'afterTooltipDraw', [args]);
 		},
 
 		// Get the single element that was clicked on
@@ -69848,7 +71144,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 204 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70185,7 +71481,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 205 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70614,7 +71910,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 206 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70666,14 +71962,14 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 207 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 var Ticks = __webpack_require__(7);
 
@@ -71210,17 +72506,33 @@ module.exports = function(Chart) {
 			return rawValue;
 		},
 
-		// Used to get the value to display in the tooltip for the data at the given index
-		// function getLabelForIndex(index, datasetIndex)
+		/**
+		 * Used to get the value to display in the tooltip for the data at the given index
+		 * @param index
+		 * @param datasetIndex
+		 */
 		getLabelForIndex: helpers.noop,
 
-		// Used to get data value locations.  Value can either be an index or a numerical value
+		/**
+		 * Returns the location of the given data point. Value can either be an index or a numerical value
+		 * The coordinate (0, 0) is at the upper-left corner of the canvas
+		 * @param value
+		 * @param index
+		 * @param datasetIndex
+		 */
 		getPixelForValue: helpers.noop,
 
-		// Used to get the data value from a given pixel. This is the inverse of getPixelForValue
+		/**
+		 * Used to get the data value from a given pixel. This is the inverse of getPixelForValue
+		 * The coordinate (0, 0) is at the upper-left corner of the canvas
+		 * @param pixel
+		 */
 		getValueForPixel: helpers.noop,
 
-		// Used for tick location, should
+		/**
+		 * Returns the location of the tick at the given index
+		 * The coordinate (0, 0) is at the upper-left corner of the canvas
+		 */
 		getPixelForTick: function(index) {
 			var me = this;
 			var offset = me.options.offset;
@@ -71241,7 +72553,10 @@ module.exports = function(Chart) {
 			return me.top + (index * (innerHeight / (me._ticks.length - 1)));
 		},
 
-		// Utility for getting the pixel location of a percentage of scale
+		/**
+		 * Utility for getting the pixel location of a percentage of scale
+		 * The coordinate (0, 0) is at the upper-left corner of the canvas
+		 */
 		getPixelForDecimal: function(decimal) {
 			var me = this;
 			if (me.isHorizontal()) {
@@ -71255,6 +72570,10 @@ module.exports = function(Chart) {
 			return me.top + (decimal * me.height);
 		},
 
+		/**
+		 * Returns the pixel for the minimum chart value
+		 * The coordinate (0, 0) is at the upper-left corner of the canvas
+		 */
 		getBasePixel: function() {
 			return this.getPixelForValue(this.getBaseValue());
 		},
@@ -71311,7 +72630,7 @@ module.exports = function(Chart) {
 
 				// Since we always show the last tick,we need may need to hide the last shown one before
 				shouldSkip = (skipRatio > 1 && i % skipRatio > 0) || (i % skipRatio === 0 && i + skipRatio >= tickCount);
-				if (shouldSkip && i !== tickCount - 1 || helpers.isNullOrUndef(tick.label)) {
+				if (shouldSkip && i !== tickCount - 1) {
 					// leave tick in place but make sure it's not displayed (#4635)
 					delete tick.label;
 				}
@@ -71361,7 +72680,7 @@ module.exports = function(Chart) {
 
 			helpers.each(ticks, function(tick, index) {
 				// autoskipper skipped this tick (#4635)
-				if (tick.label === undefined) {
+				if (helpers.isNullOrUndef(tick.label)) {
 					return;
 				}
 
@@ -71581,14 +72900,14 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 208 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -71971,6 +73290,7 @@ module.exports = function(Chart) {
 	Chart.Tooltip = Element.extend({
 		initialize: function() {
 			this._model = getBaseModel(this._options);
+			this._lastActive = [];
 		},
 
 		// Get the title
@@ -72082,7 +73402,7 @@ module.exports = function(Chart) {
 
 				var labelColors = [];
 				var labelTextColors = [];
-				tooltipPosition = Chart.Tooltip.positioners[opts.position](active, me._eventPosition);
+				tooltipPosition = Chart.Tooltip.positioners[opts.position].call(me, active, me._eventPosition);
 
 				var tooltipItems = [];
 				for (i = 0, len = active.length; i < len; ++i) {
@@ -72264,6 +73584,7 @@ module.exports = function(Chart) {
 			};
 
 			// Before body lines
+			ctx.fillStyle = mergeOpacity(vm.bodyFontColor, opacity);
 			helpers.each(vm.beforeBody, fillLineOfText);
 
 			var drawColorBoxes = vm.displayColors;
@@ -72271,6 +73592,8 @@ module.exports = function(Chart) {
 
 			// Draw body lines now
 			helpers.each(body, function(bodyItem, i) {
+				var textColor = mergeOpacity(vm.labelTextColors[i], opacity);
+				ctx.fillStyle = textColor;
 				helpers.each(bodyItem.before, fillLineOfText);
 
 				helpers.each(bodyItem.lines, function(line) {
@@ -72288,7 +73611,6 @@ module.exports = function(Chart) {
 						// Inner square
 						ctx.fillStyle = mergeOpacity(vm.labelColors[i].backgroundColor, opacity);
 						ctx.fillRect(pt.x + 1, pt.y + 1, bodyFontSize - 2, bodyFontSize - 2);
-						var textColor = mergeOpacity(vm.labelTextColors[i], opacity);
 						ctx.fillStyle = textColor;
 					}
 
@@ -72533,7 +73855,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 209 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72672,7 +73994,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 210 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72812,7 +74134,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 211 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73011,7 +74333,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 212 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73262,7 +74584,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 213 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73799,7 +75121,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 214 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73818,47 +75140,47 @@ var MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
 
 var INTERVALS = {
 	millisecond: {
-		major: true,
+		common: true,
 		size: 1,
 		steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
 	},
 	second: {
-		major: true,
+		common: true,
 		size: 1000,
 		steps: [1, 2, 5, 10, 30]
 	},
 	minute: {
-		major: true,
+		common: true,
 		size: 60000,
 		steps: [1, 2, 5, 10, 30]
 	},
 	hour: {
-		major: true,
+		common: true,
 		size: 3600000,
 		steps: [1, 2, 3, 6, 12]
 	},
 	day: {
-		major: true,
+		common: true,
 		size: 86400000,
 		steps: [1, 2, 5]
 	},
 	week: {
-		major: false,
+		common: false,
 		size: 604800000,
 		steps: [1, 2, 3, 4]
 	},
 	month: {
-		major: true,
+		common: true,
 		size: 2.628e9,
 		steps: [1, 2, 3]
 	},
 	quarter: {
-		major: false,
+		common: false,
 		size: 7.884e9,
 		steps: [1, 2, 3, 4]
 	},
 	year: {
-		major: true,
+		common: true,
 		size: 3.154e10
 	}
 };
@@ -74058,7 +75380,10 @@ function determineStepSize(min, max, unit, capacity) {
 	return factor;
 }
 
-function determineUnit(minUnit, min, max, capacity) {
+/**
+ * Figures out what unit results in an appropriate number of auto-generated ticks
+ */
+function determineUnitForAutoTicks(minUnit, min, max, capacity) {
 	var ilen = UNITS.length;
 	var i, interval, factor;
 
@@ -74066,7 +75391,7 @@ function determineUnit(minUnit, min, max, capacity) {
 		interval = INTERVALS[UNITS[i]];
 		factor = interval.steps ? interval.steps[interval.steps.length - 1] : MAX_INTEGER;
 
-		if (Math.ceil((max - min) / (factor * interval.size)) <= capacity) {
+		if (interval.common && Math.ceil((max - min) / (factor * interval.size)) <= capacity) {
 			return UNITS[i];
 		}
 	}
@@ -74074,9 +75399,27 @@ function determineUnit(minUnit, min, max, capacity) {
 	return UNITS[ilen - 1];
 }
 
+/**
+ * Figures out what unit to format a set of ticks with
+ */
+function determineUnitForFormatting(ticks, minUnit, min, max) {
+	var duration = moment.duration(moment(max).diff(moment(min)));
+	var ilen = UNITS.length;
+	var i, unit;
+
+	for (i = ilen - 1; i >= UNITS.indexOf(minUnit); i--) {
+		unit = UNITS[i];
+		if (INTERVALS[unit].common && duration.as(unit) >= ticks.length) {
+			return unit;
+		}
+	}
+
+	return UNITS[minUnit ? UNITS.indexOf(minUnit) : 0];
+}
+
 function determineMajorUnit(unit) {
 	for (var i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
-		if (INTERVALS[UNITS[i]].major) {
+		if (INTERVALS[UNITS[i]].common) {
 			return UNITS[i];
 		}
 	}
@@ -74088,8 +75431,10 @@ function determineMajorUnit(unit) {
  * Important: this method can return ticks outside the min and max range, it's the
  * responsibility of the calling code to clamp values if needed.
  */
-function generate(min, max, minor, major, capacity, options) {
+function generate(min, max, capacity, options) {
 	var timeOpts = options.time;
+	var minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, capacity);
+	var major = determineMajorUnit(minor);
 	var stepSize = helpers.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
 	var weekday = minor === 'week' ? timeOpts.isoWeekday : false;
 	var majorTicksEnabled = options.ticks.major.enabled;
@@ -74286,8 +75631,8 @@ module.exports = function(Chart) {
 			var me = this;
 			var chart = me.chart;
 			var timeOpts = me.options.time;
-			var min = parse(timeOpts.min, me) || MAX_INTEGER;
-			var max = parse(timeOpts.max, me) || MIN_INTEGER;
+			var min = MAX_INTEGER;
+			var max = MIN_INTEGER;
 			var timestamps = [];
 			var datasets = [];
 			var labels = [];
@@ -74334,6 +75679,9 @@ module.exports = function(Chart) {
 				max = Math.max(max, timestamps[timestamps.length - 1]);
 			}
 
+			min = parse(timeOpts.min, me) || min;
+			max = parse(timeOpts.max, me) || max;
+
 			// In case there is no valid min/max, let's use today limits
 			min = min === MAX_INTEGER ? +moment().startOf('day') : min;
 			max = max === MIN_INTEGER ? +moment().endOf('day') + 1 : max;
@@ -74358,10 +75706,6 @@ module.exports = function(Chart) {
 			var max = me.max;
 			var options = me.options;
 			var timeOpts = options.time;
-			var formats = timeOpts.displayFormats;
-			var capacity = me.getLabelCapacity(min);
-			var unit = timeOpts.unit || determineUnit(timeOpts.minUnit, min, max, capacity);
-			var majorUnit = determineMajorUnit(unit);
 			var timestamps = [];
 			var ticks = [];
 			var i, ilen, timestamp;
@@ -74375,7 +75719,7 @@ module.exports = function(Chart) {
 				break;
 			case 'auto':
 			default:
-				timestamps = generate(min, max, unit, majorUnit, capacity, options);
+				timestamps = generate(min, max, me.getLabelCapacity(min), options);
 			}
 
 			if (options.bounds === 'ticks' && timestamps.length) {
@@ -74399,14 +75743,12 @@ module.exports = function(Chart) {
 			me.max = max;
 
 			// PRIVATE
-			me._unit = unit;
-			me._majorUnit = majorUnit;
-			me._minorFormat = formats[unit];
-			me._majorFormat = formats[majorUnit];
+			me._unit = timeOpts.unit || determineUnitForFormatting(ticks, timeOpts.minUnit, me.min, me.max);
+			me._majorUnit = determineMajorUnit(me._unit);
 			me._table = buildLookupTable(me._timestamps.data, min, max, options.distribution);
 			me._offsets = computeOffsets(me._table, ticks, min, max, options);
 
-			return ticksFromTimestamps(ticks, majorUnit);
+			return ticksFromTimestamps(ticks, me._majorUnit);
 		},
 
 		getLabelForIndex: function(index, datasetIndex) {
@@ -74430,16 +75772,18 @@ module.exports = function(Chart) {
 		 * Function to format an individual tick mark
 		 * @private
 		 */
-		tickFormatFunction: function(tick, index, ticks) {
+		tickFormatFunction: function(tick, index, ticks, formatOverride) {
 			var me = this;
 			var options = me.options;
 			var time = tick.valueOf();
+			var formats = options.time.displayFormats;
+			var minorFormat = formats[me._unit];
 			var majorUnit = me._majorUnit;
-			var majorFormat = me._majorFormat;
-			var majorTime = tick.clone().startOf(me._majorUnit).valueOf();
+			var majorFormat = formats[majorUnit];
+			var majorTime = tick.clone().startOf(majorUnit).valueOf();
 			var majorTickOpts = options.ticks.major;
 			var major = majorTickOpts.enabled && majorUnit && majorFormat && time === majorTime;
-			var label = tick.format(major ? majorFormat : me._minorFormat);
+			var label = tick.format(formatOverride ? formatOverride : major ? majorFormat : minorFormat);
 			var tickOpts = major ? majorTickOpts : options.ticks.minor;
 			var formatter = helpers.valueOrDefault(tickOpts.callback, tickOpts.userCallback);
 
@@ -74525,9 +75869,9 @@ module.exports = function(Chart) {
 		getLabelCapacity: function(exampleTime) {
 			var me = this;
 
-			me._minorFormat = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
+			var formatOverride = me.options.time.displayFormats.millisecond;	// Pick the longest format for guestimation
 
-			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, []);
+			var exampleLabel = me.tickFormatFunction(moment(exampleTime), 0, [], formatOverride);
 			var tickLabelWidth = me.getLabelWidth(exampleLabel);
 			var innerWidth = me.isHorizontal() ? me.width : me.height;
 
@@ -74540,240 +75884,240 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 215 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./af": 23,
-	"./af.js": 23,
-	"./ar": 24,
-	"./ar-dz": 25,
-	"./ar-dz.js": 25,
-	"./ar-kw": 26,
-	"./ar-kw.js": 26,
-	"./ar-ly": 27,
-	"./ar-ly.js": 27,
-	"./ar-ma": 28,
-	"./ar-ma.js": 28,
-	"./ar-sa": 29,
-	"./ar-sa.js": 29,
-	"./ar-tn": 30,
-	"./ar-tn.js": 30,
-	"./ar.js": 24,
-	"./az": 31,
-	"./az.js": 31,
-	"./be": 32,
-	"./be.js": 32,
-	"./bg": 33,
-	"./bg.js": 33,
-	"./bn": 34,
-	"./bn.js": 34,
-	"./bo": 35,
-	"./bo.js": 35,
-	"./br": 36,
-	"./br.js": 36,
-	"./bs": 37,
-	"./bs.js": 37,
-	"./ca": 38,
-	"./ca.js": 38,
-	"./cs": 39,
-	"./cs.js": 39,
-	"./cv": 40,
-	"./cv.js": 40,
-	"./cy": 41,
-	"./cy.js": 41,
-	"./da": 42,
-	"./da.js": 42,
-	"./de": 43,
-	"./de-at": 44,
-	"./de-at.js": 44,
-	"./de-ch": 45,
-	"./de-ch.js": 45,
-	"./de.js": 43,
-	"./dv": 46,
-	"./dv.js": 46,
-	"./el": 47,
-	"./el.js": 47,
-	"./en-au": 48,
-	"./en-au.js": 48,
-	"./en-ca": 49,
-	"./en-ca.js": 49,
-	"./en-gb": 50,
-	"./en-gb.js": 50,
-	"./en-ie": 51,
-	"./en-ie.js": 51,
-	"./en-nz": 52,
-	"./en-nz.js": 52,
-	"./eo": 53,
-	"./eo.js": 53,
-	"./es": 54,
-	"./es-do": 55,
-	"./es-do.js": 55,
-	"./es.js": 54,
-	"./et": 56,
-	"./et.js": 56,
-	"./eu": 57,
-	"./eu.js": 57,
-	"./fa": 58,
-	"./fa.js": 58,
-	"./fi": 59,
-	"./fi.js": 59,
-	"./fo": 60,
-	"./fo.js": 60,
-	"./fr": 61,
-	"./fr-ca": 62,
-	"./fr-ca.js": 62,
-	"./fr-ch": 63,
-	"./fr-ch.js": 63,
-	"./fr.js": 61,
-	"./fy": 64,
-	"./fy.js": 64,
-	"./gd": 65,
-	"./gd.js": 65,
-	"./gl": 66,
-	"./gl.js": 66,
-	"./gom-latn": 67,
-	"./gom-latn.js": 67,
-	"./he": 68,
-	"./he.js": 68,
-	"./hi": 69,
-	"./hi.js": 69,
-	"./hr": 70,
-	"./hr.js": 70,
-	"./hu": 71,
-	"./hu.js": 71,
-	"./hy-am": 72,
-	"./hy-am.js": 72,
-	"./id": 73,
-	"./id.js": 73,
-	"./is": 74,
-	"./is.js": 74,
-	"./it": 75,
-	"./it.js": 75,
-	"./ja": 76,
-	"./ja.js": 76,
-	"./jv": 77,
-	"./jv.js": 77,
-	"./ka": 78,
-	"./ka.js": 78,
-	"./kk": 79,
-	"./kk.js": 79,
-	"./km": 80,
-	"./km.js": 80,
-	"./kn": 81,
-	"./kn.js": 81,
-	"./ko": 82,
-	"./ko.js": 82,
-	"./ky": 83,
-	"./ky.js": 83,
-	"./lb": 84,
-	"./lb.js": 84,
-	"./lo": 85,
-	"./lo.js": 85,
-	"./lt": 86,
-	"./lt.js": 86,
-	"./lv": 87,
-	"./lv.js": 87,
-	"./me": 88,
-	"./me.js": 88,
-	"./mi": 89,
-	"./mi.js": 89,
-	"./mk": 90,
-	"./mk.js": 90,
-	"./ml": 91,
-	"./ml.js": 91,
-	"./mr": 92,
-	"./mr.js": 92,
-	"./ms": 93,
-	"./ms-my": 94,
-	"./ms-my.js": 94,
-	"./ms.js": 93,
-	"./my": 95,
-	"./my.js": 95,
-	"./nb": 96,
-	"./nb.js": 96,
-	"./ne": 97,
-	"./ne.js": 97,
-	"./nl": 98,
-	"./nl-be": 99,
-	"./nl-be.js": 99,
-	"./nl.js": 98,
-	"./nn": 100,
-	"./nn.js": 100,
-	"./pa-in": 101,
-	"./pa-in.js": 101,
-	"./pl": 102,
-	"./pl.js": 102,
-	"./pt": 103,
-	"./pt-br": 104,
-	"./pt-br.js": 104,
-	"./pt.js": 103,
-	"./ro": 105,
-	"./ro.js": 105,
-	"./ru": 106,
-	"./ru.js": 106,
-	"./sd": 107,
-	"./sd.js": 107,
-	"./se": 108,
-	"./se.js": 108,
-	"./si": 109,
-	"./si.js": 109,
-	"./sk": 110,
-	"./sk.js": 110,
-	"./sl": 111,
-	"./sl.js": 111,
-	"./sq": 112,
-	"./sq.js": 112,
-	"./sr": 113,
-	"./sr-cyrl": 114,
-	"./sr-cyrl.js": 114,
-	"./sr.js": 113,
-	"./ss": 115,
-	"./ss.js": 115,
-	"./sv": 116,
-	"./sv.js": 116,
-	"./sw": 117,
-	"./sw.js": 117,
-	"./ta": 118,
-	"./ta.js": 118,
-	"./te": 119,
-	"./te.js": 119,
-	"./tet": 120,
-	"./tet.js": 120,
-	"./th": 121,
-	"./th.js": 121,
-	"./tl-ph": 122,
-	"./tl-ph.js": 122,
-	"./tlh": 123,
-	"./tlh.js": 123,
-	"./tr": 124,
-	"./tr.js": 124,
-	"./tzl": 125,
-	"./tzl.js": 125,
-	"./tzm": 126,
-	"./tzm-latn": 127,
-	"./tzm-latn.js": 127,
-	"./tzm.js": 126,
-	"./uk": 128,
-	"./uk.js": 128,
-	"./ur": 129,
-	"./ur.js": 129,
-	"./uz": 130,
-	"./uz-latn": 131,
-	"./uz-latn.js": 131,
-	"./uz.js": 130,
-	"./vi": 132,
-	"./vi.js": 132,
-	"./x-pseudo": 133,
-	"./x-pseudo.js": 133,
-	"./yo": 134,
-	"./yo.js": 134,
-	"./zh-cn": 135,
-	"./zh-cn.js": 135,
-	"./zh-hk": 136,
-	"./zh-hk.js": 136,
-	"./zh-tw": 137,
-	"./zh-tw.js": 137
+	"./af": 25,
+	"./af.js": 25,
+	"./ar": 26,
+	"./ar-dz": 27,
+	"./ar-dz.js": 27,
+	"./ar-kw": 28,
+	"./ar-kw.js": 28,
+	"./ar-ly": 29,
+	"./ar-ly.js": 29,
+	"./ar-ma": 30,
+	"./ar-ma.js": 30,
+	"./ar-sa": 31,
+	"./ar-sa.js": 31,
+	"./ar-tn": 32,
+	"./ar-tn.js": 32,
+	"./ar.js": 26,
+	"./az": 33,
+	"./az.js": 33,
+	"./be": 34,
+	"./be.js": 34,
+	"./bg": 35,
+	"./bg.js": 35,
+	"./bn": 36,
+	"./bn.js": 36,
+	"./bo": 37,
+	"./bo.js": 37,
+	"./br": 38,
+	"./br.js": 38,
+	"./bs": 39,
+	"./bs.js": 39,
+	"./ca": 40,
+	"./ca.js": 40,
+	"./cs": 41,
+	"./cs.js": 41,
+	"./cv": 42,
+	"./cv.js": 42,
+	"./cy": 43,
+	"./cy.js": 43,
+	"./da": 44,
+	"./da.js": 44,
+	"./de": 45,
+	"./de-at": 46,
+	"./de-at.js": 46,
+	"./de-ch": 47,
+	"./de-ch.js": 47,
+	"./de.js": 45,
+	"./dv": 48,
+	"./dv.js": 48,
+	"./el": 49,
+	"./el.js": 49,
+	"./en-au": 50,
+	"./en-au.js": 50,
+	"./en-ca": 51,
+	"./en-ca.js": 51,
+	"./en-gb": 52,
+	"./en-gb.js": 52,
+	"./en-ie": 53,
+	"./en-ie.js": 53,
+	"./en-nz": 54,
+	"./en-nz.js": 54,
+	"./eo": 55,
+	"./eo.js": 55,
+	"./es": 56,
+	"./es-do": 57,
+	"./es-do.js": 57,
+	"./es.js": 56,
+	"./et": 58,
+	"./et.js": 58,
+	"./eu": 59,
+	"./eu.js": 59,
+	"./fa": 60,
+	"./fa.js": 60,
+	"./fi": 61,
+	"./fi.js": 61,
+	"./fo": 62,
+	"./fo.js": 62,
+	"./fr": 63,
+	"./fr-ca": 64,
+	"./fr-ca.js": 64,
+	"./fr-ch": 65,
+	"./fr-ch.js": 65,
+	"./fr.js": 63,
+	"./fy": 66,
+	"./fy.js": 66,
+	"./gd": 67,
+	"./gd.js": 67,
+	"./gl": 68,
+	"./gl.js": 68,
+	"./gom-latn": 69,
+	"./gom-latn.js": 69,
+	"./he": 70,
+	"./he.js": 70,
+	"./hi": 71,
+	"./hi.js": 71,
+	"./hr": 72,
+	"./hr.js": 72,
+	"./hu": 73,
+	"./hu.js": 73,
+	"./hy-am": 74,
+	"./hy-am.js": 74,
+	"./id": 75,
+	"./id.js": 75,
+	"./is": 76,
+	"./is.js": 76,
+	"./it": 77,
+	"./it.js": 77,
+	"./ja": 78,
+	"./ja.js": 78,
+	"./jv": 79,
+	"./jv.js": 79,
+	"./ka": 80,
+	"./ka.js": 80,
+	"./kk": 81,
+	"./kk.js": 81,
+	"./km": 82,
+	"./km.js": 82,
+	"./kn": 83,
+	"./kn.js": 83,
+	"./ko": 84,
+	"./ko.js": 84,
+	"./ky": 85,
+	"./ky.js": 85,
+	"./lb": 86,
+	"./lb.js": 86,
+	"./lo": 87,
+	"./lo.js": 87,
+	"./lt": 88,
+	"./lt.js": 88,
+	"./lv": 89,
+	"./lv.js": 89,
+	"./me": 90,
+	"./me.js": 90,
+	"./mi": 91,
+	"./mi.js": 91,
+	"./mk": 92,
+	"./mk.js": 92,
+	"./ml": 93,
+	"./ml.js": 93,
+	"./mr": 94,
+	"./mr.js": 94,
+	"./ms": 95,
+	"./ms-my": 96,
+	"./ms-my.js": 96,
+	"./ms.js": 95,
+	"./my": 97,
+	"./my.js": 97,
+	"./nb": 98,
+	"./nb.js": 98,
+	"./ne": 99,
+	"./ne.js": 99,
+	"./nl": 100,
+	"./nl-be": 101,
+	"./nl-be.js": 101,
+	"./nl.js": 100,
+	"./nn": 102,
+	"./nn.js": 102,
+	"./pa-in": 103,
+	"./pa-in.js": 103,
+	"./pl": 104,
+	"./pl.js": 104,
+	"./pt": 105,
+	"./pt-br": 106,
+	"./pt-br.js": 106,
+	"./pt.js": 105,
+	"./ro": 107,
+	"./ro.js": 107,
+	"./ru": 108,
+	"./ru.js": 108,
+	"./sd": 109,
+	"./sd.js": 109,
+	"./se": 110,
+	"./se.js": 110,
+	"./si": 111,
+	"./si.js": 111,
+	"./sk": 112,
+	"./sk.js": 112,
+	"./sl": 113,
+	"./sl.js": 113,
+	"./sq": 114,
+	"./sq.js": 114,
+	"./sr": 115,
+	"./sr-cyrl": 116,
+	"./sr-cyrl.js": 116,
+	"./sr.js": 115,
+	"./ss": 117,
+	"./ss.js": 117,
+	"./sv": 118,
+	"./sv.js": 118,
+	"./sw": 119,
+	"./sw.js": 119,
+	"./ta": 120,
+	"./ta.js": 120,
+	"./te": 121,
+	"./te.js": 121,
+	"./tet": 122,
+	"./tet.js": 122,
+	"./th": 123,
+	"./th.js": 123,
+	"./tl-ph": 124,
+	"./tl-ph.js": 124,
+	"./tlh": 125,
+	"./tlh.js": 125,
+	"./tr": 126,
+	"./tr.js": 126,
+	"./tzl": 127,
+	"./tzl.js": 127,
+	"./tzm": 128,
+	"./tzm-latn": 129,
+	"./tzm-latn.js": 129,
+	"./tzm.js": 128,
+	"./uk": 130,
+	"./uk.js": 130,
+	"./ur": 131,
+	"./ur.js": 131,
+	"./uz": 132,
+	"./uz-latn": 133,
+	"./uz-latn.js": 133,
+	"./uz.js": 132,
+	"./vi": 134,
+	"./vi.js": 134,
+	"./x-pseudo": 135,
+	"./x-pseudo.js": 135,
+	"./yo": 136,
+	"./yo.js": 136,
+	"./zh-cn": 137,
+	"./zh-cn.js": 137,
+	"./zh-hk": 138,
+	"./zh-hk.js": 138,
+	"./zh-tw": 139,
+	"./zh-tw.js": 139
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -74789,10 +76133,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 215;
+webpackContext.id = 221;
 
 /***/ }),
-/* 216 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75220,7 +76564,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 217 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75407,7 +76751,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 218 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75713,7 +77057,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 219 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76053,7 +77397,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 220 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76282,7 +77626,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 221 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76457,7 +77801,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 222 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76506,7 +77850,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 223 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76524,7 +77868,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 224 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76541,7 +77885,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 225 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76559,7 +77903,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 226 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76577,7 +77921,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 227 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76595,7 +77939,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 228 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76613,7 +77957,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 229 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76628,7 +77972,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 230 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76956,14 +78300,14 @@ module.exports = function() {
 
 
 /***/ }),
-/* 231 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -77530,14 +78874,14 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 232 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var defaults = __webpack_require__(2);
-var Element = __webpack_require__(4);
+var Element = __webpack_require__(5);
 var helpers = __webpack_require__(1);
 
 defaults._set('global', {
@@ -77780,13 +79124,13 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 233 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(5)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(234)
+var __vue_script__ = __webpack_require__(240)
 /* template */
 var __vue_template__ = null
 /* template functional */
@@ -77805,7 +79149,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\charts\\chart-categories.vue"
+Component.options.__file = "resources/assets/js/components/charts/ChartCategories.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
 
 /* hot reload */
@@ -77815,9 +79159,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-8e1dda80", Component.options)
+    hotAPI.createRecord("data-v-613e1796", Component.options)
   } else {
-    hotAPI.reload("data-v-8e1dda80", Component.options)
+    hotAPI.reload("data-v-613e1796", Component.options)
 ' + '  }
   module.hot.dispose(function (data) {
     disposed = true
@@ -77828,12 +79172,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 234 */
+/* 240 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Graph__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Graph__ = __webpack_require__(20);
 
 
 
@@ -77863,15 +79207,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 }));
 
 /***/ }),
-/* 235 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(5)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(236)
+var __vue_script__ = __webpack_require__(242)
 /* template */
-var __vue_template__ = __webpack_require__(237)
+var __vue_template__ = __webpack_require__(243)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -77888,7 +79232,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\table-report.vue"
+Component.options.__file = "resources/assets/js/components/TableReport.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
 
 /* hot reload */
@@ -77898,9 +79242,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-91916f70", Component.options)
+    hotAPI.createRecord("data-v-a1907546", Component.options)
   } else {
-    hotAPI.reload("data-v-91916f70", Component.options)
+    hotAPI.reload("data-v-a1907546", Component.options)
 ' + '  }
   module.hot.dispose(function (data) {
     disposed = true
@@ -77911,7 +79255,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 236 */
+/* 242 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -78001,7 +79345,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 237 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -78093,20 +79437,20 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-91916f70", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-a1907546", module.exports)
   }
 }
 
 /***/ }),
-/* 238 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(5)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(239)
+var __vue_script__ = __webpack_require__(245)
 /* template */
-var __vue_template__ = __webpack_require__(240)
+var __vue_template__ = __webpack_require__(246)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -78123,7 +79467,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\infoboxes\\box-sum-sm.vue"
+Component.options.__file = "resources/assets/js/components/infoboxes/BoxSumSm.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
 
 /* hot reload */
@@ -78133,9 +79477,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-7669a7d7", Component.options)
+    hotAPI.createRecord("data-v-876b8c5a", Component.options)
   } else {
-    hotAPI.reload("data-v-7669a7d7", Component.options)
+    hotAPI.reload("data-v-876b8c5a", Component.options)
 ' + '  }
   module.hot.dispose(function (data) {
     disposed = true
@@ -78146,7 +79490,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 239 */
+/* 245 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -78174,7 +79518,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 240 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -78197,20 +79541,20 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-7669a7d7", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-876b8c5a", module.exports)
   }
 }
 
 /***/ }),
-/* 241 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(5)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(242)
+var __vue_script__ = __webpack_require__(248)
 /* template */
-var __vue_template__ = __webpack_require__(243)
+var __vue_template__ = __webpack_require__(249)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -78227,7 +79571,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\infoboxes\\box-avg-sm.vue"
+Component.options.__file = "resources/assets/js/components/infoboxes/BoxAvgSm.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
 
 /* hot reload */
@@ -78237,9 +79581,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-6e3d1570", Component.options)
+    hotAPI.createRecord("data-v-79f6351a", Component.options)
   } else {
-    hotAPI.reload("data-v-6e3d1570", Component.options)
+    hotAPI.reload("data-v-79f6351a", Component.options)
 ' + '  }
   module.hot.dispose(function (data) {
     disposed = true
@@ -78250,7 +79594,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 242 */
+/* 248 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -78291,7 +79635,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 243 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -78314,20 +79658,20 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-6e3d1570", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-79f6351a", module.exports)
   }
 }
 
 /***/ }),
-/* 244 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(5)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(245)
+var __vue_script__ = __webpack_require__(251)
 /* template */
-var __vue_template__ = __webpack_require__(246)
+var __vue_template__ = null
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -78344,7 +79688,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\infoboxes\\box-generic-lg.vue"
+Component.options.__file = "resources/assets/js/pages/Overview.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
 
 /* hot reload */
@@ -78354,9 +79698,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-ecab7828", Component.options)
+    hotAPI.createRecord("data-v-1782ca58", Component.options)
   } else {
-    hotAPI.reload("data-v-ecab7828", Component.options)
+    hotAPI.reload("data-v-1782ca58", Component.options)
 ' + '  }
   module.hot.dispose(function (data) {
     disposed = true
@@ -78367,7 +79711,70 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 245 */
+/* 251 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_infoboxes_BoxGenericLg_vue__ = __webpack_require__(252);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_infoboxes_BoxGenericLg_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_infoboxes_BoxGenericLg_vue__);
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    components: { BoxGenericLg: __WEBPACK_IMPORTED_MODULE_0__components_infoboxes_BoxGenericLg_vue___default.a }
+});
+
+/***/ }),
+/* 252 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(253)
+/* template */
+var __vue_template__ = __webpack_require__(254)
+/* template functional */
+  var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/infoboxes/BoxGenericLg.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-72546800", Component.options)
+  } else {
+    hotAPI.reload("data-v-72546800", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 253 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -78399,7 +79806,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 246 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -78438,15 +79845,528 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-ecab7828", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-72546800", module.exports)
   }
 }
 
 /***/ }),
-/* 247 */
+/* 255 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(256)
+/* template */
+var __vue_template__ = __webpack_require__(260)
+/* template functional */
+  var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/charts/ChartSelector.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-64491690", Component.options)
+  } else {
+    hotAPI.reload("data-v-64491690", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 256 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__BarChart_vue__ = __webpack_require__(271);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__BarChart_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__BarChart_vue__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    components: { BarChart: __WEBPACK_IMPORTED_MODULE_1__BarChart_vue___default.a },
+
+    props: ['yearsAvailable'],
+
+    data: function data() {
+        return {
+            year: new Date().getFullYear()
+        };
+    },
+
+
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'groupedBy']), {
+
+        /** 
+         * Return the labels according to the groupedBy property returned with the ajax call.
+         */
+        labels: function labels() {
+            switch (this.groupedBy) {
+                case 'month':
+                    return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }),
+
+    mounted: function mounted() {
+        this.refreshDatasets(this.year);
+    },
+
+
+    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapMutations */])(['clearDatasets', 'pushDataset', 'incrementUpdated']), {
+
+        /**
+         * Refresh the datasets in the store, loading the year passed
+         * and the previous year, then update the properties.
+         */
+        refreshDatasets: function refreshDatasets(year) {
+            this.clearDatasets();
+
+            this.addDataset(year);
+            this.addDataset(year - 1);
+        },
+
+
+        /**
+         * Fetch a dataset for a given year and commit the mutation.
+         * Increment the updated property in the store to trigger
+         * re-rendering after the ajax call.
+         * 
+         * @param {*} year 
+         */
+        addDataset: function addDataset(year) {
+            var _this = this;
+
+            axios.get('/api/visits/' + year).then(function (response) {
+                _this.pushDataset(response.data);
+
+                _this.incrementUpdated();
+            });
+        }
+    })
+});
+
+/***/ }),
+/* 257 */,
+/* 258 */,
+/* 259 */,
+/* 260 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "col" },
+    [
+      _c("div", { staticClass: "card-body" }, [
+        _c("div", { staticClass: "row" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("div", { staticClass: "col" }, [
+            _c(
+              "label",
+              { staticClass: "mr-sm-2", attrs: { for: "dateSelector" } },
+              [_vm._v("Year")]
+            ),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.year,
+                    expression: "year"
+                  }
+                ],
+                staticClass: "custom-select mb-2 mr-sm-2 mb-sm-0",
+                attrs: { id: "dateSelector" },
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.year = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  }
+                }
+              },
+              _vm._l(_vm.yearsAvailable, function(year, index) {
+                return _c("option", { key: index, domProps: { value: year } }, [
+                  _vm._v(_vm._s(year))
+                ])
+              })
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary",
+                on: {
+                  click: function($event) {
+                    _vm.refreshDatasets(_vm.year)
+                  }
+                }
+              },
+              [_vm._v("Load")]
+            )
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("bar-chart", { attrs: { labels: _vm.labels } })
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col" }, [
+      _c("h4", { staticClass: "card-title" }, [_vm._v("Load the statistics")]),
+      _vm._v(" "),
+      _c("p", { staticClass: "card-text" }, [
+        _vm._v(
+          "Select a year from the dropdown menu to update the graph. \n                    The data will be compared with the same period of the previous year (if available)."
+        )
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-64491690", module.exports)
+  }
+}
+
+/***/ }),
+/* 261 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = ({
+    state: {
+        /**
+         * The raw data coming from the API.
+         */
+        rawDatasets: [],
+
+        /**
+         * Keep a count of the dataset updates to allow reactivity even with nested arrays.
+         */
+        updated: 0,
+
+        backgroundColors: ['rgba(249, 178, 72, 0.5)', 'rgba(252, 58, 82, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(204, 101, 254, 0.5)'],
+        borderColors: ['rgba(249, 178, 72, 0.8)', 'rgba(252, 58, 82, 0.8)', 'rgba(255, 99, 132, 0.8)', 'rgba(54, 162, 235, 0.8)', 'rgba(204, 101, 254, 0.8)']
+    },
+
+    getters: {
+        /**
+         * Get an array of datasets containing the total number of visits for the period
+         * selected. The datasets are formatted to be used with chart.js.
+         */
+        totalVisits: function totalVisits(state) {
+            var datasets = [];
+
+            for (var key in state.rawDatasets) {
+                if (state.rawDatasets.hasOwnProperty(key)) {
+                    // Get rid of the patron categories, sum all the visits and store them in an array.
+                    var totals = [];
+
+                    for (var unit in state.rawDatasets[key].data.visits) {
+                        if (state.rawDatasets[key].data.visits.hasOwnProperty(unit)) {
+                            totals[unit] = Object.values(state.rawDatasets[key].data.visits[unit]).reduce(function (a, b) {
+                                return a + b;
+                            });
+                        }
+                    }
+
+                    // Push the dataset into an array in a format readable by chart.js.
+                    datasets.push({
+                        data: totals,
+                        label: state.rawDatasets[key].data.label,
+                        backgroundColor: state.backgroundColors[key],
+                        borderColor: state.borderColors[key]
+                    });
+                }
+            }
+
+            return datasets;
+        },
+
+        /**
+         * Get the time unit which the datasets are grouped by.
+         */
+        groupedBy: function groupedBy(state) {
+            if (state.rawDatasets.hasOwnProperty(0)) {
+                return state.rawDatasets[0].data.groupedBy;
+            }
+        }
+    },
+
+    mutations: {
+        /**
+         * Push a dataset to the current state once it has been retrieved.
+         * 
+         * @param {*} state 
+         * @param {*} dataset 
+         */
+        pushDataset: function pushDataset(state, dataset) {
+            state.rawDatasets.push(dataset);
+        },
+
+
+        /**
+         * Empty the raw datasets.
+         * 
+         * @param {*} state 
+         */
+        clearDatasets: function clearDatasets(state) {
+            state.rawDatasets = [];
+        },
+
+
+        /**
+         * Increment the updated property.
+         * 
+         * @param {*} state 
+         */
+        incrementUpdated: function incrementUpdated(state) {
+            state.updated++;
+        }
+    }
+});
+
+/***/ }),
+/* 262 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 263 */,
+/* 264 */,
+/* 265 */,
+/* 266 */,
+/* 267 */,
+/* 268 */,
+/* 269 */,
+/* 270 */,
+/* 271 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(272)
+/* template */
+var __vue_template__ = __webpack_require__(273)
+/* template functional */
+  var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/charts/BarChart.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-524a0000", Component.options)
+  } else {
+    hotAPI.reload("data-v-524a0000", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 272 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_chart_js__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_chart_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_chart_js__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['labels'],
+
+    data: function data() {
+        return {
+            chart: null
+        };
+    },
+
+
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['updated']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits'])),
+
+    watch: {
+        /**
+         * Trigger a chart re-render each time two datasets are added.
+         */
+        updated: function updated() {
+            if (this.updated % 2 === 0) {
+                this.render();
+            }
+        }
+    },
+
+    mounted: function mounted() {
+        this.createChart();
+    },
+
+
+    methods: {
+        /** 
+         * Destroy any existing chart and create a new one.
+         */
+        render: function render() {
+            this.chart.destroy();
+            return this.createChart();
+        },
+
+
+        /**
+         * Create a new chart and store it in the chart property.
+         */
+        createChart: function createChart() {
+            this.chart = new __WEBPACK_IMPORTED_MODULE_1_chart_js___default.a(this.$el, {
+                type: 'bar',
+                data: {
+                    labels: this.labels,
+                    datasets: this.totalVisits
+                }
+            });
+        }
+    }
+});
+
+/***/ }),
+/* 273 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("canvas")
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-524a0000", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

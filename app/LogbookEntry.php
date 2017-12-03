@@ -24,7 +24,7 @@ class LogbookEntry extends Model
     public $fillable = ['patron_category_id', 'visited_at', 'recorded_live'];
 
     /**
-     * Cast the field visited_at to a Carbon instance automativally.
+     * Cast the field visited_at to a Carbon instance automatically.
      *
      * @var array
      */
@@ -109,8 +109,8 @@ class LogbookEntry extends Model
     /**
      * Get aggregate values for a custom time range.
      *
-     * @param  Carbon $start
-     * @param  Carbon $end
+     * @param Carbon $start
+     * @param Carbon $end
      *
      * @return Illuminate\Database\Eloquent\Collection
      */
@@ -166,60 +166,6 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Get the total number of visits grouped by year and month, with an optional second year for comparison.
-     * TODO: Remove this method, will be replaced by the api methods. The data will be fetched with
-     * AJAX requests.
-     *
-     * @param  int $year1
-     * @param  int $year2
-     * @return Illuminate\Database\Eloquent\Collection
-     */
-    public static function getTotalVisitsByYear(int $year1, int $year2 = null)
-    {
-        $collection = static::selectRaw('YEAR(visited_at) as year, MONTH(visited_at) as month, count(*) as visits')
-            ->groupBy('year', 'month')
-            ->having('year', $year1)
-            ->orHaving('year', $year2)
-            ->get()
-            ->sortByDesc('year')
-            ->groupBy('year');
-
-        // $result structure = year => [monthNo => visits, monthNo => visits, ...]
-        $result = [];
-        foreach ($collection as $year => $items) {
-            // Create the array skeleton
-            for ($monthNo = 1; $monthNo < 13 ; $monthNo++) {
-                $result[$year][$monthNo] = 0;
-            };
-
-            // Replace zeroes with real values from the collection
-            foreach ($items as $item) {
-                $result[$year][$item->month] = $item->visits;
-            }
-        };
-
-        // Collect the result to allow automatic conversion to JSON in the view.
-        return collect($result);
-    }
-
-    /**
-     * Get the total number of visits for the year specified,
-     * grouped by patron category.
-     *
-     * @param int $year
-     * @return Collection
-     */
-    public static function getTotalVisitsByPatronCategory(int $year)
-    {
-        return static::year($year)
-            ->selectRaw('count(*) as visits, patron_category_id')
-            ->groupBy('patron_category_id')
-            ->with('patronCategory')
-            ->get()
-            ->pluck('visits', 'patronCategory.name');
-    }
-
-    /**
      * Get the visits count for the last available day before today.
      *
      * @return Collection | null
@@ -234,47 +180,32 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Group the visits by month.
+     * Aggregate the entries according to the desired period (month, day, hour).
      *
      * @param Builder $builder
-     * @return Collection
+     * @param string $period
+     * @return array
      */
-    public function scopeGroupVisitsByMonth($builder)
+    public function scopeAggregateBy($builder, string $period)
     {
-        return $builder
-            ->selectRaw('MONTH(visited_at) as month, count(*) as visits')
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('visits', 'month');
-    }
+        $allowedPeriods = ['month', 'day', 'hour'];
 
-    /**
-     * Group the visits by day.
-     *
-     * @param Builder $builder
-     * @return Collection
-     */
-    public function scopeGroupVisitsByDay($builder)
-    {
-        return $builder
-            ->selectRaw('DAY(visited_at) as day, count(*) as visits')
-            ->groupBy('day')
-            ->orderBy('day')
-            ->pluck('visits', 'day');
-    }
+        if (!in_array($period, $allowedPeriods)) {
+            return [];
+        }
 
-    /**
-     * Group the visits by hour.
-     *
-     * @param Builder $builder
-     * @return Collection
-     */
-    public function scopeGroupVisitsByHour($builder)
-    {
-        return $builder
-            ->selectRaw('HOUR(visited_at) as hour, count(*) as visits')
-            ->groupBy('hour')
-            ->orderBy('hour')
-            ->pluck('visits', 'hour');
+        $entries = $builder
+            ->selectRaw("{$period}(visited_at) as {$period}, patron_category_id, count(*) as visits")
+            ->with('patronCategory:id,name')
+            ->groupBy('patron_category_id', $period)
+            ->orderBy($period)
+            ->get();
+
+        $result = [];
+        foreach ($entries as $entry) {
+            $result[$entry->$period][$entry->patronCategory->name] = $entry->visits;
+        }
+
+        return $result;
     }
 }

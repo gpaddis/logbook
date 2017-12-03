@@ -19,6 +19,17 @@ class VisitsTest extends TestCase
         Artisan::call('db:seed', ['--class' => 'LogbookEntrySeeder']);
     }
 
+    /**
+     * Convert the JSON response to an array.
+     *
+     * @param [type] $response
+     * @return array
+     */
+    protected function jsonToArray($response)
+    {
+        return json_decode(json_encode($response->getData()), true);
+    }
+
     /** @test */
     public function it_gets_the_visits_by_year_grouped_by_month()
     {
@@ -26,10 +37,7 @@ class VisitsTest extends TestCase
         $response->assertStatus(200)
         ->assertJson([
             'data' => [
-                'visits' => [
-                    '1' => '28',
-                    '2' => '28'
-                ],
+                'label' => 2010,
                 'period' => [
                     'year' => 2010
                 ],
@@ -45,9 +53,7 @@ class VisitsTest extends TestCase
         $response->assertStatus(200)
         ->assertJson([
             'data' => [
-                'visits' => [
-                    '13' => '28'
-                ],
+                'label' => 'February 2010',
                 'period' => [
                     'year' => 2010,
                     'month' => 02
@@ -55,6 +61,9 @@ class VisitsTest extends TestCase
                 'groupedBy' => 'day'
             ]
         ]);
+
+        $visits = array_sum($this->jsonToArray($response)['data']['visits']['13']);
+        $this->assertEquals(28, $visits);
     }
 
     /** @test */
@@ -64,10 +73,7 @@ class VisitsTest extends TestCase
         $response->assertStatus(200)
         ->assertJson([
             'data' => [
-                'visits' => [
-                    '12' => '14',
-                    '13' => '14',
-                ],
+                'label' => 'February 13, 2010',
                 'period' => [
                     'year' => 2010,
                     'month' => 02,
@@ -97,5 +103,42 @@ class VisitsTest extends TestCase
 
         $this->json('GET', '/api/visits/2014/  /12')
             ->assertStatus(422);
+
+        $this->json('GET', '/api/visits/2014/03/0')
+            ->assertStatus(422);
+    }
+
+    /** @test */
+    public function it_allows_for_custom_groupings()
+    {
+        $this->withExceptionHandling();
+
+        $this->json('GET', '/api/visits/2010?groupBy=month')
+        ->assertStatus(200)
+        ->assertJson([
+            'data' => [
+                'groupedBy' => 'month'
+            ]
+        ]);
+
+        $this->json('GET', '/api/visits/2010?groupBy=day')
+        ->assertStatus(200)
+        ->assertJson([
+            'data' => [
+                'groupedBy' => 'day'
+            ]
+        ]);
+
+        $this->json('GET', '/api/visits/2010?groupBy=hour')
+        ->assertStatus(200)
+        ->assertJson([
+            'data' => [
+                'groupedBy' => 'hour'
+            ]
+        ]);
+
+        // It validates the request
+        $this->json('GET', '/api/visits/2010?groupBy=minute')
+        ->assertStatus(422);
     }
 }

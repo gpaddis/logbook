@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -13,22 +12,27 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', require('./components/Example.vue'));
+// Global components
 Vue.component('flash', require('./components/flash.vue'));
-
-// Livecounter
+Vue.component('example', require('./components/Example.vue'));
 Vue.component('category-cards', require('./components/livecounter/category-cards.vue'));
 
-// Charts & reports
-Vue.component('chart-month', require('./components/charts/chart-month.vue'));
-Vue.component('chart-categories', require('./components/charts/chart-categories.vue'));
-Vue.component('table-report', require('./components/table-report.vue'));
+// Logbook browse views
+Vue.component('year-view', require('./pages/Year.vue'));
+Vue.component('overview-view', require('./pages/Overview.vue'));
 
-// Infoboxes
-Vue.component('box-sum-sm', require('./components/infoboxes/box-sum-sm.vue'));
-Vue.component('box-avg-sm', require('./components/infoboxes/box-avg-sm.vue'));
-Vue.component('box-generic-lg', require('./components/infoboxes/box-generic-lg.vue'));
+// Line chart (testing)
+Vue.component('chart-selector', require('./components/charts/ChartSelector.vue'));
 
+// Import the global store (state management) object.
+import Vuex from 'vuex';
+Vue.use(Vuex);
+
+import store from './store';
+
+// The Vue instance.
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+
+    store: new Vuex.Store(store)
 });
