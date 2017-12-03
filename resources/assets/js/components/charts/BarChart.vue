@@ -8,11 +8,11 @@ import {mapState, mapGetters} from 'vuex';
 import Chart from 'chart.js';
 
 export default {
+    props: ['labels'],
+
     data() {
         return {
             chart: null,
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            colors: ['rgba(249, 178, 72, 0.5)', 'rgba(252, 58, 82, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(204, 101, 254, 0.5)']
         }
     },
 

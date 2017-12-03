@@ -3,12 +3,15 @@ export default {
         /**
          * The raw data coming from the API.
          */
-        rawDatasets: null,
+        rawDatasets: [],
 
         /**
          * Keep a count of the dataset updates to allow reactivity even with nested arrays.
          */
-        updated: 0
+        updated: 0,
+
+        backgroundColors: ['rgba(249, 178, 72, 0.5)', 'rgba(252, 58, 82, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(204, 101, 254, 0.5)'],
+        borderColors: ['rgba(249, 178, 72, 0.8)', 'rgba(252, 58, 82, 0.8)', 'rgba(255, 99, 132, 0.8)', 'rgba(54, 162, 235, 0.8)', 'rgba(204, 101, 254, 0.8)']
     },
 
     getters: {
@@ -34,7 +37,9 @@ export default {
                     // Push the dataset into an array in a format readable by chart.js.
                     datasets.push({
                         data: totals,
-                        label: state.rawDatasets[key].data.label
+                        label: state.rawDatasets[key].data.label,
+                        backgroundColor: state.backgroundColors[key],
+                        borderColor: state.borderColors[key],
                     });
 
                 }

@@ -1,43 +1,39 @@
 <template>
     <div class="col">
-        <div class="card">
-            <div class="card-header">
-                <ul class="nav nav-pills card-header-pills">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Active</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled</a>
-                </li>
-                </ul>
-            </div>
-        </div>
-
         <div class="card-body">
-            <h4 class="card-title">Load new datasets</h4>
-            <p class="card-text">Click on the button to load new datasets.</p>
+            <div class="row">
+                <div class="col">
+                    <h4 class="card-title">Load the statistics</h4>
+                    <p class="card-text">Select a year from the dropdown menu to update the graph. 
+                        The data will be compared with the same period of the previous year (if available).</p>
+                </div>
 
-            <div class="input-group">
-                <span class="input-group-btn">
-                    <button class="btn btn-primary" type="button" @click="refreshDatasets(year)">Load</button>
-                </span>
-                <input type="text" class="form-control" placeholder="Type in a year" aria-label="Search for..." v-model="year">
+                <div class="col">
+                    <label class="mr-sm-2" for="dateSelector">Year</label>
+                    <select v-model="year" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="dateSelector">
+                        <option v-for="(year, index) in yearsAvailable" :value="year" :key="index">{{ year }}</option>
+                    </select>
+
+                   <button class="btn btn-primary" @click="refreshDatasets(year)">Load</button>
+                </div>
             </div>
+            
+
+            
         </div>
 
-        <line-chart></line-chart>
+        <bar-chart :labels="labels"></bar-chart>
     </div>
 </template>
 
 <script>
     import {mapGetters, mapMutations} from 'vuex';
-    import LineChart from './LineChart.vue';
+    import BarChart from './BarChart.vue';
 
     export default {
-        components: { LineChart },
+        components: { BarChart },
+
+        props: ['yearsAvailable'],
 
         data() {
             return {
@@ -46,7 +42,21 @@
         },
 
         computed: {
-            ...mapGetters(['totalVisits', 'groupedBy'])
+            ...mapGetters(['totalVisits', 'groupedBy']),
+
+            /** 
+             * Return the labels according to the groupedBy property returned with the ajax call.
+             */
+            labels() {
+                switch (this.groupedBy) {
+                    case 'month':
+                        return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                        break;
+                
+                    default:
+                        break;
+                }
+            }
         },
 
         mounted() {
