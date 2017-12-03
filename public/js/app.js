@@ -79974,7 +79974,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
 
-    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapMutations */])(['clearDatasets', 'pushDataset', 'incrementUpdated']), {
+    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapMutations */])(['clearDatasets', 'pushDataset', 'incrementUpdated']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])(['addDataset']), {
+
+        /** 
+         * Generate the URL for the ajax call based on the parameters passed.
+         */
+        generateUrl: function generateUrl(year) {
+            return '/api/visits/' + year;
+        },
+
 
         /**
          * Refresh the datasets in the store, loading the year passed
@@ -79983,26 +79991,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         refreshDatasets: function refreshDatasets(year) {
             this.clearDatasets();
 
-            this.addDataset(year);
-            this.addDataset(year - 1);
-        },
-
-
-        /**
-         * Fetch a dataset for a given year and commit the mutation.
-         * Increment the updated property in the store to trigger
-         * re-rendering after the ajax call.
-         * 
-         * @param {*} year 
-         */
-        addDataset: function addDataset(year) {
-            var _this = this;
-
-            axios.get('/api/visits/' + year).then(function (response) {
-                _this.pushDataset(response.data);
-
-                _this.incrementUpdated();
-            });
+            this.addDataset(this.generateUrl(year));
+            this.addDataset(this.generateUrl(year - 1));
         }
     })
 });
@@ -80348,6 +80338,24 @@ if (false) {
          */
         incrementUpdated: function incrementUpdated(state) {
             state.updated++;
+        }
+    },
+
+    actions: {
+        /**
+         * Fetch a dataset from the given url and commit the mutation.
+         * Increment the updated property in the store to trigger
+         * re-rendering after the ajax call.
+         * 
+         * @param {*} context
+         * @param {*} url
+         */
+        addDataset: function addDataset(context, url) {
+            axios.get(url).then(function (response) {
+                context.commit('pushDataset', response.data);
+
+                context.commit('incrementUpdated');
+            });
         }
     }
 });

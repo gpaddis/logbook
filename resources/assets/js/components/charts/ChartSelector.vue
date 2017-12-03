@@ -27,7 +27,7 @@
 </template>
 
 <script>
-    import {mapGetters, mapMutations} from 'vuex';
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
     import BarChart from './BarChart.vue';
 
     export default {
@@ -65,6 +65,14 @@
 
         methods: {
             ...mapMutations(['clearDatasets', 'pushDataset', 'incrementUpdated']),
+            ...mapActions(['addDataset']),
+
+            /** 
+             * Generate the URL for the ajax call based on the parameters passed.
+             */
+            generateUrl(year) {
+                return '/api/visits/' + year;
+            },
 
             /**
              * Refresh the datasets in the store, loading the year passed
@@ -73,25 +81,9 @@
             refreshDatasets(year) {
                 this.clearDatasets();
 
-                this.addDataset(year);
-                this.addDataset(year - 1);
+                this.addDataset(this.generateUrl(year));
+                this.addDataset(this.generateUrl(year - 1));
             },
-
-            /**
-             * Fetch a dataset for a given year and commit the mutation.
-             * Increment the updated property in the store to trigger
-             * re-rendering after the ajax call.
-             * 
-             * @param {*} year 
-             */
-            addDataset (year) {
-                axios.get('/api/visits/' + year)
-                    .then(response => {
-                        this.pushDataset(response.data);
-
-                        this.incrementUpdated();
-                    });
-                }
-            }
+        }
     }
 </script>

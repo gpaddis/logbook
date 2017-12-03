@@ -87,5 +87,24 @@ export default {
         incrementUpdated(state) {
             state.updated++;
         }
+    },
+
+    actions: {
+        /**
+         * Fetch a dataset from the given url and commit the mutation.
+         * Increment the updated property in the store to trigger
+         * re-rendering after the ajax call.
+         * 
+         * @param {*} context
+         * @param {*} url
+         */
+        addDataset(context, url) {
+            axios.get(url)
+            .then(response => {
+                context.commit('pushDataset', response.data);
+
+                context.commit('incrementUpdated');
+            })
+        }
     }
 };
