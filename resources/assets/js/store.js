@@ -29,7 +29,8 @@ export default {
 
                     for (let unit in state.rawDatasets[key].data.visits) {
                         if (state.rawDatasets[key].data.visits.hasOwnProperty(unit)) {
-                            totals[unit] = Object.values(state.rawDatasets[key].data.visits[unit])
+                            let newIndex = unit - 1; // Shift all indexes to match the labels in the graph.
+                            totals[newIndex] = Object.values(state.rawDatasets[key].data.visits[unit])
                                 .reduce((a, b) => a + b);
                         }
                     }
