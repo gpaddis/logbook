@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <line-chart v-if="isLoaded"></line-chart>
+        <line-chart></line-chart>
     </div>
 </template>
 
@@ -41,12 +41,12 @@
 
         data() {
             return {
-                year: new Date().getFullYear()
+                year: new Date().getFullYear(),
             }
         },
 
         computed: {
-            ...mapGetters(['totalVisits', 'groupedBy', 'isLoaded'])
+            ...mapGetters(['totalVisits', 'groupedBy'])
         },
 
         mounted() {
@@ -54,7 +54,7 @@
         },
 
         methods: {
-            ...mapMutations(['clearDatasets', 'pushDataset']),
+            ...mapMutations(['clearDatasets', 'pushDataset', 'incrementUpdated']),
 
             /**
              * Refresh the datasets in the store, loading the year passed
@@ -65,18 +65,22 @@
 
                 this.addDataset(year);
                 this.addDataset(year - 1);
-
-                this.updated = true;
             },
 
             /**
              * Fetch a dataset for a given year and commit the mutation.
+             * Increment the updated property in the store to trigger
+             * re-rendering after the ajax call.
              * 
              * @param {*} year 
              */
             addDataset (year) {
                 axios.get('/api/visits/' + year)
-                    .then(response => this.pushDataset(response.data));
+                    .then(response => {
+                        this.pushDataset(response.data);
+
+                        this.incrementUpdated();
+                    });
                 }
             }
     }

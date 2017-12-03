@@ -4,10 +4,10 @@
 
 
 <script>
-import {mapGetters} from 'vuex';
+import {mapState, mapGetters} from 'vuex';
 import Chart from 'chart.js';
 
-export default {    
+export default {
     data() {
         return {
             chart: null,
@@ -17,7 +17,19 @@ export default {
     },
 
     computed: {
+        ...mapState(['updated']),
         ...mapGetters(['totalVisits']),
+    },
+
+    watch: {
+        /**
+         * Trigger a chart re-render each time two datasets are added.
+         */
+        updated() {
+            if (this.updated % 2 === 0) {
+                this.render();
+            }
+        }
     },
 
     mounted() {
@@ -25,6 +37,9 @@ export default {
     },
 
     methods: {
+        /** 
+         * Destroy any existing chart and create a new one.
+         */
         render() {
             this.chart.destroy();
             return this.createChart();

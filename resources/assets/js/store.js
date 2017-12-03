@@ -1,6 +1,14 @@
 export default {
     state: {
-        rawDatasets: null
+        /**
+         * The raw data coming from the API.
+         */
+        rawDatasets: null,
+
+        /**
+         * Keep a count of the dataset updates to allow reactivity even with nested arrays.
+         */
+        updated: 0
     },
 
     getters: {
@@ -13,7 +21,7 @@ export default {
 
             for (let key in state.rawDatasets) {
                 if (state.rawDatasets.hasOwnProperty(key)) {
-                    // Sum the visits
+                    // Get rid of the patron categories, sum all the visits and store them in an array.
                     let totals = [];
 
                     for (let unit in state.rawDatasets[key].data.visits) {
@@ -23,6 +31,7 @@ export default {
                         }
                     }
 
+                    // Push the dataset into an array in a format readable by chart.js.
                     datasets.push({
                         data: totals,
                         label: state.rawDatasets[key].data.label
@@ -41,18 +50,6 @@ export default {
             if (state.rawDatasets.hasOwnProperty(0)) {
                 return state.rawDatasets[0].data.groupedBy;
             }
-        },
-
-        /**
-         * Check if the data was loaded.
-         */
-        isLoaded: state => {
-            if (state.rawDatasets !== null) {
-                return true;
-            }
-            
-            console.log('not yet');
-            return false;
         }
     },
 
@@ -74,6 +71,15 @@ export default {
          */
         clearDatasets (state) {
             state.rawDatasets = [];
+        },
+
+        /**
+         * Increment the updated property.
+         * 
+         * @param {*} state 
+         */
+        incrementUpdated(state) {
+            state.updated++;
         }
     }
 };
