@@ -38,6 +38,9 @@
         data() {
             return {
                 year: new Date().getFullYear(),
+                options: {
+                    groupBy: null
+                }
             }
         },
 
@@ -68,10 +71,17 @@
             ...mapActions(['addDataset']),
 
             /** 
-             * Generate the URL for the ajax call based on the parameters passed.
+             * Generate the URL for the AJAX call based on the parameters passed and append
+             * the options set in this.options (if any).
              */
             generateUrl(year) {
-                return '/api/visits/' + year;
+                let url = '/api/visits/' + year;
+                
+                if (this.options.groupBy !== null) {
+                    url += '&groupBy=' + this.options.groupBy;
+                }
+
+                return url;
             },
 
             /**
