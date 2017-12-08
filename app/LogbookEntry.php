@@ -228,7 +228,7 @@ class LogbookEntry extends Model
 
         if ($driver === 'sqlsrv') {
             if ($period === 'DATE') {
-                return 'SELECT CONVERT(date, visited_at)';
+                return 'CONVERT(date, visited_at)';
             }
 
             return "DATEPART({$period}, visited_at)";
