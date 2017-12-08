@@ -223,7 +223,7 @@ class LogbookEntry extends Model
      */
     protected static function selectDatePart(string $period, string $field = 'visited_at')
     {
-        $driver = env('DB_CONNECTION');
+        $driver = env('APP_ENV') === 'testing' ? env('DB_TEST_DRIVER') : env('DB_CONNECTION');
         $period = strtoupper($period);
 
         if ($driver === 'sqlsrv') {
