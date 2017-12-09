@@ -27,7 +27,7 @@
 </template>
 
 <script>
-    import {mapGetters, mapMutations} from 'vuex';
+    import {mapGetters, mapMutations, mapActions} from 'vuex';
     import BarChart from './BarChart.vue';
 
     export default {
@@ -38,6 +38,9 @@
         data() {
             return {
                 year: new Date().getFullYear(),
+                options: {
+                    groupBy: null
+                }
             }
         },
 
@@ -52,8 +55,17 @@
                     case 'month':
                         return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                         break;
+
+                    case 'day':
+                        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31];
+                        break;
+                    
+                    case 'hour':
+                        return [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+                        break;
                 
                     default:
+                        return null;
                         break;
                 }
             }
@@ -65,6 +77,21 @@
 
         methods: {
             ...mapMutations(['clearDatasets', 'pushDataset', 'incrementUpdated']),
+            ...mapActions(['addDataset']),
+
+            /** 
+             * Generate the URL for the AJAX call based on the parameters passed and append
+             * the options set in this.options (if any).
+             */
+            generateUrl(year) {
+                let url = '/api/visits/' + year;
+                
+                if (this.options.groupBy !== null) {
+                    url += '&groupBy=' + this.options.groupBy;
+                }
+
+                return url;
+            },
 
             /**
              * Refresh the datasets in the store, loading the year passed
@@ -73,25 +100,9 @@
             refreshDatasets(year) {
                 this.clearDatasets();
 
-                this.addDataset(year);
-                this.addDataset(year - 1);
+                this.addDataset(this.generateUrl(year));
+                this.addDataset(this.generateUrl(year - 1));
             },
-
-            /**
-             * Fetch a dataset for a given year and commit the mutation.
-             * Increment the updated property in the store to trigger
-             * re-rendering after the ajax call.
-             * 
-             * @param {*} year 
-             */
-            addDataset (year) {
-                axios.get('/api/visits/' + year)
-                    .then(response => {
-                        this.pushDataset(response.data);
-
-                        this.incrementUpdated();
-                    });
-                }
-            }
+        }
     }
 </script>
