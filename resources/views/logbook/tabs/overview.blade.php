@@ -44,9 +44,12 @@
             @endcan
 
             <div class="card">
-                <div class="card-header">Card header</div>
+                <div class="card-header">Contribute</div>
                 <div class="card-body">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, quas cum aspernatur illum facere quis repudiandae maxime? Odit voluptatibus, iusto aliquid animi est consectetur, delectus distinctio enim vitae cupiditate consequatur.</p>
+                    <p>
+                    Which contents would you like to see on this page? 
+                    <a href="https://github.com/gpaddis/logbook" target="_blank">Contribute</a> to this project on GitHub or send me an email with your suggestions.
+                    </p>
                 </div>
             </div>
 
