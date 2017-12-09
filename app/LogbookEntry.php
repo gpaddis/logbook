@@ -88,7 +88,7 @@ class LogbookEntry extends Model
      *
      * @param Builder $query
      * @param int $day
-     * @return Illuminate\Database\Query\Builder
+     * @return Builder
      */
     public function scopeDay($query, $day)
     {
@@ -116,9 +116,7 @@ class LogbookEntry extends Model
      */
     public static function getAggregatesWithin(Carbon $start, Carbon $end)
     {
-        $dayQuery = static::selectDatePart('DATE');
-
-        return static::selectRaw('MONTH(visited_at) as month, WEEK(visited_at) as week, ' . $dayQuery . ' AS day, COUNT(*) AS visits')
+        return static::selectRaw('MONTH(visited_at) as month, WEEK(visited_at) as week, DATE(visited_at) AS day, COUNT(*) AS visits')
             ->where('visited_at', '>=', $start->startOfDay())
             ->where('visited_at', '<=', $end->endOfDay())
             ->groupBy('month', 'week', 'day')
@@ -161,7 +159,7 @@ class LogbookEntry extends Model
     public static function getOpeningDays($year)
     {
         return static::year($year)
-            ->selectRaw(static::selectDatePart('DATE') . ' as day')
+            ->selectRaw('DATE(visited_at) as day')
             ->distinct('days')
             ->get()
             ->count();
@@ -175,7 +173,7 @@ class LogbookEntry extends Model
     public static function lastAvailableDay()
     {
         return static::whereDate('visited_at', '<', date('Y-m-d'))
-            ->selectRaw(static::selectDatePart('DATE') . ' as date, count(*) as visits')
+            ->selectRaw('DATE(visited_at) as date, count(*) as visits')
             ->groupBy('date')
             ->orderBy('date', 'desc')
             ->first();
@@ -196,10 +194,8 @@ class LogbookEntry extends Model
             return [];
         }
 
-        $periodQuery = static::selectDatePart($period);
-
         $entries = $builder
-            ->selectRaw("{$periodQuery} as {$period}, patron_category_id, count(*) as visits")
+            ->selectRaw("{$period}(visited_at) as {$period}, patron_category_id, count(*) as visits")
             ->with('patronCategory:id,name')
             ->groupBy('patron_category_id', $period)
             ->orderBy($period)
@@ -211,29 +207,5 @@ class LogbookEntry extends Model
         }
 
         return $result;
-    }
-
-    /**
-     * Get the raw query string to select only a part of the visited_at timestamp.
-     * This involves different functions for different DBMS.
-     *
-     * @param string $period
-     * @param string $field
-     * @return string
-     */
-    protected static function selectDatePart(string $period, string $field = 'visited_at')
-    {
-        $driver = env('APP_ENV') === 'testing' ? env('DB_TEST_DRIVER') : env('DB_CONNECTION');
-        $period = strtoupper($period);
-
-        if ($driver === 'sqlsrv') {
-            if ($period === 'DATE') {
-                return 'CONVERT(date, visited_at)';
-            }
-
-            return "DATEPART({$period}, visited_at)";
-        }
-
-        return "{$period}(visited_at)";
     }
 }
