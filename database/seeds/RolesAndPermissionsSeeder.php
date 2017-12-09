@@ -7,10 +7,10 @@ use Spatie\Permission\Models\Permission;
 class RolesAndPermissionsSeeder extends Seeder
 {
     /**
-    * Run the database seeds (php artisan db:seed).
-    *
-    * @return void
-    */
+     * Run the database seeds (php artisan db:seed).
+     *
+     * @return void
+     */
     public function run()
     {
         // Reset cached roles and permissions

@@ -34,7 +34,6 @@ class ManageUsersTest extends TestCase
 
         $this->get('/users')
         ->assertSee($user->first_name)
-        ->assertSee($user->last_name)
         ->assertSee($user->email)
         ->assertSee($user->roles->first()->name);
     }
