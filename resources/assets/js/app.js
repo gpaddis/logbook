@@ -24,6 +24,7 @@ Vue.component('overview-view', require('./pages/Overview.vue'));
 // Charts
 Vue.component('chart-selector', require('./components/charts/ChartSelector.vue'));
 Vue.component('bar-chart', require('./components/charts/BarChart.vue'));
+Vue.component('table-report', require('./components/TableReport.vue'));
 
 
 // Import the global store (state management) object.

@@ -29912,6 +29912,7 @@ Vue.component('overview-view', __webpack_require__(250));
 // Charts
 Vue.component('chart-selector', __webpack_require__(255));
 Vue.component('bar-chart', __webpack_require__(257));
+Vue.component('table-report', __webpack_require__(241));
 
 // Import the global store (state management) object.
 
@@ -79133,6 +79134,9 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 //
 //
 //
@@ -79149,72 +79153,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: {
-        values: {
-            required: true
-        }
-    },
-
-    data: function data() {
-        return {
-            fields: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        };
-    },
-
-
-    computed: {
-        series: function series() {
-            return this.convertToArray(this.values);
-        },
-        percentage: function percentage() {
-            var serie1 = this.series[0];
-            var serie2 = this.series[1];
-
-            var collection = [];
-
-            if (serie2) {
-                for (var index in serie1) {
-                    collection.push(this.calculateVariation(serie1[index], serie2[index]));
-                }
-            }
-
-            return collection;
-        }
-    },
-
-    methods: {
-        calculateVariation: function calculateVariation(first, second) {
-            if (first && second) {
-                var variation = second - first;
-
-                return Math.round(variation / first * 100);
-            }
-        },
-        convertToArray: function convertToArray(object) {
-            var collection = [];
-
-            for (var prop in object) {
-                collection.push(object[prop]);
-            }
-
-            return collection;
-        }
-    }
+        computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['updated']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'labels']))
 });
 
 /***/ }),
@@ -79225,86 +79168,41 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("table", { staticClass: "table table-sm" }, [
-    _c("thead", [
-      _c(
-        "tr",
-        [
-          _c("th", [_vm._v("Year")]),
-          _vm._v(" "),
-          _vm._l(this.fields, function(field) {
-            return _c("th", [_vm._v(_vm._s(field))])
-          })
-        ],
-        2
-      )
-    ]),
-    _vm._v(" "),
+  return _c("table", { staticClass: "table" }, [
     _c(
-      "tbody",
+      "thead",
       [
-        _vm._l(this.values, function(values, year) {
+        _c(
+          "tr",
+          [
+            _c("th", [_vm._v("Year")]),
+            _vm._v(" "),
+            _vm._l(this.labels, function(field) {
+              return _c("th", [_vm._v(_vm._s(field))])
+            })
+          ],
+          2
+        ),
+        _vm._v(" "),
+        _vm._l(this.totalVisits, function(dataset) {
           return _c(
             "tr",
             [
-              _c("th", { attrs: { scope: "row" } }, [_vm._v(_vm._s(year))]),
+              _c("td", [_vm._v(_vm._s(dataset.label))]),
               _vm._v(" "),
-              _vm._l(values, function(value) {
+              _vm._l(dataset.data, function(value) {
                 return _c("td", [_vm._v(_vm._s(value))])
               })
             ],
             2
           )
-        }),
-        _vm._v(" "),
-        this.series[1]
-          ? _c(
-              "tr",
-              [
-                _vm._m(0),
-                _vm._v(" "),
-                _vm._l(this.percentage, function(element) {
-                  return _c(
-                    "td",
-                    { class: element >= 0 ? "text-success" : "text-danger" },
-                    [
-                      element
-                        ? _c("p", [
-                            _vm._v(
-                              "\n                    " +
-                                _vm._s(element) +
-                                "%\n                "
-                            )
-                          ])
-                        : _vm._e()
-                    ]
-                  )
-                })
-              ],
-              2
-            )
-          : _vm._e()
+        })
       ],
       2
     )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("th", { attrs: { scope: "row" } }, [
-      _c("i", {
-        staticClass: "fa fa-line-chart",
-        attrs: {
-          "aria-hidden": "true",
-          title: "Increase / decrease percentage"
-        }
-      })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
