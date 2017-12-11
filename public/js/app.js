@@ -79794,14 +79794,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -80005,87 +79997,68 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "col" }, [
-    _c("div", { staticClass: "card-body" }, [
-      _c("div", { staticClass: "row" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c("div", { staticClass: "col" }, [
-          _c(
-            "label",
-            { staticClass: "mr-sm-2", attrs: { for: "dateSelector" } },
-            [_vm._v("Year")]
-          ),
-          _vm._v(" "),
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.year,
-                  expression: "year"
-                }
-              ],
-              staticClass: "custom-select mb-2 mr-sm-2 mb-sm-0",
-              attrs: { id: "dateSelector" },
-              on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.year = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                }
-              }
-            },
-            _vm._l(_vm.yearsAvailable, function(year, index) {
-              return _c("option", { key: index, domProps: { value: year } }, [
-                _vm._v(_vm._s(year))
-              ])
-            })
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-primary",
-              on: {
-                click: function($event) {
-                  _vm.refreshDatasets(_vm.year)
-                }
-              }
-            },
-            [_vm._v("Load")]
-          )
+  return _c("div", { staticClass: "card-body" }, [
+    _c("h4", { staticClass: "card-title" }, [_vm._v("Load the statistics")]),
+    _vm._v(" "),
+    _c("p", { staticClass: "card-text" }, [
+      _vm._v(
+        "Select a year from the dropdown menu to update the graph. \n                The data will be compared with the same period of the previous year (if available)."
+      )
+    ]),
+    _vm._v(" "),
+    _c("label", { staticClass: "mr-sm-2", attrs: { for: "dateSelector" } }, [
+      _vm._v("Year")
+    ]),
+    _vm._v(" "),
+    _c(
+      "select",
+      {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.year,
+            expression: "year"
+          }
+        ],
+        staticClass: "custom-select mb-2 mr-sm-2 mb-sm-0",
+        attrs: { id: "dateSelector" },
+        on: {
+          change: function($event) {
+            var $$selectedVal = Array.prototype.filter
+              .call($event.target.options, function(o) {
+                return o.selected
+              })
+              .map(function(o) {
+                var val = "_value" in o ? o._value : o.value
+                return val
+              })
+            _vm.year = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+          }
+        }
+      },
+      _vm._l(_vm.yearsAvailable, function(year, index) {
+        return _c("option", { key: index, domProps: { value: year } }, [
+          _vm._v(_vm._s(year))
         ])
-      ])
-    ])
+      })
+    ),
+    _vm._v(" "),
+    _c(
+      "button",
+      {
+        staticClass: "btn btn-primary",
+        on: {
+          click: function($event) {
+            _vm.refreshDatasets(_vm.year)
+          }
+        }
+      },
+      [_vm._v("Load")]
+    )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col" }, [
-      _c("h4", { staticClass: "card-title" }, [_vm._v("Load the statistics")]),
-      _vm._v(" "),
-      _c("p", { staticClass: "card-text" }, [
-        _vm._v(
-          "Select a year from the dropdown menu to update the graph. \n                    The data will be compared with the same period of the previous year (if available)."
-        )
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {

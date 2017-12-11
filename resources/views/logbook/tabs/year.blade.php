@@ -1,6 +1,11 @@
 @extends('logbook.index')
 
 @section('tab-content')
-<chart-selector :years-available="{{ $yearsAvailable }}"></chart-selector>
-<bar-chart></bar-chart>
+<div class="col col-4">
+    <chart-selector :years-available="{{ $yearsAvailable }}"></chart-selector>
+</div>
+
+<div class="col">
+    <bar-chart></bar-chart>
+</div>
 @endsection
