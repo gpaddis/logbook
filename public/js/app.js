@@ -29909,8 +29909,9 @@ Vue.component('category-cards', __webpack_require__(179));
 Vue.component('year-view', __webpack_require__(185));
 Vue.component('overview-view', __webpack_require__(250));
 
-// Line chart (testing)
+// Charts
 Vue.component('chart-selector', __webpack_require__(255));
+Vue.component('bar-chart', __webpack_require__(257));
 
 // Import the global store (state management) object.
 
@@ -79776,8 +79777,6 @@ module.exports = Component.exports
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__BarChart_vue__ = __webpack_require__(257);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__BarChart_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__BarChart_vue__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -79803,18 +79802,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
-//
-//
-//
-//
-
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    components: { BarChart: __WEBPACK_IMPORTED_MODULE_1__BarChart_vue___default.a },
-
     props: ['yearsAvailable'],
 
     data: function data() {
@@ -80014,77 +80005,70 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "col" },
-    [
-      _c("div", { staticClass: "card-body" }, [
-        _c("div", { staticClass: "row" }, [
-          _vm._m(0),
+  return _c("div", { staticClass: "col" }, [
+    _c("div", { staticClass: "card-body" }, [
+      _c("div", { staticClass: "row" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c("div", { staticClass: "col" }, [
+          _c(
+            "label",
+            { staticClass: "mr-sm-2", attrs: { for: "dateSelector" } },
+            [_vm._v("Year")]
+          ),
           _vm._v(" "),
-          _c("div", { staticClass: "col" }, [
-            _c(
-              "label",
-              { staticClass: "mr-sm-2", attrs: { for: "dateSelector" } },
-              [_vm._v("Year")]
-            ),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.year,
-                    expression: "year"
-                  }
-                ],
-                staticClass: "custom-select mb-2 mr-sm-2 mb-sm-0",
-                attrs: { id: "dateSelector" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.year = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  }
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.year,
+                  expression: "year"
                 }
-              },
-              _vm._l(_vm.yearsAvailable, function(year, index) {
-                return _c("option", { key: index, domProps: { value: year } }, [
-                  _vm._v(_vm._s(year))
-                ])
-              })
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                on: {
-                  click: function($event) {
-                    _vm.refreshDatasets(_vm.year)
-                  }
+              ],
+              staticClass: "custom-select mb-2 mr-sm-2 mb-sm-0",
+              attrs: { id: "dateSelector" },
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.year = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
                 }
-              },
-              [_vm._v("Load")]
-            )
-          ])
+              }
+            },
+            _vm._l(_vm.yearsAvailable, function(year, index) {
+              return _c("option", { key: index, domProps: { value: year } }, [
+                _vm._v(_vm._s(year))
+              ])
+            })
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary",
+              on: {
+                click: function($event) {
+                  _vm.refreshDatasets(_vm.year)
+                }
+              }
+            },
+            [_vm._v("Load")]
+          )
         ])
-      ]),
-      _vm._v(" "),
-      _c("bar-chart")
-    ],
-    1
-  )
+      ])
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {

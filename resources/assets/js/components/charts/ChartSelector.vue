@@ -17,22 +17,14 @@
                    <button class="btn btn-primary" @click="refreshDatasets(year)">Load</button>
                 </div>
             </div>
-            
-
-            
         </div>
-
-        <bar-chart></bar-chart>
     </div>
 </template>
 
 <script>
     import {mapGetters, mapMutations, mapActions} from 'vuex';
-    import BarChart from './BarChart.vue';
 
     export default {
-        components: { BarChart },
-
         props: ['yearsAvailable'],
 
         data() {
