@@ -8,8 +8,6 @@ import {mapState, mapGetters} from 'vuex';
 import Chart from 'chart.js';
 
 export default {
-    props: ['labels'],
-
     data() {
         return {
             chart: null,
@@ -18,7 +16,7 @@ export default {
 
     computed: {
         ...mapState(['updated']),
-        ...mapGetters(['totalVisits']),
+        ...mapGetters(['totalVisits', 'labels']),
     },
 
     watch: {

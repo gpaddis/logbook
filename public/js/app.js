@@ -79827,31 +79827,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
 
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'groupedBy']), {
-
-        /** 
-         * Return the labels according to the groupedBy property returned with the ajax call.
-         */
-        labels: function labels() {
-            switch (this.groupedBy) {
-                case 'month':
-                    return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    break;
-
-                case 'day':
-                    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31];
-                    break;
-
-                case 'hour':
-                    return [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-                    break;
-
-                default:
-                    return null;
-                    break;
-            }
-        }
-    }),
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'groupedBy'])),
 
     mounted: function mounted() {
         this.refreshDatasets(this.year);
@@ -79957,8 +79933,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['labels'],
-
     data: function data() {
         return {
             chart: null
@@ -79966,7 +79940,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
 
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['updated']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits'])),
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['updated']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'labels'])),
 
     watch: {
         /**
@@ -80107,7 +80081,7 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c("bar-chart", { attrs: { labels: _vm.labels } })
+      _c("bar-chart")
     ],
     1
   )
@@ -80199,6 +80173,35 @@ if (false) {
         groupedBy: function groupedBy(state) {
             if (state.rawDatasets.hasOwnProperty(0)) {
                 return state.rawDatasets[0].data.groupedBy;
+            }
+        },
+
+        /** 
+         * Return the labels according to the groupedBy property returned with the ajax call.
+         */
+        labels: function labels(state) {
+            var grouping = null;
+
+            if (state.rawDatasets.hasOwnProperty(0)) {
+                grouping = state.rawDatasets[0].data.groupedBy;
+            }
+
+            switch (grouping) {
+                case 'month':
+                    return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    break;
+
+                case 'day':
+                    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31];
+                    break;
+
+                case 'hour':
+                    return [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+                    break;
+
+                default:
+                    return null;
+                    break;
             }
         }
     },
