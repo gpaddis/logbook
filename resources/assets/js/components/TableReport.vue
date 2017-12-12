@@ -1,24 +1,30 @@
 <template>
-  <table class="table">
-    <thead>
-        <tr>
-            <th>Year</th>
-            <th v-for="field in this.labels">{{ field }}</th>
-        </tr>
-    </thead>
+<div class="card">
+    <div class="card-body">
+        <h3>Comparison</h3>
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th v-for="field in this.labels">{{ field }}</th>
+                </tr>
+            </thead>
 
-    <tbody>
-        <tr v-for="dataset in this.totalVisits">
-            <td>{{ dataset.label }}</td>
-            <td v-for="value in dataset.data">{{ typeof(value) !== 'undefined' ? value : '-' }}</td>
-        </tr>
+            <tbody>
+                <tr v-for="dataset in this.totalVisits">
+                    <td><strong>{{ dataset.label }}</strong></td>
+                    <td v-for="value in dataset.data">{{ typeof(value) !== 'undefined' ? value : '-' }}</td>
+                </tr>
 
-        <tr v-if="ready">
-            <td><i class="fa fa-line-chart" aria-hidden="true" title="Increase / decrease percentage"></i></td>
-            <td v-for="percValue in this.percentage">{{ percValue !== '-' ? percValue + '%' : '-' }}</td>
-        </tr>
-    </tbody>
-  </table>
+                <tr v-if="ready">
+                    <td><i class="fa fa-line-chart" aria-hidden="true" title="Increase / decrease percentage"></i></td>
+                    <td v-for="percValue in this.percentage">{{ percValue !== '-' ? percValue + '%' : '-' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </template>
 
 <script>

@@ -79160,6 +79160,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -79217,58 +79223,66 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("table", { staticClass: "table" }, [
-    _c("thead", [
-      _c(
-        "tr",
-        [
-          _c("th", [_vm._v("Year")]),
-          _vm._v(" "),
-          _vm._l(this.labels, function(field) {
-            return _c("th", [_vm._v(_vm._s(field))])
-          })
-        ],
-        2
-      )
-    ]),
-    _vm._v(" "),
-    _c(
-      "tbody",
-      [
-        _vm._l(this.totalVisits, function(dataset) {
-          return _c(
+  return _c("div", { staticClass: "card" }, [
+    _c("div", { staticClass: "card-body" }, [
+      _c("h3", [_vm._v("Comparison")]),
+      _vm._v(" "),
+      _c("table", { staticClass: "table" }, [
+        _c("thead", [
+          _c(
             "tr",
             [
-              _c("td", [_vm._v(_vm._s(dataset.label))]),
+              _c("th", [_vm._v("Year")]),
               _vm._v(" "),
-              _vm._l(dataset.data, function(value) {
-                return _c("td", [
-                  _vm._v(_vm._s(typeof value !== "undefined" ? value : "-"))
-                ])
+              _vm._l(this.labels, function(field) {
+                return _c("th", [_vm._v(_vm._s(field))])
               })
             ],
             2
           )
-        }),
+        ]),
         _vm._v(" "),
-        _vm.ready
-          ? _c(
-              "tr",
-              [
-                _vm._m(0),
-                _vm._v(" "),
-                _vm._l(this.percentage, function(percValue) {
-                  return _c("td", [
-                    _vm._v(_vm._s(percValue !== "-" ? percValue + "%" : "-"))
-                  ])
-                })
-              ],
-              2
-            )
-          : _vm._e()
-      ],
-      2
-    )
+        _c(
+          "tbody",
+          [
+            _vm._l(this.totalVisits, function(dataset) {
+              return _c(
+                "tr",
+                [
+                  _c("td", [_c("strong", [_vm._v(_vm._s(dataset.label))])]),
+                  _vm._v(" "),
+                  _vm._l(dataset.data, function(value) {
+                    return _c("td", [
+                      _vm._v(_vm._s(typeof value !== "undefined" ? value : "-"))
+                    ])
+                  })
+                ],
+                2
+              )
+            }),
+            _vm._v(" "),
+            _vm.ready
+              ? _c(
+                  "tr",
+                  [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _vm._l(this.percentage, function(percValue) {
+                      return _c("td", [
+                        _vm._v(
+                          _vm._s(percValue !== "-" ? percValue + "%" : "-")
+                        )
+                      ])
+                    })
+                  ],
+                  2
+                )
+              : _vm._e()
+          ],
+          2
+        )
+      ])
+    ])
   ])
 }
 var staticRenderFns = [
