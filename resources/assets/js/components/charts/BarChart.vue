@@ -8,8 +8,6 @@ import {mapState, mapGetters} from 'vuex';
 import Chart from 'chart.js';
 
 export default {
-    props: ['labels'],
-
     data() {
         return {
             chart: null,
@@ -18,7 +16,7 @@ export default {
 
     computed: {
         ...mapState(['updated']),
-        ...mapGetters(['totalVisits']),
+        ...mapGetters(['totalVisits', 'labels']),
     },
 
     watch: {
@@ -33,7 +31,7 @@ export default {
     },
 
     mounted() {
-        this.createChart();
+        this.render();
     },
 
     methods: {
@@ -41,12 +39,15 @@ export default {
          * Destroy any existing chart and create a new one.
          */
         render() {
-            this.chart.destroy();
+            if (this.chart !== null) {
+                this.chart.destroy();
+            }
+
             return this.createChart();
         },
 
         /**
-         * Create a new chart and store it in the chart property.
+         * Create a new chart and store it in the chart data property.
          */
         createChart() {
             this.chart = new Chart(this.$el, {
