@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 140);
+/******/ 	return __webpack_require__(__webpack_require__.s = 141);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1896,7 +1896,7 @@ function loadLocale(name) {
             module && module.exports) {
         try {
             oldLocale = globalLocale._abbr;
-            __webpack_require__(221)("./" + name);
+            __webpack_require__(222)("./" + name);
             // because defineLocale currently also sets the global locale, we
             // want to undo that for lazy loaded locales
             getSetGlobalLocale(oldLocale);
@@ -4541,9 +4541,9 @@ return hooks;
 
 
 module.exports = __webpack_require__(10);
-module.exports.easing = __webpack_require__(193);
-module.exports.canvas = __webpack_require__(194);
-module.exports.options = __webpack_require__(195);
+module.exports.easing = __webpack_require__(194);
+module.exports.canvas = __webpack_require__(195);
+module.exports.options = __webpack_require__(196);
 
 
 /***/ }),
@@ -4682,7 +4682,7 @@ module.exports = function normalizeComponent (
 
 
 var bind = __webpack_require__(15);
-var isBuffer = __webpack_require__(151);
+var isBuffer = __webpack_require__(152);
 
 /*global toString:true*/
 
@@ -5114,252 +5114,14 @@ module.exports = Element;
 
 
 module.exports = {};
-module.exports.Arc = __webpack_require__(201);
-module.exports.Line = __webpack_require__(202);
-module.exports.Point = __webpack_require__(203);
-module.exports.Rectangle = __webpack_require__(204);
+module.exports.Arc = __webpack_require__(202);
+module.exports.Line = __webpack_require__(203);
+module.exports.Point = __webpack_require__(204);
+module.exports.Rectangle = __webpack_require__(205);
 
 
 /***/ }),
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var helpers = __webpack_require__(1);
-
-/**
- * Namespace to hold static tick generation functions
- * @namespace Chart.Ticks
- */
-module.exports = {
-	/**
-	 * Namespace to hold generators for different types of ticks
-	 * @namespace Chart.Ticks.generators
-	 */
-	generators: {
-		/**
-		 * Interface for the options provided to the numeric tick generator
-		 * @interface INumericTickGenerationOptions
-		 */
-		/**
-		 * The maximum number of ticks to display
-		 * @name INumericTickGenerationOptions#maxTicks
-		 * @type Number
-		 */
-		/**
-		 * The distance between each tick.
-		 * @name INumericTickGenerationOptions#stepSize
-		 * @type Number
-		 * @optional
-		 */
-		/**
-		 * Forced minimum for the ticks. If not specified, the minimum of the data range is used to calculate the tick minimum
-		 * @name INumericTickGenerationOptions#min
-		 * @type Number
-		 * @optional
-		 */
-		/**
-		 * The maximum value of the ticks. If not specified, the maximum of the data range is used to calculate the tick maximum
-		 * @name INumericTickGenerationOptions#max
-		 * @type Number
-		 * @optional
-		 */
-
-		/**
-		 * Generate a set of linear ticks
-		 * @method Chart.Ticks.generators.linear
-		 * @param generationOptions {INumericTickGenerationOptions} the options used to generate the ticks
-		 * @param dataRange {IRange} the range of the data
-		 * @returns {Array<Number>} array of tick values
-		 */
-		linear: function(generationOptions, dataRange) {
-			var ticks = [];
-			// To get a "nice" value for the tick spacing, we will use the appropriately named
-			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
-			// for details.
-
-			var spacing;
-			if (generationOptions.stepSize && generationOptions.stepSize > 0) {
-				spacing = generationOptions.stepSize;
-			} else {
-				var niceRange = helpers.niceNum(dataRange.max - dataRange.min, false);
-				spacing = helpers.niceNum(niceRange / (generationOptions.maxTicks - 1), true);
-			}
-			var niceMin = Math.floor(dataRange.min / spacing) * spacing;
-			var niceMax = Math.ceil(dataRange.max / spacing) * spacing;
-
-			// If min, max and stepSize is set and they make an evenly spaced scale use it.
-			if (generationOptions.min && generationOptions.max && generationOptions.stepSize) {
-				// If very close to our whole number, use it.
-				if (helpers.almostWhole((generationOptions.max - generationOptions.min) / generationOptions.stepSize, spacing / 1000)) {
-					niceMin = generationOptions.min;
-					niceMax = generationOptions.max;
-				}
-			}
-
-			var numSpaces = (niceMax - niceMin) / spacing;
-			// If very close to our rounded value, use it.
-			if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
-				numSpaces = Math.round(numSpaces);
-			} else {
-				numSpaces = Math.ceil(numSpaces);
-			}
-
-			// Put the values into the ticks array
-			ticks.push(generationOptions.min !== undefined ? generationOptions.min : niceMin);
-			for (var j = 1; j < numSpaces; ++j) {
-				ticks.push(niceMin + (j * spacing));
-			}
-			ticks.push(generationOptions.max !== undefined ? generationOptions.max : niceMax);
-
-			return ticks;
-		},
-
-		/**
-		 * Generate a set of logarithmic ticks
-		 * @method Chart.Ticks.generators.logarithmic
-		 * @param generationOptions {INumericTickGenerationOptions} the options used to generate the ticks
-		 * @param dataRange {IRange} the range of the data
-		 * @returns {Array<Number>} array of tick values
-		 */
-		logarithmic: function(generationOptions, dataRange) {
-			var ticks = [];
-			var valueOrDefault = helpers.valueOrDefault;
-
-			// Figure out what the max number of ticks we can support it is based on the size of
-			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
-			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
-			// the graph
-			var tickVal = valueOrDefault(generationOptions.min, Math.pow(10, Math.floor(helpers.log10(dataRange.min))));
-
-			var endExp = Math.floor(helpers.log10(dataRange.max));
-			var endSignificand = Math.ceil(dataRange.max / Math.pow(10, endExp));
-			var exp, significand;
-
-			if (tickVal === 0) {
-				exp = Math.floor(helpers.log10(dataRange.minNotZero));
-				significand = Math.floor(dataRange.minNotZero / Math.pow(10, exp));
-
-				ticks.push(tickVal);
-				tickVal = significand * Math.pow(10, exp);
-			} else {
-				exp = Math.floor(helpers.log10(tickVal));
-				significand = Math.floor(tickVal / Math.pow(10, exp));
-			}
-
-			do {
-				ticks.push(tickVal);
-
-				++significand;
-				if (significand === 10) {
-					significand = 1;
-					++exp;
-				}
-
-				tickVal = significand * Math.pow(10, exp);
-			} while (exp < endExp || (exp === endExp && significand < endSignificand));
-
-			var lastTick = valueOrDefault(generationOptions.max, tickVal);
-			ticks.push(lastTick);
-
-			return ticks;
-		}
-	},
-
-	/**
-	 * Namespace to hold formatters for different types of ticks
-	 * @namespace Chart.Ticks.formatters
-	 */
-	formatters: {
-		/**
-		 * Formatter for value labels
-		 * @method Chart.Ticks.formatters.values
-		 * @param value the value to display
-		 * @return {String|Array} the label to display
-		 */
-		values: function(value) {
-			return helpers.isArray(value) ? value : '' + value;
-		},
-
-		/**
-		 * Formatter for linear numeric ticks
-		 * @method Chart.Ticks.formatters.linear
-		 * @param tickValue {Number} the value to be formatted
-		 * @param index {Number} the position of the tickValue parameter in the ticks array
-		 * @param ticks {Array<Number>} the list of ticks being converted
-		 * @return {String} string representation of the tickValue parameter
-		 */
-		linear: function(tickValue, index, ticks) {
-			// If we have lots of ticks, don't use the ones
-			var delta = ticks.length > 3 ? ticks[2] - ticks[1] : ticks[1] - ticks[0];
-
-			// If we have a number like 2.5 as the delta, figure out how many decimal places we need
-			if (Math.abs(delta) > 1) {
-				if (tickValue !== Math.floor(tickValue)) {
-					// not an integer
-					delta = tickValue - Math.floor(tickValue);
-				}
-			}
-
-			var logDelta = helpers.log10(Math.abs(delta));
-			var tickString = '';
-
-			if (tickValue !== 0) {
-				var numDecimal = -1 * Math.floor(logDelta);
-				numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
-				tickString = tickValue.toFixed(numDecimal);
-			} else {
-				tickString = '0'; // never show decimal places for 0
-			}
-
-			return tickString;
-		},
-
-		logarithmic: function(tickValue, index, ticks) {
-			var remain = tickValue / (Math.pow(10, Math.floor(helpers.log10(tickValue))));
-
-			if (tickValue === 0) {
-				return '0';
-			} else if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === ticks.length - 1) {
-				return tickValue.toExponential();
-			}
-			return '';
-		}
-	}
-};
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6304,6 +6066,244 @@ var index_esm = {
 
 
 /***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var helpers = __webpack_require__(1);
+
+/**
+ * Namespace to hold static tick generation functions
+ * @namespace Chart.Ticks
+ */
+module.exports = {
+	/**
+	 * Namespace to hold generators for different types of ticks
+	 * @namespace Chart.Ticks.generators
+	 */
+	generators: {
+		/**
+		 * Interface for the options provided to the numeric tick generator
+		 * @interface INumericTickGenerationOptions
+		 */
+		/**
+		 * The maximum number of ticks to display
+		 * @name INumericTickGenerationOptions#maxTicks
+		 * @type Number
+		 */
+		/**
+		 * The distance between each tick.
+		 * @name INumericTickGenerationOptions#stepSize
+		 * @type Number
+		 * @optional
+		 */
+		/**
+		 * Forced minimum for the ticks. If not specified, the minimum of the data range is used to calculate the tick minimum
+		 * @name INumericTickGenerationOptions#min
+		 * @type Number
+		 * @optional
+		 */
+		/**
+		 * The maximum value of the ticks. If not specified, the maximum of the data range is used to calculate the tick maximum
+		 * @name INumericTickGenerationOptions#max
+		 * @type Number
+		 * @optional
+		 */
+
+		/**
+		 * Generate a set of linear ticks
+		 * @method Chart.Ticks.generators.linear
+		 * @param generationOptions {INumericTickGenerationOptions} the options used to generate the ticks
+		 * @param dataRange {IRange} the range of the data
+		 * @returns {Array<Number>} array of tick values
+		 */
+		linear: function(generationOptions, dataRange) {
+			var ticks = [];
+			// To get a "nice" value for the tick spacing, we will use the appropriately named
+			// "nice number" algorithm. See http://stackoverflow.com/questions/8506881/nice-label-algorithm-for-charts-with-minimum-ticks
+			// for details.
+
+			var spacing;
+			if (generationOptions.stepSize && generationOptions.stepSize > 0) {
+				spacing = generationOptions.stepSize;
+			} else {
+				var niceRange = helpers.niceNum(dataRange.max - dataRange.min, false);
+				spacing = helpers.niceNum(niceRange / (generationOptions.maxTicks - 1), true);
+			}
+			var niceMin = Math.floor(dataRange.min / spacing) * spacing;
+			var niceMax = Math.ceil(dataRange.max / spacing) * spacing;
+
+			// If min, max and stepSize is set and they make an evenly spaced scale use it.
+			if (generationOptions.min && generationOptions.max && generationOptions.stepSize) {
+				// If very close to our whole number, use it.
+				if (helpers.almostWhole((generationOptions.max - generationOptions.min) / generationOptions.stepSize, spacing / 1000)) {
+					niceMin = generationOptions.min;
+					niceMax = generationOptions.max;
+				}
+			}
+
+			var numSpaces = (niceMax - niceMin) / spacing;
+			// If very close to our rounded value, use it.
+			if (helpers.almostEquals(numSpaces, Math.round(numSpaces), spacing / 1000)) {
+				numSpaces = Math.round(numSpaces);
+			} else {
+				numSpaces = Math.ceil(numSpaces);
+			}
+
+			// Put the values into the ticks array
+			ticks.push(generationOptions.min !== undefined ? generationOptions.min : niceMin);
+			for (var j = 1; j < numSpaces; ++j) {
+				ticks.push(niceMin + (j * spacing));
+			}
+			ticks.push(generationOptions.max !== undefined ? generationOptions.max : niceMax);
+
+			return ticks;
+		},
+
+		/**
+		 * Generate a set of logarithmic ticks
+		 * @method Chart.Ticks.generators.logarithmic
+		 * @param generationOptions {INumericTickGenerationOptions} the options used to generate the ticks
+		 * @param dataRange {IRange} the range of the data
+		 * @returns {Array<Number>} array of tick values
+		 */
+		logarithmic: function(generationOptions, dataRange) {
+			var ticks = [];
+			var valueOrDefault = helpers.valueOrDefault;
+
+			// Figure out what the max number of ticks we can support it is based on the size of
+			// the axis area. For now, we say that the minimum tick spacing in pixels must be 50
+			// We also limit the maximum number of ticks to 11 which gives a nice 10 squares on
+			// the graph
+			var tickVal = valueOrDefault(generationOptions.min, Math.pow(10, Math.floor(helpers.log10(dataRange.min))));
+
+			var endExp = Math.floor(helpers.log10(dataRange.max));
+			var endSignificand = Math.ceil(dataRange.max / Math.pow(10, endExp));
+			var exp, significand;
+
+			if (tickVal === 0) {
+				exp = Math.floor(helpers.log10(dataRange.minNotZero));
+				significand = Math.floor(dataRange.minNotZero / Math.pow(10, exp));
+
+				ticks.push(tickVal);
+				tickVal = significand * Math.pow(10, exp);
+			} else {
+				exp = Math.floor(helpers.log10(tickVal));
+				significand = Math.floor(tickVal / Math.pow(10, exp));
+			}
+
+			do {
+				ticks.push(tickVal);
+
+				++significand;
+				if (significand === 10) {
+					significand = 1;
+					++exp;
+				}
+
+				tickVal = significand * Math.pow(10, exp);
+			} while (exp < endExp || (exp === endExp && significand < endSignificand));
+
+			var lastTick = valueOrDefault(generationOptions.max, tickVal);
+			ticks.push(lastTick);
+
+			return ticks;
+		}
+	},
+
+	/**
+	 * Namespace to hold formatters for different types of ticks
+	 * @namespace Chart.Ticks.formatters
+	 */
+	formatters: {
+		/**
+		 * Formatter for value labels
+		 * @method Chart.Ticks.formatters.values
+		 * @param value the value to display
+		 * @return {String|Array} the label to display
+		 */
+		values: function(value) {
+			return helpers.isArray(value) ? value : '' + value;
+		},
+
+		/**
+		 * Formatter for linear numeric ticks
+		 * @method Chart.Ticks.formatters.linear
+		 * @param tickValue {Number} the value to be formatted
+		 * @param index {Number} the position of the tickValue parameter in the ticks array
+		 * @param ticks {Array<Number>} the list of ticks being converted
+		 * @return {String} string representation of the tickValue parameter
+		 */
+		linear: function(tickValue, index, ticks) {
+			// If we have lots of ticks, don't use the ones
+			var delta = ticks.length > 3 ? ticks[2] - ticks[1] : ticks[1] - ticks[0];
+
+			// If we have a number like 2.5 as the delta, figure out how many decimal places we need
+			if (Math.abs(delta) > 1) {
+				if (tickValue !== Math.floor(tickValue)) {
+					// not an integer
+					delta = tickValue - Math.floor(tickValue);
+				}
+			}
+
+			var logDelta = helpers.log10(Math.abs(delta));
+			var tickString = '';
+
+			if (tickValue !== 0) {
+				var numDecimal = -1 * Math.floor(logDelta);
+				numDecimal = Math.max(Math.min(numDecimal, 20), 0); // toFixed has a max of 20 decimal places
+				tickString = tickValue.toFixed(numDecimal);
+			} else {
+				tickString = '0'; // never show decimal places for 0
+			}
+
+			return tickString;
+		},
+
+		logarithmic: function(tickValue, index, ticks) {
+			var remain = tickValue / (Math.pow(10, Math.floor(helpers.log10(tickValue))));
+
+			if (tickValue === 0) {
+				return '0';
+			} else if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === ticks.length - 1) {
+				return tickValue.toExponential();
+			}
+			return '';
+		}
+	}
+};
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6615,7 +6615,7 @@ helpers.getValueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(4);
-var normalizeHeaderName = __webpack_require__(153);
+var normalizeHeaderName = __webpack_require__(154);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -17302,7 +17302,7 @@ Vue$3.compile = compileToFunctions;
 
 module.exports = Vue$3;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(147).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(148).setImmediate))
 
 /***/ }),
 /* 14 */
@@ -17520,12 +17520,12 @@ module.exports = function bind(fn, thisArg) {
 
 
 var utils = __webpack_require__(4);
-var settle = __webpack_require__(154);
-var buildURL = __webpack_require__(156);
-var parseHeaders = __webpack_require__(157);
-var isURLSameOrigin = __webpack_require__(158);
+var settle = __webpack_require__(155);
+var buildURL = __webpack_require__(157);
+var parseHeaders = __webpack_require__(158);
+var isURLSameOrigin = __webpack_require__(159);
 var createError = __webpack_require__(17);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(159);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(160);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -17622,7 +17622,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(160);
+      var cookies = __webpack_require__(161);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -17706,7 +17706,7 @@ module.exports = function xhrAdapter(config) {
 "use strict";
 
 
-var enhanceError = __webpack_require__(155);
+var enhanceError = __webpack_require__(156);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -17804,12 +17804,12 @@ module.exports = Cancel;
 /**
  * @namespace Chart
  */
-var Chart = __webpack_require__(192)();
+var Chart = __webpack_require__(193)();
 
 Chart.helpers = __webpack_require__(1);
 
 // @todo dispatch these helpers into appropriated helpers/helpers.* file and write unit tests!
-__webpack_require__(196)(Chart);
+__webpack_require__(197)(Chart);
 
 Chart.defaults = __webpack_require__(2);
 Chart.Element = __webpack_require__(5);
@@ -17817,7 +17817,6 @@ Chart.elements = __webpack_require__(6);
 Chart.Interaction = __webpack_require__(23);
 Chart.platform = __webpack_require__(24);
 
-__webpack_require__(207)(Chart);
 __webpack_require__(208)(Chart);
 __webpack_require__(209)(Chart);
 __webpack_require__(210)(Chart);
@@ -17825,39 +17824,40 @@ __webpack_require__(211)(Chart);
 __webpack_require__(212)(Chart);
 __webpack_require__(213)(Chart);
 __webpack_require__(214)(Chart);
-
 __webpack_require__(215)(Chart);
+
 __webpack_require__(216)(Chart);
 __webpack_require__(217)(Chart);
 __webpack_require__(218)(Chart);
 __webpack_require__(219)(Chart);
 __webpack_require__(220)(Chart);
+__webpack_require__(221)(Chart);
 
 // Controllers must be loaded after elements
 // See Chart.core.datasetController.dataElementType
-__webpack_require__(222)(Chart);
 __webpack_require__(223)(Chart);
 __webpack_require__(224)(Chart);
 __webpack_require__(225)(Chart);
 __webpack_require__(226)(Chart);
 __webpack_require__(227)(Chart);
 __webpack_require__(228)(Chart);
-
 __webpack_require__(229)(Chart);
+
 __webpack_require__(230)(Chart);
 __webpack_require__(231)(Chart);
 __webpack_require__(232)(Chart);
 __webpack_require__(233)(Chart);
 __webpack_require__(234)(Chart);
 __webpack_require__(235)(Chart);
+__webpack_require__(236)(Chart);
 
 // Loading built-it plugins
 var plugins = [];
 
 plugins.push(
-	__webpack_require__(236)(Chart),
 	__webpack_require__(237)(Chart),
-	__webpack_require__(238)(Chart)
+	__webpack_require__(238)(Chart),
+	__webpack_require__(239)(Chart)
 );
 
 Chart.plugins.register(plugins);
@@ -17886,8 +17886,8 @@ Chart.canvasHelpers = Chart.helpers.canvas;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var convert = __webpack_require__(197);
-var string = __webpack_require__(199);
+var convert = __webpack_require__(198);
+var string = __webpack_require__(200);
 
 var Color = function (obj) {
 	if (obj instanceof Color) {
@@ -18717,8 +18717,8 @@ module.exports = {
 
 
 var helpers = __webpack_require__(1);
-var basic = __webpack_require__(205);
-var dom = __webpack_require__(206);
+var basic = __webpack_require__(206);
+var dom = __webpack_require__(207);
 
 // @TODO Make possible to select another platform at build time.
 var implementation = dom._enabled ? dom : basic;
@@ -29874,17 +29874,65 @@ return zhTw;
 /* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(141);
-module.exports = __webpack_require__(262);
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(242)
+/* template */
+var __vue_template__ = __webpack_require__(243)
+/* template functional */
+  var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\TableReport.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-a1907546", Component.options)
+  } else {
+    hotAPI.reload("data-v-a1907546", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
 
 
 /***/ }),
 /* 141 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(142);
+module.exports = __webpack_require__(262);
+
+
+/***/ }),
+/* 142 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store__ = __webpack_require__(261);
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -29892,7 +29940,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-__webpack_require__(142);
+__webpack_require__(143);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -29901,18 +29949,18 @@ __webpack_require__(142);
  */
 
 // Global components
-Vue.component('flash', __webpack_require__(168));
-Vue.component('example', __webpack_require__(176));
-Vue.component('category-cards', __webpack_require__(179));
+Vue.component('flash', __webpack_require__(169));
+Vue.component('example', __webpack_require__(177));
+Vue.component('category-cards', __webpack_require__(180));
 
 // Logbook browse views
-Vue.component('year-view', __webpack_require__(185));
+Vue.component('year-view', __webpack_require__(186));
 Vue.component('overview-view', __webpack_require__(250));
 
 // Charts
 Vue.component('chart-selector', __webpack_require__(255));
-Vue.component('bar-chart', __webpack_require__(257));
-Vue.component('table-report', __webpack_require__(241));
+Vue.component('bar-chart', __webpack_require__(258));
+Vue.component('table-report', __webpack_require__(140));
 
 // Import the global store (state management) object.
 
@@ -29928,11 +29976,11 @@ var app = new Vue({
 });
 
 /***/ }),
-/* 142 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-window._ = __webpack_require__(143);
+window._ = __webpack_require__(144);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -29941,9 +29989,9 @@ window._ = __webpack_require__(143);
  */
 
 try {
-  window.$ = window.jQuery = __webpack_require__(144);
-  window.Popper = __webpack_require__(145).default;
-  __webpack_require__(146);
+  window.$ = window.jQuery = __webpack_require__(145);
+  window.Popper = __webpack_require__(146).default;
+  __webpack_require__(147);
 } catch (e) {}
 
 /**
@@ -29966,7 +30014,7 @@ window.flash = function (message) {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = __webpack_require__(149);
+window.axios = __webpack_require__(150);
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -30000,7 +30048,7 @@ if (token) {
 // });
 
 /***/ }),
-/* 143 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -47089,10 +47137,10 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(12)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(12)(module)))
 
 /***/ }),
-/* 144 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -57352,7 +57400,7 @@ return jQuery;
 
 
 /***/ }),
-/* 145 */
+/* 146 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -59798,10 +59846,10 @@ Popper.Defaults = Defaults;
 /* harmony default export */ __webpack_exports__["default"] = (Popper);
 //# sourceMappingURL=popper.js.map
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9)))
 
 /***/ }),
-/* 146 */
+/* 147 */
 /***/ (function(module, exports) {
 
 /*!
@@ -63637,7 +63685,7 @@ var Popover = function ($) {
 })();
 
 /***/ }),
-/* 147 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -63690,13 +63738,13 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(148);
+__webpack_require__(149);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 148 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -63886,16 +63934,16 @@ exports.clearImmediate = clearImmediate;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(14)))
-
-/***/ }),
-/* 149 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(150);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(14)))
 
 /***/ }),
 /* 150 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(151);
+
+/***/ }),
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63903,7 +63951,7 @@ module.exports = __webpack_require__(150);
 
 var utils = __webpack_require__(4);
 var bind = __webpack_require__(15);
-var Axios = __webpack_require__(152);
+var Axios = __webpack_require__(153);
 var defaults = __webpack_require__(11);
 
 /**
@@ -63938,14 +63986,14 @@ axios.create = function create(instanceConfig) {
 
 // Expose Cancel & CancelToken
 axios.Cancel = __webpack_require__(19);
-axios.CancelToken = __webpack_require__(166);
+axios.CancelToken = __webpack_require__(167);
 axios.isCancel = __webpack_require__(18);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(167);
+axios.spread = __webpack_require__(168);
 
 module.exports = axios;
 
@@ -63954,7 +64002,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 151 */
+/* 152 */
 /***/ (function(module, exports) {
 
 /*!
@@ -63981,7 +64029,7 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 152 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63989,10 +64037,10 @@ function isSlowBuffer (obj) {
 
 var defaults = __webpack_require__(11);
 var utils = __webpack_require__(4);
-var InterceptorManager = __webpack_require__(161);
-var dispatchRequest = __webpack_require__(162);
-var isAbsoluteURL = __webpack_require__(164);
-var combineURLs = __webpack_require__(165);
+var InterceptorManager = __webpack_require__(162);
+var dispatchRequest = __webpack_require__(163);
+var isAbsoluteURL = __webpack_require__(165);
+var combineURLs = __webpack_require__(166);
 
 /**
  * Create a new instance of Axios
@@ -64074,7 +64122,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 153 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64093,7 +64141,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 154 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64126,7 +64174,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 155 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64154,7 +64202,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 156 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64229,7 +64277,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 157 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64273,7 +64321,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 158 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64348,7 +64396,7 @@ module.exports = (
 
 
 /***/ }),
-/* 159 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64391,7 +64439,7 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 160 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64451,7 +64499,7 @@ module.exports = (
 
 
 /***/ }),
-/* 161 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64510,14 +64558,14 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 162 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(4);
-var transformData = __webpack_require__(163);
+var transformData = __webpack_require__(164);
 var isCancel = __webpack_require__(18);
 var defaults = __webpack_require__(11);
 
@@ -64596,7 +64644,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 163 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64623,7 +64671,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 164 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64644,7 +64692,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 165 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64665,7 +64713,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 166 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64729,7 +64777,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 167 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64763,19 +64811,19 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 168 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(169)
+  __webpack_require__(170)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(174)
+var __vue_script__ = __webpack_require__(175)
 /* template */
-var __vue_template__ = __webpack_require__(175)
+var __vue_template__ = __webpack_require__(176)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -64815,17 +64863,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 169 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(170);
+var content = __webpack_require__(171);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(172)("fa6b0a2c", content, false);
+var update = __webpack_require__(173)("fa6b0a2c", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -64841,10 +64889,10 @@ if(false) {
 }
 
 /***/ }),
-/* 170 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(171)(undefined);
+exports = module.exports = __webpack_require__(172)(undefined);
 // imports
 
 
@@ -64855,7 +64903,7 @@ exports.push([module.i, "\n.alert-flash {\r\n    position: absolute;\r\n    righ
 
 
 /***/ }),
-/* 171 */
+/* 172 */
 /***/ (function(module, exports) {
 
 /*
@@ -64937,7 +64985,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 172 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -64956,7 +65004,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(173)
+var listToStyles = __webpack_require__(174)
 
 /*
 type StyleObject = {
@@ -65158,7 +65206,7 @@ function applyToTag (styleElement, obj) {
 
 
 /***/ }),
-/* 173 */
+/* 174 */
 /***/ (function(module, exports) {
 
 /**
@@ -65191,7 +65239,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 174 */
+/* 175 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -65243,7 +65291,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 175 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -65273,15 +65321,15 @@ if (false) {
 }
 
 /***/ }),
-/* 176 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(177)
+var __vue_script__ = __webpack_require__(178)
 /* template */
-var __vue_template__ = __webpack_require__(178)
+var __vue_template__ = __webpack_require__(179)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -65321,12 +65369,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 177 */
+/* 178 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(7);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -65366,7 +65414,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 178 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -65394,15 +65442,15 @@ if (false) {
 }
 
 /***/ }),
-/* 179 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(180)
+var __vue_script__ = __webpack_require__(181)
 /* template */
-var __vue_template__ = __webpack_require__(184)
+var __vue_template__ = __webpack_require__(185)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -65442,12 +65490,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 180 */
+/* 181 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__category_card_vue__ = __webpack_require__(181);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__category_card_vue__ = __webpack_require__(182);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__category_card_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__category_card_vue__);
 //
 //
@@ -65550,15 +65598,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 181 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(182)
+var __vue_script__ = __webpack_require__(183)
 /* template */
-var __vue_template__ = __webpack_require__(183)
+var __vue_template__ = __webpack_require__(184)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -65598,7 +65646,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 182 */
+/* 183 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -65639,7 +65687,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 183 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -65697,7 +65745,7 @@ if (false) {
 }
 
 /***/ }),
-/* 184 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -65771,13 +65819,13 @@ if (false) {
 }
 
 /***/ }),
-/* 185 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(186)
+var __vue_script__ = __webpack_require__(187)
 /* template */
 var __vue_template__ = null
 /* template functional */
@@ -65819,18 +65867,18 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 186 */
+/* 187 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_charts_SelectorYear_vue__ = __webpack_require__(187);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_charts_SelectorYear_vue__ = __webpack_require__(188);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_charts_SelectorYear_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_charts_SelectorYear_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_charts_ChartMonth_vue__ = __webpack_require__(190);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_charts_ChartMonth_vue__ = __webpack_require__(191);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_charts_ChartMonth_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_charts_ChartMonth_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_charts_ChartCategories_vue__ = __webpack_require__(239);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_charts_ChartCategories_vue__ = __webpack_require__(240);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_charts_ChartCategories_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_charts_ChartCategories_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_TableReport_vue__ = __webpack_require__(241);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_TableReport_vue__ = __webpack_require__(140);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_TableReport_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_TableReport_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_infoboxes_BoxSumSm_vue__ = __webpack_require__(244);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_infoboxes_BoxSumSm_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_infoboxes_BoxSumSm_vue__);
@@ -65893,15 +65941,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 187 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(188)
+var __vue_script__ = __webpack_require__(189)
 /* template */
-var __vue_template__ = __webpack_require__(189)
+var __vue_template__ = __webpack_require__(190)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -65941,7 +65989,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 188 */
+/* 189 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -65983,7 +66031,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 189 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -66033,13 +66081,13 @@ if (false) {
 }
 
 /***/ }),
-/* 190 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(191)
+var __vue_script__ = __webpack_require__(192)
 /* template */
 var __vue_template__ = null
 /* template functional */
@@ -66081,7 +66129,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 191 */
+/* 192 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -66130,7 +66178,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 }));
 
 /***/ }),
-/* 192 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66186,7 +66234,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 193 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66443,7 +66491,7 @@ helpers.easingEffects = effects;
 
 
 /***/ }),
-/* 194 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66664,7 +66712,7 @@ helpers.drawRoundedRectangle = function(ctx) {
 
 
 /***/ }),
-/* 195 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66767,7 +66815,7 @@ module.exports = {
 
 
 /***/ }),
-/* 196 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67409,10 +67457,10 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 197 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(198);
+var conversions = __webpack_require__(199);
 
 var convert = function() {
    return new Converter();
@@ -67506,7 +67554,7 @@ Converter.prototype.getValues = function(space) {
 module.exports = convert;
 
 /***/ }),
-/* 198 */
+/* 199 */
 /***/ (function(module, exports) {
 
 /* MIT license */
@@ -68210,11 +68258,11 @@ for (var key in cssKeywords) {
 
 
 /***/ }),
-/* 199 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var colorNames = __webpack_require__(200);
+var colorNames = __webpack_require__(201);
 
 module.exports = {
    getRgba: getRgba,
@@ -68437,7 +68485,7 @@ for (var name in colorNames) {
 
 
 /***/ }),
-/* 200 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68596,7 +68644,7 @@ module.exports = {
 
 
 /***/ }),
-/* 201 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68710,7 +68758,7 @@ module.exports = Element.extend({
 
 
 /***/ }),
-/* 202 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68808,7 +68856,7 @@ module.exports = Element.extend({
 
 
 /***/ }),
-/* 203 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68921,7 +68969,7 @@ module.exports = Element.extend({
 
 
 /***/ }),
-/* 204 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69145,7 +69193,7 @@ module.exports = Element.extend({
 
 
 /***/ }),
-/* 205 */
+/* 206 */
 /***/ (function(module, exports) {
 
 /**
@@ -69166,7 +69214,7 @@ module.exports = {
 
 
 /***/ }),
-/* 206 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69623,7 +69671,7 @@ helpers.removeEvent = removeEventListener;
 
 
 /***/ }),
-/* 207 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70004,7 +70052,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 208 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70183,7 +70231,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 209 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71066,7 +71114,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 210 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71403,7 +71451,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 211 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71832,7 +71880,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 212 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71884,7 +71932,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 213 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71893,7 +71941,7 @@ module.exports = function(Chart) {
 var defaults = __webpack_require__(2);
 var Element = __webpack_require__(5);
 var helpers = __webpack_require__(1);
-var Ticks = __webpack_require__(7);
+var Ticks = __webpack_require__(8);
 
 defaults._set('scale', {
 	display: true,
@@ -72799,7 +72847,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73751,14 +73799,14 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var helpers = __webpack_require__(1);
-var Ticks = __webpack_require__(7);
+var Ticks = __webpack_require__(8);
 
 module.exports = function(Chart) {
 
@@ -73890,7 +73938,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 216 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74030,7 +74078,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 217 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74038,7 +74086,7 @@ module.exports = function(Chart) {
 
 var defaults = __webpack_require__(2);
 var helpers = __webpack_require__(1);
-var Ticks = __webpack_require__(7);
+var Ticks = __webpack_require__(8);
 
 module.exports = function(Chart) {
 
@@ -74229,14 +74277,14 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 218 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var helpers = __webpack_require__(1);
-var Ticks = __webpack_require__(7);
+var Ticks = __webpack_require__(8);
 
 module.exports = function(Chart) {
 
@@ -74480,7 +74528,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 219 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74488,7 +74536,7 @@ module.exports = function(Chart) {
 
 var defaults = __webpack_require__(2);
 var helpers = __webpack_require__(1);
-var Ticks = __webpack_require__(7);
+var Ticks = __webpack_require__(8);
 
 module.exports = function(Chart) {
 
@@ -75017,7 +75065,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 220 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75758,7 +75806,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 221 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -76007,10 +76055,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 221;
+webpackContext.id = 222;
 
 /***/ }),
-/* 222 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76438,7 +76486,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 223 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76625,7 +76673,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 224 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76931,7 +76979,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 225 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77271,7 +77319,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 226 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77500,7 +77548,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 227 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77675,7 +77723,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 228 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77724,7 +77772,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 229 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77742,7 +77790,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 230 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77759,7 +77807,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 231 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77777,7 +77825,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 232 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77795,7 +77843,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 233 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77813,7 +77861,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 234 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77831,7 +77879,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 235 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -77846,7 +77894,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 236 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78174,7 +78222,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 237 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78748,7 +78796,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -78998,13 +79046,13 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(240)
+var __vue_script__ = __webpack_require__(241)
 /* template */
 var __vue_template__ = null
 /* template functional */
@@ -79046,7 +79094,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -79081,62 +79129,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 }));
 
 /***/ }),
-/* 241 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(3)
-/* script */
-var __vue_script__ = __webpack_require__(242)
-/* template */
-var __vue_template__ = __webpack_require__(243)
-/* template functional */
-  var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources\\assets\\js\\components\\TableReport.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-a1907546", Component.options)
-  } else {
-    hotAPI.reload("data-v-a1907546", Component.options)
-' + '  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
 /* 242 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(7);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -79157,7 +79164,49 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-        computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['updated']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'labels']))
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['updated']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'labels']), {
+
+        /** 
+         * Evaluate to true if both datasets are loaded.
+         */
+        ready: function ready() {
+            return this.totalVisits.hasOwnProperty(0) && this.totalVisits.hasOwnProperty(1);
+        },
+
+
+        /** 
+         * Return a serie containing the percentage variation across the datasets compared.
+         */
+        percentage: function percentage() {
+            var serie1 = this.totalVisits[0].data;
+            var serie2 = this.totalVisits[1].data;
+
+            var collection = [];
+
+            if (serie2) {
+                for (var index in this.labels) {
+                    collection.push(this.calculateVariation(serie1[index], serie2[index]));
+                }
+            }
+
+            return collection;
+        }
+    }),
+
+    methods: {
+        /** 
+         * Calculate the percentage variation between the values provided.
+         */
+        calculateVariation: function calculateVariation(first, second) {
+            if (first && second) {
+                var variation = second - first;
+
+                return Math.round(variation / first * 100);
+            } else {
+                return '-';
+            }
+        }
+    }
 });
 
 /***/ }),
@@ -79169,21 +79218,23 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("table", { staticClass: "table" }, [
+    _c("thead", [
+      _c(
+        "tr",
+        [
+          _c("th", [_vm._v("Year")]),
+          _vm._v(" "),
+          _vm._l(this.labels, function(field) {
+            return _c("th", [_vm._v(_vm._s(field))])
+          })
+        ],
+        2
+      )
+    ]),
+    _vm._v(" "),
     _c(
-      "thead",
+      "tbody",
       [
-        _c(
-          "tr",
-          [
-            _c("th", [_vm._v("Year")]),
-            _vm._v(" "),
-            _vm._l(this.labels, function(field) {
-              return _c("th", [_vm._v(_vm._s(field))])
-            })
-          ],
-          2
-        ),
-        _vm._v(" "),
         _vm._l(this.totalVisits, function(dataset) {
           return _c(
             "tr",
@@ -79191,18 +79242,51 @@ var render = function() {
               _c("td", [_vm._v(_vm._s(dataset.label))]),
               _vm._v(" "),
               _vm._l(dataset.data, function(value) {
-                return _c("td", [_vm._v(_vm._s(value))])
+                return _c("td", [
+                  _vm._v(_vm._s(typeof value !== "undefined" ? value : "-"))
+                ])
               })
             ],
             2
           )
-        })
+        }),
+        _vm._v(" "),
+        _vm.ready
+          ? _c(
+              "tr",
+              [
+                _vm._m(0),
+                _vm._v(" "),
+                _vm._l(this.percentage, function(percValue) {
+                  return _c("td", [
+                    _vm._v(_vm._s(percValue !== "-" ? percValue + "%" : "-"))
+                  ])
+                })
+              ],
+              2
+            )
+          : _vm._e()
       ],
       2
     )
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c("i", {
+        staticClass: "fa fa-line-chart",
+        attrs: {
+          "aria-hidden": "true",
+          title: "Increase / decrease percentage"
+        }
+      })
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -79629,7 +79713,7 @@ var normalizeComponent = __webpack_require__(3)
 /* script */
 var __vue_script__ = __webpack_require__(256)
 /* template */
-var __vue_template__ = __webpack_require__(260)
+var __vue_template__ = __webpack_require__(257)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -79674,7 +79758,7 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(7);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -79749,148 +79833,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 /* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var disposed = false
-var normalizeComponent = __webpack_require__(3)
-/* script */
-var __vue_script__ = __webpack_require__(258)
-/* template */
-var __vue_template__ = __webpack_require__(259)
-/* template functional */
-  var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources\\assets\\js\\components\\charts\\BarChart.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-524a0000", Component.options)
-  } else {
-    hotAPI.reload("data-v-524a0000", Component.options)
-' + '  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 258 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_chart_js__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_chart_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_chart_js__);
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-//
-//
-//
-//
-//
-
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            chart: null
-        };
-    },
-
-
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['updated']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'labels'])),
-
-    watch: {
-        /**
-         * Trigger a chart re-render each time two datasets are added.
-         */
-        updated: function updated() {
-            if (this.updated % 2 === 0) {
-                this.render();
-            }
-        }
-    },
-
-    mounted: function mounted() {
-        this.render();
-    },
-
-
-    methods: {
-        /** 
-         * Destroy any existing chart and create a new one.
-         */
-        render: function render() {
-            if (this.chart !== null) {
-                this.chart.destroy();
-            }
-
-            return this.createChart();
-        },
-
-
-        /**
-         * Create a new chart and store it in the chart data property.
-         */
-        createChart: function createChart() {
-            this.chart = new __WEBPACK_IMPORTED_MODULE_1_chart_js___default.a(this.$el, {
-                type: 'bar',
-                data: {
-                    labels: this.labels,
-                    datasets: this.totalVisits
-                }
-            });
-        }
-    }
-});
-
-/***/ }),
-/* 259 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("canvas")
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-524a0000", module.exports)
-  }
-}
-
-/***/ }),
-/* 260 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -79963,6 +79905,148 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-64491690", module.exports)
+  }
+}
+
+/***/ }),
+/* 258 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(259)
+/* template */
+var __vue_template__ = __webpack_require__(260)
+/* template functional */
+  var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\charts\\BarChart.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-524a0000", Component.options)
+  } else {
+    hotAPI.reload("data-v-524a0000", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 259 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_chart_js__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_chart_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_chart_js__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            chart: null
+        };
+    },
+
+
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['updated']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'labels'])),
+
+    watch: {
+        /**
+         * Trigger a chart re-render each time two datasets are added.
+         */
+        updated: function updated() {
+            if (this.updated % 2 === 0) {
+                this.render();
+            }
+        }
+    },
+
+    mounted: function mounted() {
+        this.render();
+    },
+
+
+    methods: {
+        /** 
+         * Destroy any existing chart and create a new one.
+         */
+        render: function render() {
+            if (this.chart !== null) {
+                this.chart.destroy();
+            }
+
+            return this.createChart();
+        },
+
+
+        /**
+         * Create a new chart and store it in the chart data property.
+         */
+        createChart: function createChart() {
+            this.chart = new __WEBPACK_IMPORTED_MODULE_1_chart_js___default.a(this.$el, {
+                type: 'bar',
+                data: {
+                    labels: this.labels,
+                    datasets: this.totalVisits
+                }
+            });
+        }
+    }
+});
+
+/***/ }),
+/* 260 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("canvas")
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-524a0000", module.exports)
   }
 }
 
