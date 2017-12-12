@@ -79225,7 +79225,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "card" }, [
     _c("div", { staticClass: "card-body" }, [
-      _c("h3", [_vm._v("Comparison")]),
+      _c("h4", [_vm._v("Comparison")]),
       _vm._v(" "),
       _c("table", { staticClass: "table" }, [
         _c("thead", [

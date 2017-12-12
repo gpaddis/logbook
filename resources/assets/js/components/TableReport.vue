@@ -1,7 +1,7 @@
 <template>
 <div class="card">
     <div class="card-body">
-        <h3>Comparison</h3>
+        <h4>Comparison</h4>
         
         <table class="table">
             <thead>
