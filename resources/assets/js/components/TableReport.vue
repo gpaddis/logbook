@@ -14,12 +14,25 @@
             <tbody>
                 <tr v-for="dataset in this.totalVisits">
                     <td><strong>{{ dataset.label }}</strong></td>
-                    <td v-for="value in dataset.data">{{ typeof(value) !== 'undefined' ? value : '-' }}</td>
+                    <td v-for="value in dataset.data">
+                        <p v-if="value">
+                            {{ value }}
+                        </p>
+                    </td>
                 </tr>
 
                 <tr v-if="ready">
                     <td><i class="fa fa-line-chart" aria-hidden="true" title="Increase / decrease percentage"></i></td>
-                    <td v-for="percValue in this.percentage">{{ percValue !== '-' ? percValue + '%' : '-' }}</td>
+                    <td v-for="percValue in this.percentage">
+                        <p v-if="percValue" 
+                           :class="percValue >= 0 ? 'text-success' : 'text-danger'">
+                            {{ percValue }}%
+                        </p>
+
+                        <p v-else>
+                            -
+                        </p>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -71,8 +84,6 @@ export default {
                 let variation = second - first;
 
                 return (Math.round((variation / first) * 100));
-            } else {
-                return '-';
             }
         }
     }
