@@ -90,13 +90,14 @@ export default {
 
     mutations: {
         /**
-         * Push a dataset to the current state once it has been retrieved.
+         * Push a dataset to the current state at a given index once it has been retrieved.
+         * The payload must contain a dataset and an index.
          * 
          * @param {*} state 
-         * @param {*} dataset 
+         * @param {*} payload 
          */
-        pushDataset (state, dataset) {
-            state.rawDatasets.push(dataset);
+        pushDataset (state, payload) {
+            state.rawDatasets.splice(payload.index, 0, payload.dataset);
         },
 
         /**
@@ -125,14 +126,17 @@ export default {
          * re-rendering after the ajax call.
          * 
          * @param {*} context
-         * @param {*} url
+         * @param {*} payload
          */
-        addDataset(context, url) {
-            axios.get(url)
+        addDataset({ commit }, payload) {
+            axios.get(payload.url)
             .then(response => {
-                context.commit('pushDataset', response.data);
+                commit('pushDataset', { 
+                    dataset: response.data,
+                    index: payload.index
+                });
 
-                context.commit('incrementUpdated');
+                commit('incrementUpdated');
             })
         }
     }

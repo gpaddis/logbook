@@ -55,14 +55,21 @@
             },
 
             /**
-             * Refresh the datasets in the store, loading the year passed
-             * and the previous year, then update the properties.
+             * Refresh the datasets in the store, loading the year passed and the previous year,
+             * then update the datasets in the state at the given index.
              */
             refreshDatasets(year) {
                 this.clearDatasets();
 
-                this.addDataset(this.generateUrl(year));
-                this.addDataset(this.generateUrl(year - 1));
+                this.addDataset({ 
+                    url: this.generateUrl(year - 1),
+                    index: 0
+                    });
+
+                this.addDataset({ 
+                    url: this.generateUrl(year),
+                    index: 1
+                    });
             },
         }
     }
