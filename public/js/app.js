@@ -79828,6 +79828,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
 
 
 
@@ -79844,7 +79846,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
 
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'groupedBy'])),
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['updated']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'groupedBy']), {
+
+        /** 
+         * "Loading" is true until both datasets have been loaded.
+         */
+        loading: function loading() {
+            return this.updated % 2 !== 0;
+        }
+    }),
 
     mounted: function mounted() {
         this.refreshDatasets(this.year);
@@ -79901,7 +79911,7 @@ var render = function() {
     _vm._v(" "),
     _c("p", { staticClass: "card-text" }, [
       _vm._v(
-        "Select a year from the dropdown menu to update the graph. \n                The data will be compared with the same period of the previous year (if available)."
+        "Select a year from the dropdown menu to update the graph. \n        The data will be compared with the same period of the previous year (if available)."
       )
     ]),
     _vm._v(" "),
@@ -79953,7 +79963,13 @@ var render = function() {
           }
         }
       },
-      [_vm._v("Load")]
+      [
+        _vm._v("\n        Reload "),
+        _c("i", {
+          staticClass: "fa fa-refresh fa-fw",
+          class: { "fa-spin": _vm.loading }
+        })
+      ]
     )
   ])
 }

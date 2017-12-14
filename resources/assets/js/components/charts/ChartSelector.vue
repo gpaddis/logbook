@@ -1,20 +1,22 @@
 <template>
     <div class="card-body">
-                <h4 class="card-title">Load the statistics</h4>
-                <p class="card-text">Select a year from the dropdown menu to update the graph. 
-                    The data will be compared with the same period of the previous year (if available).</p>
+        <h4 class="card-title">Load the statistics</h4>
+        <p class="card-text">Select a year from the dropdown menu to update the graph. 
+            The data will be compared with the same period of the previous year (if available).</p>
 
-                <label class="mr-sm-2" for="dateSelector">Year</label>
-                <select v-model="year" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="dateSelector">
-                    <option v-for="(year, index) in yearsAvailable" :value="year" :key="index">{{ year }}</option>
-                </select>
+        <label class="mr-sm-2" for="dateSelector">Year</label>
+        <select v-model="year" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="dateSelector">
+            <option v-for="(year, index) in yearsAvailable" :value="year" :key="index">{{ year }}</option>
+        </select>
 
-                <button class="btn btn-primary" @click="refreshDatasets(year)">Load</button>
+        <button class="btn btn-primary" @click="refreshDatasets(year)">
+            Reload <i class="fa fa-refresh fa-fw" :class="{ 'fa-spin': loading }"></i>
+        </button>
     </div>
 </template>
 
 <script>
-    import {mapGetters, mapMutations, mapActions} from 'vuex';
+    import {mapState, mapGetters, mapMutations, mapActions} from 'vuex';
 
     export default {
         props: ['yearsAvailable'],
@@ -29,7 +31,15 @@
         },
 
         computed: {
+            ...mapState(['updated']),
             ...mapGetters(['totalVisits', 'groupedBy']),
+
+            /** 
+             * "Loading" is true until both datasets have been loaded.
+             */
+            loading() {
+                return this.updated % 2 !== 0;
+            }
         },
 
         mounted() {
