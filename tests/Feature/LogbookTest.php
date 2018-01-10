@@ -91,12 +91,12 @@ class LogbookTest extends TestCase
 
         list($category1, $category2) = factory('App\PatronCategory', 2)->create();
 
-        $entry1 = create('App\LogbookEntry', [
+        create('App\LogbookEntry', [
             'patron_category_id' => $category1->id,
             'visited_at' => '2017-02-13 10:01:02'
         ], 10);
 
-        $entry2 = create('App\LogbookEntry', [
+        create('App\LogbookEntry', [
             'patron_category_id' => $category2->id,
             'visited_at' => '2017-02-13 17:01:02'
         ], 5);
@@ -109,7 +109,7 @@ class LogbookTest extends TestCase
         $this->assertTrue(array_key_exists(17, $entries->aggregateBy('hour')));
 
         // The sum of all visits in February is equal to 15.
-        $this->assertEquals(15, array_sum($entries->aggregateBy('month')[2]));
+        $this->assertEquals(15, $entries->aggregateBy('month')[2]);
 
         // If there are no entries, expect an empty array.
         $this->assertEquals([], LogbookEntry::year(1985)->aggregateBy('month'));
