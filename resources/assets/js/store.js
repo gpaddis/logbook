@@ -1,6 +1,15 @@
 export default {
     state: {
         /**
+         * Number of units in a given time period.
+         */
+        periods: {
+            'month': 12,
+            'day': 31,
+            'hour': 24
+        },
+
+        /**
          * The raw data coming from the API.
          */
         rawDatasets: [],
@@ -21,32 +30,35 @@ export default {
          */
         totalVisits: state => {
             let datasets = [];
-
             for (let key in state.rawDatasets) {
                 if (state.rawDatasets.hasOwnProperty(key)) {
-                    // Get rid of the patron categories, sum all the visits and store them in an array.
-                    let totals = [];
+                    let currentDataset = state.rawDatasets[key].data;
 
-                    for (let unit in state.rawDatasets[key].data.visits) {
-                        if (state.rawDatasets[key].data.visits.hasOwnProperty(unit)) {
-                            let newIndex = unit - 1; // Shift all indexes to match the labels in the graph.
-                            totals[newIndex] = Object.values(state.rawDatasets[key].data.visits[unit])
-                                .reduce((a, b) => a + b);
+                    /**
+                     * Turn the visits object into an array: for each unit in the periods array
+                     * save a value, or 0 if there is no corresponding value in the raw
+                     * dataset. This is to avoid visualization problems in the chart.
+                     */
+                    let totals = [];
+                    for (let index = 1; index <= state.periods[currentDataset.groupedBy]; index++) {
+                        if (currentDataset.visits.hasOwnProperty(index)) {
+                            totals.push(currentDataset.visits[index]);
+                        } else {
+                            totals.push(0);
                         }
                     }
 
-                    // Push the dataset into an array in a format readable by chart.js.
+                    // Construct the dataset.
                     datasets.push({
                         data: totals,
-                        label: state.rawDatasets[key].data.label,
+                        label: currentDataset.label,
                         backgroundColor: state.backgroundColors[key],
                         borderColor: state.borderColors[key],
-                    });
-
+                    })
                 }
             }
-                
-            return datasets;  
+
+            return datasets;
         },
 
         /**
@@ -58,7 +70,7 @@ export default {
             }
         },
 
-        /** 
+        /**
          * Return the labels according to the groupedBy property returned with the ajax call.
          */
         labels: state => {
@@ -92,9 +104,9 @@ export default {
         /**
          * Push a dataset to the current state at a given index once it has been retrieved.
          * The payload must contain a dataset and an index.
-         * 
-         * @param {*} state 
-         * @param {*} payload 
+         *
+         * @param {*} state
+         * @param {*} payload
          */
         pushDataset (state, payload) {
             state.rawDatasets.splice(payload.index, 0, payload.dataset);
@@ -102,8 +114,8 @@ export default {
 
         /**
          * Empty the raw datasets.
-         * 
-         * @param {*} state 
+         *
+         * @param {*} state
          */
         clearDatasets (state) {
             state.rawDatasets = [];
@@ -111,8 +123,8 @@ export default {
 
         /**
          * Increment the updated property.
-         * 
-         * @param {*} state 
+         *
+         * @param {*} state
          */
         incrementUpdated(state) {
             state.updated++;
@@ -124,14 +136,14 @@ export default {
          * Fetch a dataset from the given url and commit the mutation.
          * Increment the updated property in the store to trigger
          * re-rendering after the ajax call.
-         * 
+         *
          * @param {*} context
          * @param {*} payload
          */
         addDataset({ commit }, payload) {
             axios.get(payload.url)
             .then(response => {
-                commit('pushDataset', { 
+                commit('pushDataset', {
                     dataset: response.data,
                     index: payload.index
                 });

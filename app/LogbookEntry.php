@@ -195,15 +195,18 @@ class LogbookEntry extends Model
         }
 
         $entries = $builder
-            ->selectRaw("{$period}(visited_at) as {$period}, patron_category_id, count(*) as visits")
-            ->with('patronCategory:id,name')
-            ->groupBy('patron_category_id', $period)
+            ->selectRaw("{$period}(visited_at) as {$period}, count(*) as visits")
+            ->groupBy($period)
             ->orderBy($period)
             ->get();
 
         $result = [];
         foreach ($entries as $entry) {
-            $result[$entry->$period][$entry->patronCategory->name] = $entry->visits;
+            if (!isset($result[$entry->$period])) {
+                $result[$entry->$period] = $entry->visits;
+            } else {
+                $result[$entry->$period] += $entry->visits;
+            }
         }
 
         return $result;

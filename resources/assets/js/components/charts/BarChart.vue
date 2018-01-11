@@ -35,7 +35,7 @@ export default {
     },
 
     methods: {
-        /** 
+        /**
          * Destroy any existing chart and create a new one.
          */
         render() {

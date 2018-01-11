@@ -62,7 +62,7 @@ class VisitsTest extends TestCase
             ]
         ]);
 
-        $visits = array_sum($this->jsonToArray($response)['data']['visits']['13']);
+        $visits = $this->jsonToArray($response)['data']['visits']['13'];
         $this->assertEquals(28, $visits);
     }
 
