@@ -101,14 +101,12 @@ class LogbookEntryController extends Controller
     {
         $yearsAvailable = LogbookEntry::selectRaw('YEAR(visited_at) as year')
         ->distinct()
-        ->pluck('year');
-
-        // $openingDays = LogbookEntry::getOpeningDays(2017);
+        ->pluck('year')
+        ->sort();
 
         return view('logbook.tabs.year', compact(
             'year',
             'yearsAvailable',
-            'openingDays',
             'visitsByYear',
             'visitsByPatronCategory'
         ));

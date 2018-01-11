@@ -80137,11 +80137,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
     computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["e" /* mapState */])(['updated']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapGetters */])(['totalVisits', 'groupedBy']), {
 
-        /** 
+        /**
          * "Loading" is true until both datasets have been loaded.
          */
         loading: function loading() {
             return this.updated % 2 !== 0;
+        },
+
+
+        /**
+         * Return a sorted array of the years available in the database.
+         */
+        sortedYears: function sortedYears() {
+            return Object.values(this.yearsAvailable).sort();
         }
     }),
 
@@ -80152,7 +80160,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
     methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapMutations */])(['clearDatasets', 'pushDataset', 'incrementUpdated']), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapActions */])(['addDataset']), {
 
-        /** 
+        /**
          * Generate the URL for the AJAX call based on the parameters passed and append
          * the options set in this.options (if any).
          */
@@ -80200,7 +80208,7 @@ var render = function() {
     _vm._v(" "),
     _c("p", { staticClass: "card-text" }, [
       _vm._v(
-        "Select a year from the dropdown menu to update the graph. \n        The data will be compared with the same period of the previous year (if available)."
+        "Select a year from the dropdown menu to update the graph.\n        The data will be compared with the same period of the previous year (if available)."
       )
     ]),
     _vm._v(" "),
@@ -80235,8 +80243,8 @@ var render = function() {
           }
         }
       },
-      _vm._l(_vm.yearsAvailable, function(year, index) {
-        return _c("option", { key: index, domProps: { value: year } }, [
+      _vm._l(_vm.sortedYears, function(year) {
+        return _c("option", { key: year, domProps: { value: year } }, [
           _vm._v(_vm._s(year))
         ])
       })
