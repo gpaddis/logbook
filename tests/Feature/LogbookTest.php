@@ -250,4 +250,21 @@ class LogbookTest extends TestCase
         $this->assertEquals(7, LogbookEntry::lastAvailableDay()->visits);
         $this->assertEquals('2017-06-02', LogbookEntry::lastAvailableDay()->date);
     }
+
+    /** @test */
+    public function it_returns_the_aggregates_for_the_export()
+    {
+        $visits = create('App\LogbookEntry', [], rand(3, 15));
+        $firstRecord = $visits->first();
+
+        $this->assertEquals(
+            [
+                "date" => $firstRecord->visited_at->toDateString(),
+                "start_hour" => $firstRecord->visited_at->hour,
+                "category" => $firstRecord->patronCategory->name,
+                "visits" => 1
+            ],
+            LogbookEntry::export()[0]
+        );
+    }
 }
