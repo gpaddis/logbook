@@ -216,26 +216,28 @@ class LogbookEntry extends Model
      * Aggregate the entries and format the query to make it exportable.
      *
      * @param Builder $builder
-     * @return void
+     * @return array
      */
     public function scopeExport($builder)
     {
-        $entries = $builder
-            ->selectRaw("DATE(visited_at) as date, HOUR(visited_at) as start_hour, patron_category_id, count(*) as visits")
-            ->with('patronCategory')
-            ->groupBy('patron_category_id', 'start_hour', 'date')
-            ->orderBy('start_hour', 'date')
-            ->get();
+        $entries = $builder->oldest('visited_at')->get()
+            ->groupBy(function ($item, $key) {
+                return $item->visited_at->format('Y-m-d H:00:00');
+            })->map(function ($collection) {
+                return $collection->groupBy('patronCategory.name');
+            });
 
-
-        $result = [];
-        foreach ($entries as $key => $entry) {
-            $result[$key]['date'] = $entry->date;
-            $result[$key]['start_hour'] = $entry->start_hour;
-            $result[$key]['category'] = $entry->patronCategory->name;
-            $result[$key]['visits'] = $entry->visits;
+        $visits = [];
+        foreach ($entries as $datetime => $categories) {
+            foreach ($categories as $category => $records) {
+                $visits[] = [
+                    'start_time' => $datetime,
+                    'category' => $category,
+                    'visits' => count($records)
+                ];
+            }
         }
 
-        return $result;
+        return $visits;
     }
 }

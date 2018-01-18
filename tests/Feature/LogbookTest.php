@@ -254,17 +254,39 @@ class LogbookTest extends TestCase
     /** @test */
     public function it_returns_the_aggregates_for_the_export()
     {
-        $visits = create('App\LogbookEntry', [], rand(3, 15));
-        $firstRecord = $visits->first();
+        // Create two groups of visit records, one early and one late.
+        $earlyVisits = create(
+            'App\LogbookEntry',
+            ['patron_category_id' => create('App\PatronCategory')->id],
+            12
+        )->first();
+
+        $lateVisits = create(
+            'App\LogbookEntry',
+            [
+                'patron_category_id' => create('App\PatronCategory')->id,
+                'visited_at' => Carbon::now()->addHours(5)
+            ],
+            18
+        )->first();
+
+        // The two distinct groups are returned in the correct format and sequence by the export() method.
+        $this->assertEquals(
+            [
+                "start_time" => $earlyVisits->visited_at->format('Y-m-d H:00:00'),
+                "category" => $earlyVisits->patronCategory->name,
+                "visits" => 12
+            ],
+            LogbookEntry::export()[0]
+        );
 
         $this->assertEquals(
             [
-                "date" => $firstRecord->visited_at->toDateString(),
-                "start_hour" => $firstRecord->visited_at->hour,
-                "category" => $firstRecord->patronCategory->name,
-                "visits" => 1
+                "start_time" => $lateVisits->visited_at->format('Y-m-d H:00:00'),
+                "category" => $lateVisits->patronCategory->name,
+                "visits" => 18
             ],
-            LogbookEntry::export()[0]
+            LogbookEntry::export()[1]
         );
     }
 }
