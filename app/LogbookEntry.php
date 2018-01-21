@@ -221,7 +221,7 @@ class LogbookEntry extends Model
     public function scopeExport($builder)
     {
         $entries = $builder->oldest('visited_at')->get()
-            ->groupBy(function ($item, $key) {
+            ->groupBy(function ($item) {
                 return $item->visited_at->format('Y-m-d H:00:00');
             })->map(function ($collection) {
                 return $collection->groupBy('patronCategory.name');
