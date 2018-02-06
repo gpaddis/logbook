@@ -211,4 +211,33 @@ class LogbookEntry extends Model
 
         return $result;
     }
+
+    /**
+     * Aggregate the entries and format the query to make it exportable.
+     *
+     * @param Builder $builder
+     * @return array
+     */
+    public function scopeExport($builder)
+    {
+        $entries = $builder->oldest('visited_at')->get()
+            ->groupBy(function ($item) {
+                return $item->visited_at->format('Y-m-d H:00:00');
+            })->map(function ($collection) {
+                return $collection->groupBy('patronCategory.name');
+            });
+
+        $visits = [];
+        foreach ($entries as $datetime => $categories) {
+            foreach ($categories as $category => $records) {
+                $visits[] = [
+                    'start_time' => $datetime,
+                    'category' => $category,
+                    'visits' => count($records)
+                ];
+            }
+        }
+
+        return $visits;
+    }
 }

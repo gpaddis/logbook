@@ -44,15 +44,18 @@
             @endcan
 
             <div class="card">
-                <div class="card-header">Contribute</div>
+                <div class="card-header">Export to CSV</div>
                 <div class="card-body">
-                    <p>
-                    Which contents would you like to see on this page? 
-                    <a href="https://github.com/gpaddis/logbook" target="_blank">Contribute</a> to this project on GitHub or send me an email with your suggestions.
-                    </p>
+                    <form class="form" method="GET" action="{{ route('logbook.export') }}">
+                        <p>Select a a time range:</p>
+                        <div class="form-group">
+                            <input type="date" class="form-control mb-1" id="from" name="from" max="{{ date('Y-m-d') }}" value="{{ date('Y') }}-01-01">
+                            <input type="date" class="form-control" id="to" name="to" max="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Export</button>
+                    </form>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

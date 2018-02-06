@@ -42,6 +42,11 @@ Route::middleware('permission:edit logbook')->group(function () {
 });
 
 /**
+ * Import & Export
+ */
+Route::get('/logbook/export', 'ImportExportController@exportCsv')->name('logbook.export');
+
+/**
  * Live Counter
  */
 Route::middleware('permission:edit logbook')->group(function () {
