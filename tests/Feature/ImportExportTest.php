@@ -22,4 +22,13 @@ class ImportExportTest extends TestCase
             $response->content()
         );
     }
+
+    /** @test */
+    public function it_redirects_back_if_there_are_no_visits()
+    {
+        $this->signIn();
+
+        $this->get('/logbook/export?from=2017-01-01&to=' . date('Y-m-d'))
+            ->assertRedirect();
+    }
 }

@@ -29,27 +29,33 @@ class ImportExportController extends Controller
         $request->validate(
             [
                 'from' => 'required|date',
-                'to' => 'required|date'
+                'to' => 'required|date|before_or_equal:' . date('Y-m-d')
             ]
         );
 
-        $visits =  LogbookEntry::within(
-            $request->input('from'),
-            Carbon::parse($request->input('to'))->addDay()->toDateString()
-        )->export();
+        $start = $request->input('from');
+        $end = Carbon::parse($request->input('to'))->addDay()->toDateString();
+        $visits = LogbookEntry::within($start, $end)->export();
+
+        if (empty($visits)) {
+            return redirect()->back();
+        }
 
         return $this->createCsv($visits);
     }
 
     /**
-     * Create the CSV file for the export.
+     * Create the CSV file for the export and return a response.
      *
      * @param array $visits
-     * @return void
+     * @return Response
      */
     protected function createCsv(array $visits)
     {
-        // Check if $visits contains anything!
+        if (empty($visits)) {
+            return null;
+        }
+
         $csv = Writer::createFromFileObject(new \SplTempFileObject());
 
         $csv->insertOne(array_keys($visits[0]));
