@@ -22,7 +22,7 @@ class ImportExportController extends Controller
      * Export the visits for the time span desired.
      *
      * @param Request $request
-     * @return mixed
+     * @return Response
      */
     public function exportCsv(Request $request)
     {
@@ -45,7 +45,7 @@ class ImportExportController extends Controller
     }
 
     /**
-     * Create the CSV file for the export and return a response.
+     * Create a CSV containing the visits and return it with the response.
      *
      * @param array $visits
      * @return Response
@@ -57,9 +57,7 @@ class ImportExportController extends Controller
         }
 
         $csv = Writer::createFromFileObject(new \SplTempFileObject());
-
         $csv->insertOne(array_keys($visits[0]));
-
         foreach ($visits as $visit) {
             $csv->insertOne($visit);
         }
