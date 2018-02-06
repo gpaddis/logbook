@@ -10,6 +10,7 @@
         "gpaddis/timeslot": "^0.2.0",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
+        "league/csv": "9.0",
         "spatie/laravel-permission": "^2.7"
     },
     "require-dev": {
