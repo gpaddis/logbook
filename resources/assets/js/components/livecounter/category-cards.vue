@@ -42,6 +42,24 @@ export default {
         }
     },
 
+    mounted() {
+        setInterval(function () {
+            this.loadData();
+        }.bind(this), 15000);
+    },
+
+    computed: {
+        containsSecondary() {
+            let result = false;
+            for (let cat of this.patronCategories) {
+                if (cat.is_primary === false) {
+                    result = true;
+                }
+            }
+            return result;
+        }
+    },
+
     methods: {
         add(id) {
             axios.post('/logbook/livecounter/add', { patron_category_id: id})
@@ -55,18 +73,11 @@ export default {
 
         toggleSecondary() {
             this.showSecondary = ! this.showSecondary;
-        }
-    },
+        },
 
-    computed: {
-        containsSecondary() {
-            let result = false;
-            for (let cat of this.patronCategories) {
-                if (cat.is_primary === false) {
-                    result = true;
-                }
-            }
-            return result;
+        loadData() {
+            axios.get('/logbook/livecounter/show')
+            .then(response => this.visits = response.data);
         }
     }
 }
