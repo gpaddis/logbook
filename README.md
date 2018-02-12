@@ -15,3 +15,6 @@
 * run `php artisan db:seed`
 
 To start the app and test it, run `php artisan serve` and open the link in your browser. As a first move, you will have to register an **admin account**: go to `/register-admin` and fill the form. Enjoy!
+
+### Documentation
+Check out the [Logbook Wiki](https://github.com/gpaddis/logbook/wiki) to learn about how the application works and how to get started.
