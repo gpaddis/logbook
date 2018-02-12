@@ -62,13 +62,28 @@ class ImportExportController extends Controller
             $csv->insertOne($visit);
         }
 
-        // Return a Response object, avoid direct file output
-        // See: https://csv.thephpleague.com/9.0/connections/output/
+        return $this->createResponse($csv, 'Export.csv');
+    }
+
+    /**
+     * Create a response object to output the CSV, in order to
+     * avoid breaking application flow.
+     *
+     * @see https://csv.thephpleague.com/9.0/connections/output/#using-a-response-object-symfony-laravel-psr-7-etc
+     *
+     * @param Writer $file
+     * @param string $name
+     * @return Response
+     */
+    protected function createResponse(Writer $file, string $name = 'Export.csv')
+    {
         return new Response(
-            $csv, 200, [
+            $file,
+            200,
+            [
                 'Content-Encoding' => 'none',
                 'Content-Type' => 'text/csv; charset=UTF-8',
-                'Content-Disposition' => 'attachment; filename="Export.csv"',
+                'Content-Disposition' => 'attachment; filename="'.$name.'"',
                 'Content-Description' => 'File Transfer',
             ]
         );
