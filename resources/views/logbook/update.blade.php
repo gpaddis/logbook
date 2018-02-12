@@ -25,7 +25,8 @@
       @else
       <div class="card-body">
         <p class="card-text">
-          Insert or edit the user count for a specific time range into the appropriate field. If there were no visits during a given time range, simply leave the according fields empty. If you want to delete an existing count, write a 0 in the according field.
+          <i class="fa fa-info-circle"></i>
+          Insert or edit the visits count in the appropriate time range. If there were no visits for a given slot, simply leave the field empty. If you want to delete all visits in a field, replace the count with a 0 and save the form.
         </p>
       </div>
 
@@ -61,7 +62,7 @@
           <table class="table table-sm table-hover">
             <thead>
               <tr>
-                <th>Time Range</th>
+                <th>Start Time</th>
                 @foreach($patronCategories as $category)
                 <th>
                   <abbr title="{{ $category->name }}">{{ $category->abbreviation or $category->name}}</abbr>
@@ -75,7 +76,7 @@
               @foreach($timeslots as $timeslotNo => $timeslot)
               <tr>
                 <th scope="row">
-                  From {{ $timeslot->start()->format('G:i') }} to {{ $timeslot->end()->format('G:i') }}
+                  {{ $timeslot->start()->format('G:i') }}
                 </th>
 
                 {{-- Data inputs. --}}
