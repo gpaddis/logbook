@@ -11,12 +11,17 @@
   },
   "devDependencies": {
     "axios": "^0.16.2",
-    "bootstrap": "^4.0.0-beta",
-    "cross-env": "^5.0.1",
+    "bootstrap": "^4.0.0-beta.2",
+    "chart.js": "^2.7.1",
+    "cross-env": "^5.1.1",
+    "eslint": "^4.12.0",
+    "eslint-plugin-vue": "^4.0.0-beta.0",
+    "font-awesome": "^4.7.0",
     "jquery": "^3.1.1",
-    "laravel-mix": "^1.0",
+    "laravel-mix": "^1.5.1",
     "lodash": "^4.17.4",
-    "popper.js": "^1.11.0",
-    "vue": "^2.1.10"
+    "popper.js": "^1.12.6",
+    "vue": "^2.5.2",
+    "vuex": "^3.0.1"
   }
 }

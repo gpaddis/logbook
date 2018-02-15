@@ -10,38 +10,51 @@
 
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav mr-auto">
+      @auth
+      @can('edit logbook')
       <li class="nav-item">
         <a class="nav-link" href="{{ route('livecounter.index') }}">Live Counter</a>
       </li>
+      @endcan
 
       <li class="nav-item">
         <a class="nav-link" href="{{ route('logbook.index') }}">Browse</a>
       </li>
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Admin
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a href="{{ route('patron-categories.index') }}" class="dropdown-item">Patron Categories</a>
-          <a href="#" class="dropdown-item">App Settings</a>
-        </div>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('patron-categories.index') }}">Categories</a>
       </li>
+
+      @can('manage users')
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('users.index') }}">Users</a>
+      </li>
+      @endcan
+      @endauth
     </ul>
 
     <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
-      @if(Auth::guest())
-      <!-- Authentication Links -->
+      @guest
+      <!-- Authentication -->
       <li class="nav-item">
         <a class="nav-link" href="{{ route('login') }}">Login</a>
       </li>
+      @endguest
 
-      <li class="nav-item">
-        <a class="nav-link" href="{{ route('register') }}">Register</a>
-      </li>
-      @else
-
+      @auth
       <!-- User menu -->
+      @hasrole('admin')
+      <li class="nav-item">
+        <a class="nav-link"><span class="badge badge-pill badge-danger">Admin</span></a>
+      </li>
+      @endhasrole
+
+      @hasrole('guest')
+      <li class="nav-item">
+        <a class="nav-link"><span class="badge badge-pill badge-secondary">Guest</span></a>
+      </li>
+      @endhasrole
+
       <li class="nav-item dropdown">
         <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {{ Auth::user()->first_name }} <span class="caret"></span>
@@ -50,14 +63,14 @@
           <a class="dropdown-item" href="{{ route('logout') }}"
           onclick="event.preventDefault();
           document.getElementById('logout-form').submit();">
-        Logout</a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-          {{ csrf_field() }}
-        </form>
-      </div>
-    </li>
-    @endif
+          <i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            {{ csrf_field() }}
+          </form>
+        </div>
+      </li>
+      @endauth
 
-  </ul>
-</div>
+    </ul>
+  </div>
 </nav>

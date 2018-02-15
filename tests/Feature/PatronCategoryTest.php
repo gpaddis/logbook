@@ -54,12 +54,11 @@ class PatronCategoryTest extends TestCase
         $inactiveCategory = create('App\PatronCategory', ['is_active' => false]);
 
         $this->get('/patron-categories')
-            ->assertSee($inactiveCategory->name)
-            ->assertSee('Not active');
+            ->assertSee($inactiveCategory->name);
     }
 
     /** @test */
-    function an_active_category_name_is_visible_on_the_update_logbook_entry_page()
+    public function an_active_category_name_is_visible_on_the_update_logbook_entry_page()
     {
         $this->signIn();
 
@@ -68,7 +67,7 @@ class PatronCategoryTest extends TestCase
     }
 
     /** @test */
-    function an_inactive_category_name_is_not_visible_on_the_update_logbook_entry_page()
+    public function an_inactive_category_name_is_not_visible_on_the_update_logbook_entry_page()
     {
         $this->signIn();
 
@@ -76,5 +75,19 @@ class PatronCategoryTest extends TestCase
 
         $this->get('/logbook/update')
             ->assertDontSee($patronCategory->name);
+    }
+
+    /** @test */
+    public function it_shows_all_non_boolean_fields_on_the_category_page()
+    {
+        $this->signIn();
+        $category = create('App\PatronCategory');
+
+        $this->get($category->path())
+            ->assertSee($category->name)
+            ->assertSee($category->abbreviation)
+            ->assertSee($category->notes)
+            ->assertSee($category->created_at->diffForHumans())
+            ->assertSee($category->updated_at->diffForHumans());
     }
 }

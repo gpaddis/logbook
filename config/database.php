@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Database Connection Name
@@ -32,7 +31,6 @@ return [
     */
 
     'connections' => [
-
         'sqlite' => [
             'driver' => 'sqlite',
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
@@ -55,15 +53,16 @@ return [
         ],
 
          'testing' => [
-            'driver'    => 'mysql',
-            'host'      => env('DB_TEST_HOST', 'localhost'),
-            'database'  => env('DB_TEST_DATABASE', 'logbook_dev'),
-            'username'  => env('DB_TEST_USERNAME', 'root'),
-            'password'  => env('DB_TEST_PASSWORD', ''),
-            'charset'   => 'utf8',
+            'driver' => env('DB_TEST_DRIVER', 'mysql'),
+            'host' => env('DB_TEST_HOST', 'localhost'),
+            'port' => env('DB_TEST_PORT', 'localhost'),
+            'database' => env('DB_TEST_DATABASE', 'logbook_dev'),
+            'username' => env('DB_TEST_USERNAME', 'root'),
+            'password' => env('DB_TEST_PASSWORD', ''),
+            'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
-            'strict'    => false,
+            'prefix' => '',
+            'strict' => false,
         ],
 
         'pgsql' => [
@@ -89,7 +88,6 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
         ],
-
     ],
 
     /*
@@ -117,7 +115,6 @@ return [
     */
 
     'redis' => [
-
         'client' => 'predis',
 
         'default' => [
@@ -126,7 +123,5 @@ return [
             'port' => env('REDIS_PORT', 6379),
             'database' => 0,
         ],
-
     ],
-
 ];

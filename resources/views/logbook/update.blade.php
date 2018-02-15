@@ -5,7 +5,17 @@
 <div class="row">
   <div class="col">
     <div class="card">
-      <div class="card-header">Update the logbook for {{ $timeslots->start()->toFormattedDateString() }}</div>
+      <div class="card-header d-flex justify-content-between">
+        <a class="btn btn-sm btn-outline-secondary" href="/logbook/update?date={{ $previousDay }}">
+          <i class="fa fa-backward" aria-hidden="true"></i> Previous
+        </a>
+
+        <h5>Update the logbook for <strong>{{ $timeslots->start()->toFormattedDateString() }}</strong></h5>
+
+        <a class="btn btn-sm btn-outline-secondary{{ $nextDay ? '' : ' disabled' }}" {{ $nextDay ? 'href=/logbook/update?date=' . $nextDay : ''}}>
+          Next <i class="fa fa-forward" aria-hidden="true"></i>
+        </a>
+      </div>
 
       {{-- Start main if clause --}}
       @if($patronCategories->isEmpty())
@@ -15,7 +25,8 @@
       @else
       <div class="card-body">
         <p class="card-text">
-          Insert or edit the user count for a specific time range into the appropriate field. If there were no visits during a given time range, simply leave the according fields empty. If you want to delete an existing count, write a 0 in the according field.
+          <i class="fa fa-info-circle"></i>
+          Insert or edit the visits count in the appropriate time range. If there were no visits for a given slot, simply leave the field empty. If you want to delete all visits in a field, replace the count with a 0 and save the form.
         </p>
       </div>
 
@@ -34,13 +45,24 @@
         </div>
         @endif
 
+        {{-- Errors. --}}
+        @if (count($errors))
+        <div class="row">
+          <div class="col">
+            <div class="alert alert-danger" role="alert">
+              <strong>Error:</strong> {{ $errors->first() }}
+            </div>
+          </div>
+        </div>
+        @endif
+
         {{-- Form begins --}}
         <form method="POST" action="/logbook">
           {{ csrf_field() }}
           <table class="table table-sm table-hover">
             <thead>
               <tr>
-                <th>Time Range</th>
+                <th>Start Time</th>
                 @foreach($patronCategories as $category)
                 <th>
                   <abbr title="{{ $category->name }}">{{ $category->abbreviation or $category->name}}</abbr>
@@ -54,7 +76,7 @@
               @foreach($timeslots as $timeslotNo => $timeslot)
               <tr>
                 <th scope="row">
-                  From {{ $timeslot->start()->format('G:i') }} to {{ $timeslot->end()->format('G:i') }}
+                  {{ $timeslot->start()->format('G:i') }}
                 </th>
 
                 {{-- Data inputs. --}}
@@ -83,17 +105,6 @@
             <a href="{{ route('logbook.index') }}" class="btn btn-secondary">Discard Changes</a>
           </div>
         </form>
-
-        {{-- Errors. --}}
-        @if (count($errors))
-        <div class="row">
-          <div class="col">
-            <div class="alert alert-danger" role="alert">
-              <strong>Error:</strong> {{ $errors->first() }}
-            </div>
-          </div>
-        </div>
-        @endif
       </div>
       @endif
       {{-- End main if clause. --}}

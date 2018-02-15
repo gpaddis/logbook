@@ -15,27 +15,35 @@ class LiveCounterTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $this->post('/logbook/livecounter/add', [
-            'id' => 1,
-        ])->assertRedirect('login');
+        $response = $this->post('/logbook/livecounter/add', [])->assertRedirect('login');
+    }
+
+    /** @test */
+    public function a_guest_may_not_submit_a_visit_count()
+    {
+        $guest = create('App\User')->assignRole('guest');
+        $this->signIn($guest)->withExceptionHandling();
+
+        $this->get('/logbook/livecounter')->assertStatus(302);
+        $this->post('/logbook/livecounter/add', [])->assertStatus(302);
+        $this->post('/logbook/livecounter/subtract', [])->assertStatus(302);
     }
 
     /** @test */
     public function it_adds_a_visit_to_the_database()
     {
         $this->signIn();
-
-        $entry = [
-            'patron_category_id' => create('App\PatronCategory')->id,
-            'visited_at' => Carbon::now(),
-            'recorded_live' => true
-        ];
+        $patronCategory = create('App\PatronCategory');
 
         $this->post('/logbook/livecounter/add', [
-            'patron_category_id' => $entry['patron_category_id']
-        ]);
-
-        $this->assertDatabaseHas('logbook_entries', $entry);
+            'patron_category_id' => $patronCategory->id,
+            'visited_at' => '2017-01-01 12:09:03',
+            'recorded_live' => true
+            ])
+        ->assertStatus(200)
+        ->assertJson([
+            $patronCategory->id => 1
+            ]);
     }
 
     /** @test */
@@ -43,26 +51,33 @@ class LiveCounterTest extends TestCase
     {
         $this->signIn();
 
-        $patronCategories = create('App\PatronCategory', [], 3);
+        list($cat1, $cat2, $cat3) = factory('App\PatronCategory', 3)->create();
 
         $entry1 = create('App\LogbookEntry', [
-            'patron_category_id' => $patronCategories[0]->id
-        ]);
+            'patron_category_id' => $cat1->id
+            ]);
 
         $entry2 = create('App\LogbookEntry', [
-            'patron_category_id' => $patronCategories[1]->id
-        ]);
+            'patron_category_id' => $cat2->id
+            ]);
 
         $entry3 = create('App\LogbookEntry', [
-            'patron_category_id' => $patronCategories[1]->id,
+            'patron_category_id' => $cat2->id,
             'visited_at' => Carbon::now()->addMinute()
-        ]);
+            ]);
 
         $this->post('/logbook/livecounter/subtract', [
-            'patron_category_id' => $patronCategories[1]->id
-        ]);
+            'patron_category_id' => $cat2->id
+            ])
+        ->assertStatus(200)
+        ->assertJson([
+            $cat1->id => 1,
+            $cat2->id => 1
+            ]);
 
         $this->assertDatabaseMissing('logbook_entries', $entry3->toArray());
+        $this->assertDatabaseHas('logbook_entries', $entry1->toArray());
+        $this->assertDatabaseHas('logbook_entries', $entry2->toArray());
     }
 
     /** @test */
@@ -72,11 +87,11 @@ class LiveCounterTest extends TestCase
 
         $entry = create('App\LogbookEntry', [
             'visited_at' => Carbon::now()->subDay()
-        ]);
+            ]);
 
         $this->post('/logbook/livecounter/subtract', [
             'patron_category_id' => $entry->patron_category_id
-        ]);
+            ]);
 
         $this->assertDatabaseHas('logbook_entries', $entry->toArray());
     }
@@ -89,36 +104,58 @@ class LiveCounterTest extends TestCase
         create('App\PatronCategory', ['id' => 1]);
 
         $this->post('/logbook/livecounter/add', [
-            'patron_category_id' => 6
-        ])->assertSessionHasErrors('patron_category_id');
+            'patron_category_id' => 100
+            ])->assertSessionHasErrors('patron_category_id');
 
         $this->post('/logbook/livecounter/remove', [
-            'patron_category_id' => 6
-        ])->assertSessionHasErrors('patron_category_id');
+            'patron_category_id' => 100
+            ])->assertSessionHasErrors('patron_category_id');
     }
 
     /** @test */
-    public function it_displays_todays_visits_on_the_livecounter_page()
+    public function it_rejects_an_inactive_patron_category_id()
     {
-        $this->signIn();
+        $this->signIn()->withExceptionHandling();
 
-        $entry = factory('App\LogbookEntry', 23)->create();
+        $active = create('App\PatronCategory');
+        $inactive = create('App\PatronCategory', ['is_active' => false]);
 
-        $this->get('logbook/livecounter')
-        ->assertSee('value="23"');
+        $this->post('/logbook/livecounter/add', [
+            'patron_category_id' => $active->id
+            ])->assertStatus(200);
+
+        $this->post('/logbook/livecounter/add', [
+            'patron_category_id' => $inactive->id
+            ])->assertSessionHasErrors('patron_category_id');
+
+        $this->post('/logbook/livecounter/subtract', [
+            'patron_category_id' => $inactive->id
+            ])->assertSessionHasErrors('patron_category_id');
     }
 
     /** @test */
-    public function it_displays_the_toggle_secondary_categories_link_if_there_are_some()
+    public function it_returns_a_collection_of_visits_keyed_with_patron_category_ids()
     {
         $this->signIn();
 
-        create('App\PatronCategory', ['is_primary' => true], 3);
-        $this->get('/logbook/livecounter')
-        ->assertDontSee('Toggle secondary categories...');
+        list($cat1, $cat2, $cat3) = factory('App\PatronCategory', 3)->create();
 
-        create('App\PatronCategory', ['is_primary' => false], 3);
-        $this->get('/logbook/livecounter')
-        ->assertSee('Toggle secondary categories...');
+        $entry1 = create('App\LogbookEntry', [
+            'patron_category_id' => $cat1->id
+            ]);
+
+        $entry2 = create('App\LogbookEntry', [
+            'patron_category_id' => $cat2->id
+            ]);
+
+        $response = $this->json('GET', '/logbook/livecounter/show');
+
+        $response
+        ->assertStatus(200)
+        ->assertJson([
+            $cat1->id => 1,
+            $cat2->id => 1,
+            $cat3->id => 0
+            ]);
     }
 }

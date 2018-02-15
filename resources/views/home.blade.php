@@ -8,9 +8,9 @@
             <div class="card-header">Dashboard</div>
 
             <div class="card-body">
-                <h3>Logbook Home</h3>
+                <h3>Welcome, {{ Auth::user()->first_name }}!</h3>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate sunt eaque, illo, magnam praesentium, excepturi possimus mollitia voluptatem eum magni, fugiat ut aperiam. Consectetur beatae, impedit odit provident explicabo nam.</p>
+                <p>Select one option from the navigation menu above.</p>
             </div>
         </div>
     </div>

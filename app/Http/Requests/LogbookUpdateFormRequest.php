@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Carbon\Carbon;
 use App\LogbookEntry;
+use App\PatronCategory;
 use Illuminate\Validation\Validator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
@@ -31,7 +32,7 @@ class LogbookUpdateFormRequest extends FormRequest
             'entry.*.start_time' => 'required|date|before_or_equal:' . Carbon::now()->addDay()->toDateString(),
             'entry.*.end_time' => 'required|date|after:start_time',
             'entry.*.patron_category_id' => 'required|exists:patron_categories,id',
-            'entry.*.visits' => 'nullable|integer|min:0',
+            'entry.*.visits' => 'nullable|integer|min:0|max:255',
         ];
     }
 
@@ -44,7 +45,8 @@ class LogbookUpdateFormRequest extends FormRequest
     {
         return [
             'before_or_equal' => 'You cannot save a logbook entry in the future.',
-            'min' => 'The visits count must be a positive number.'
+            'min' => 'The visits count must be a positive number.',
+            'max' => 'The value you inserted is too high.'
         ];
     }
 
@@ -125,26 +127,29 @@ class LogbookUpdateFormRequest extends FormRequest
      */
     protected function addEntries(array $entry, int $number)
     {
+        $entries = [];
+
         for ($i = 0; $i < $number; $i++) {
-            LogbookEntry::create([
-                'patron_category_id' => $entry['patron_category_id'],
+            $entries[] = [
                 'visited_at' => $entry['start_time']
-            ]);
+            ];
         }
+
+        PatronCategory::find($entry['patron_category_id'])
+        ->logbookEntries()
+        ->createMany($entries);
     }
 
     /**
      * Delete a $number of records for a given patron categories within a time range.
      *
-     * @param  Builder  $storedEntries
-     * @param  int      $number
+     * @param  Builder $storedEntries
+     * @param  int $number
      *
      * @return void
      */
     protected function deleteEntries(Builder $storedEntries, int $number = 1)
     {
-        for ($i=0; $i < $number; $i++) {
-            $storedEntries->first()->delete();
-        }
+        $storedEntries->take($number)->delete();
     }
 }
