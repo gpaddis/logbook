@@ -166,6 +166,20 @@ class LogbookEntry extends Model
     }
 
     /**
+     * Count the unique number of days in a collection of entries.
+     *
+     * @param Builder $builder
+     * @return int
+     */
+    public function scopeCountDays($builder)
+    {
+        return $builder->get()
+            ->groupBy(function ($entry) {
+                return $entry->visited_at->toDateString();
+            })->count();
+    }
+
+    /**
      * Get the visits count for the last available day before today.
      *
      * @return Collection | null

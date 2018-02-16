@@ -28,12 +28,17 @@ class LogbookEntryController extends Controller
      */
     public function index()
     {
-        $aggregates = LogbookEntry::getAggregatesWithin(Carbon::now()->subWeek()->startOfWeek(), Carbon::now());
+        $thisWeek = new Timeslot(Carbon::now()->startOfWeek(), 24 * 7);
+        $lastWeek = new Timeslot(Carbon::now()->subWeek()->startOfWeek(), 24 * 7);
 
-        $today = $aggregates->where('day', Carbon::now()->toDateString())->first()->visits ?? 0;
+        $today = LogbookEntry::today()->count() ?? 0;
         $lastAvailableDay = LogbookEntry::lastAvailableDay()->visits ?? 0;
-        $thisWeeksAverage = $aggregates->where('week', Carbon::now()->weekOfYear)->pluck('visits')->average();
-        $lastWeeksAverage = $aggregates->where('week', Carbon::now()->subWeek()->weekOfYear)->pluck('visits')->average();
+        $thisWeeksEntries = LogbookEntry::withinTimeslot($thisWeek);
+        $lastWeeksEntries = LogbookEntry::withinTimeslot($lastWeek);
+        $thisWeeksOpeningDays = $thisWeeksEntries->countDays();
+        $lastWeeksOpeningDays = $lastWeeksEntries->countDays();
+        $thisWeeksAverage = $thisWeeksOpeningDays > 0 ? $thisWeeksEntries->count() / $thisWeeksOpeningDays : 0;
+        $lastWeeksAverage = $lastWeeksOpeningDays > 0 ? $lastWeeksEntries->count() / $lastWeeksOpeningDays : 0;
 
         return view('logbook.tabs.overview', compact('today', 'lastAvailableDay', 'thisWeeksAverage', 'lastWeeksAverage'));
     }
