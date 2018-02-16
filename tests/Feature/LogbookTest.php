@@ -55,36 +55,6 @@ class LogbookTest extends TestCase
     }
 
     /** @test */
-    public function it_gets_the_aggregate_values_within_a_time_range()
-    {
-        $this->signIn();
-        $timeslot = Timeslot::create('2017-08-10 10:00:00');
-
-        create('App\LogbookEntry', [
-            'visited_at' => '2017-08-10 10:00:00'
-        ], 5);
-
-        create('App\LogbookEntry', [
-            'visited_at' => '2017-08-11 00:00:00'
-        ], 3);
-
-        create('App\LogbookEntry', [
-            'visited_at' => '2017-08-12 10:00:00'
-        ], 6);
-
-        create('App\LogbookEntry', [
-            'visited_at' => '2017-08-13 23:59:59'
-        ], 5);
-
-        $result = LogbookEntry::getAggregatesWithin(Carbon::parse('2017-08-11'), Carbon::parse('2017-08-13'));
-
-        $this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $result);
-        $this->assertEquals(3, $result->where('day', '2017-08-11')->first()->visits);
-        $this->assertEquals(5, $result->where('day', '2017-08-13')->first()->visits);
-        $this->assertEquals(4.7, number_format($result->pluck('visits')->average(), 1));
-    }
-
-    /** @test */
     public function it_gets_the_aggregate_values_by_time_unit()
     {
         $this->signIn();
