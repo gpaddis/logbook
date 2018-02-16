@@ -107,24 +107,6 @@ class LogbookEntry extends Model
     }
 
     /**
-     * Get aggregate values for a custom time range.
-     *
-     * @param Carbon $start
-     * @param Carbon $end
-     *
-     * @return Collection
-     */
-    public static function getAggregatesWithin(Carbon $start, Carbon $end)
-    {
-        return static::selectRaw('MONTH(visited_at) as month, WEEK(visited_at) as week, DATE(visited_at) AS day, COUNT(*) AS visits')
-            ->where('visited_at', '>=', $start->startOfDay())
-            ->where('visited_at', '<=', $end->endOfDay())
-            ->groupBy('month', 'week', 'day')
-            ->latest('day')
-            ->get();
-    }
-
-    /**
      * A logbook entry belongs to a patron category.
      *
      * @return BelongsTo
@@ -163,6 +145,20 @@ class LogbookEntry extends Model
             ->distinct('days')
             ->get()
             ->count();
+    }
+
+    /**
+     * Count the unique number of days in a collection of entries.
+     *
+     * @param Builder $builder
+     * @return int
+     */
+    public function scopeCountDays($builder)
+    {
+        return $builder->get()
+            ->groupBy(function ($entry) {
+                return $entry->visited_at->toDateString();
+            })->count();
     }
 
     /**
