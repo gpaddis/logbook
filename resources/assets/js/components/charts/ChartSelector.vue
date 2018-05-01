@@ -1,18 +1,18 @@
 <template>
-    <div class="card-body">
-        <h4 class="card-title">Load the statistics</h4>
-        <p class="card-text">Select a year from the dropdown menu to update the graph.
-            The data will be compared with the same period of the previous year (if available).</p>
+  <div class="card-body">
+    <h4 class="card-title">Load the statistics</h4>
+    <p class="card-text">Select a year from the dropdown menu to update the graph.
+      The data will be compared with the same period of the previous year (if available).</p>
 
-        <label class="mr-sm-2" for="dateSelector">Year</label>
-        <select v-model="year" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="dateSelector">
-            <option v-for="year in sortedYears" :value="year" :key="year">{{ year }}</option>
-        </select>
+    <label class="mr-sm-2" for="dateSelector">Year</label>
+    <select v-model="year" class="custom-select mb-2 mr-sm-2 mb-sm-0" id="dateSelector">
+      <option v-for="year in sortedYears" :value="year" :key="year">{{ year }}</option>
+    </select>
 
-        <button class="btn btn-primary" @click="refreshDatasets(year)">
-            Reload <i class="fa fa-refresh fa-fw" :class="{ 'fa-spin': loading }"></i>
-        </button>
-    </div>
+    <button class="btn btn-primary" @click="refreshDatasets(year)">
+    Reload <i class="fa fa-refresh fa-fw" :class="{ 'fa-spin': loading }"></i>
+    </button>
+  </div>
 </template>
 
 <script>
@@ -65,7 +65,7 @@
                 let url = '/api/visits/' + year;
 
                 if (this.options.groupBy !== null) {
-                    url += '&groupBy=' + this.options.groupBy;
+                    url += '?groupBy=' + this.options.groupBy;
                 }
 
                 return url;
